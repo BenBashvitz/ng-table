@@ -3,13 +3,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { CdkVirtualScrollViewport, VirtualScrollStrategy } from '@angular/cdk/scrolling';
 import { ListRange } from '@angular/cdk/collections';
-
-export interface TSVStrategyConfigs {
-  rowHeight: number;
-  headerHeight: number;
-  footerHeight: number;
-  bufferMultiplier: number;
-}
+import {PrTableVirtualScrollConfig} from "./table.interface";
 
 @Injectable()
 export class FixedSizeTableVirtualScrollStrategy implements VirtualScrollStrategy {
@@ -82,7 +76,7 @@ export class FixedSizeTableVirtualScrollStrategy implements VirtualScrollStrateg
     this.viewport.scrollToOffset((index - 1 ) * this.rowHeight + this.headerHeight, behavior);
   }
 
-  public setConfig(configs: TSVStrategyConfigs) {
+  public setConfig(configs: PrTableVirtualScrollConfig) {
     const {rowHeight, headerHeight, footerHeight, bufferMultiplier} = configs;
     if (
       this.rowHeight === rowHeight
@@ -92,6 +86,7 @@ export class FixedSizeTableVirtualScrollStrategy implements VirtualScrollStrateg
     ) {
       return;
     }
+
     this.rowHeight = rowHeight;
     this.headerHeight = headerHeight;
     this.footerHeight = footerHeight;
@@ -109,7 +104,6 @@ export class FixedSizeTableVirtualScrollStrategy implements VirtualScrollStrateg
     const itemsDisplayed = Math.ceil(this.viewport.getViewportSize() / this.rowHeight);
     const bufferItems = Math.ceil(itemsDisplayed * this.bufferMultiplier);
     const end = start + itemsDisplayed + 2 * bufferItems;
-
 
     const bufferOffset = renderedOffset + bufferItems * this.rowHeight;
     const scrollOffset = this.viewport.measureScrollOffset();

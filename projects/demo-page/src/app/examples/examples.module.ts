@@ -14,6 +14,7 @@ import { FilterSortSelectExampleComponent } from './filter-sort-select-example/f
 import { FooterExampleComponent } from './footer-example/footer-example.component';
 import { StickyColumnExampleComponent } from './sticky-column-example/sticky-column-example.component';
 import { StickyExampleComponent } from './sticky-example/sticky-example.component';
+import { TableComponent } from './table/table.component';
 
 const examples = [
   BaseExampleComponent,
@@ -21,12 +22,13 @@ const examples = [
   FooterExampleComponent,
   FilterSortSelectExampleComponent,
   StickyExampleComponent,
-  StickyColumnExampleComponent
+  StickyColumnExampleComponent,
+  TableComponent,
 ];
 
 @NgModule({
   declarations: [
-    ...examples
+    ...examples,
   ],
   imports: [
     CommonModule,

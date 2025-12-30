@@ -1,0 +1,45 @@
+<cdk-virtual-scroll-viewport tvsItemSize
+                             tvsTableSize
+                             class="wrapper mat-elevation-z2">
+  <table mat-table [dataSource]="dataSource">
+    <tr mat-header-row *matHeaderRowDef="columnDefs"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnDefs;"></tr>
+
+    <ng-container
+      *ngFor="let column of table.columns; trackBy: trackByColumnDef"
+      [matColumnDef]="column.columnDef"
+      [sticky]="column.isSticky ?? defaults.isSticky"
+    >
+      <th
+        mat-header-cell
+        tvsColumnResize
+        [prColumn]="column"
+        *matHeaderCellDef
+        [style.max-width.px]="column.maxWidthInPx ?? defaults.maxWidthInPx"
+        [style.min-width.px]="column.minWidthInPx ?? defaults.minWidthInPx"
+      >
+        {{ column.title }}
+        <div class="resizer"></div>
+      </th>
+      <td
+        mat-cell
+        [class]="'cell ' + column.columnDef"
+        *matCellDef="let row"
+        [style.max-width.px]="column.maxWidthInPx ?? defaults.maxWidthInPx"
+        [style.min-width.px]="column.minWidthInPx  ?? defaults.minWidthInPx"
+      >
+        <ng-container *ngIf="table | tableCell: column: row">
+          <ng-container *ngIf="isNormalCell(table | tableCell: column: row)">
+            {{ ((table | tableCell: column: row) | toNormalCell).cellText }}
+          </ng-container>
+          <ng-container *ngIf="isCustomCell(table | tableCell: column: row)">
+            <ng-container *ngComponentOutlet="((table | tableCell: column: row) | toComponentCell).component;"></ng-container>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="!(table | tableCell: column: row)">
+          row does not have a cell for this column
+        </ng-container>
+      </td>
+    </ng-container>
+  </table>
+</cdk-virtual-scroll-viewport>

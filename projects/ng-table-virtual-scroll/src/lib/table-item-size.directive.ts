@@ -15,6 +15,7 @@ import { combineLatest, from, Subject } from 'rxjs';
 import { delayWhen, distinctUntilChanged, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { FixedSizeTableVirtualScrollStrategy } from './fixed-size-table-virtual-scroll-strategy';
 import { CdkTableVirtualScrollDataSource, isTVSDataSource, TableVirtualScrollDataSource } from './table-data-source';
+import {defaults} from "./table.interface";
 
 export function _tableVirtualScrollDirectiveStrategyFactory(tableDir: TableItemSizeDirective) {
   return tableDir.scrollStrategy;
@@ -44,22 +45,14 @@ function isCdkTable<T>(table: unknown): table is CdkTable<T> {
   return table instanceof CdkTable && table['stickyCssClass'].includes('cdk');
 }
 
-const defaults = {
-  rowHeight: 48,
-  headerHeight: 56,
-  headerEnabled: true,
-  footerHeight: 48,
-  footerEnabled: false,
-  bufferMultiplier: 0.7
-};
-
 @Directive({
   selector: 'cdk-virtual-scroll-viewport[tvsItemSize]',
   providers: [{
     provide: VIRTUAL_SCROLL_STRATEGY,
     useFactory: _tableVirtualScrollDirectiveStrategyFactory,
     deps: [forwardRef(() => TableItemSizeDirective)]
-  }]
+  }],
+  standalone: true
 })
 export class TableItemSizeDirective<T = unknown> implements OnChanges, AfterContentInit, OnDestroy {
   private destroyed$ = new Subject<void>();

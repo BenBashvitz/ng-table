@@ -1,5 +1,5 @@
 import {AfterViewInit, Directive, ElementRef, OnDestroy, Renderer2} from '@angular/core';
-import {TableSizeService} from "./table-size.service";
+import {TableSizeService} from "../services/table-size.service";
 import {takeUntil, tap} from "rxjs/operators";
 import {Subject, Subscription} from "rxjs";
 
@@ -22,14 +22,14 @@ export class TableSizeDirective implements AfterViewInit, OnDestroy {
     const contentWrapper = this.element.nativeElement.getElementsByClassName('cdk-virtual-scroll-content-wrapper').item(0)
     const minWidthInPx = +window.getComputedStyle(contentWrapper).width.slice(0, -2)
 
-    this.tableSizeService.setMinimumTableSize(minWidthInPx);
+    this.tableSizeService.setMinSize(minWidthInPx);
 
-    this.subscription = this.tableSizeService.tableSize$.pipe(
+    this.subscription = this.tableSizeService.size$.pipe(
       takeUntil(this.destroyed$),
       tap(tableSize => {
         this.renderer.setStyle(contentWrapper, 'width', `${tableSize}px`);
       })
-    ).subscribe()
+    ).subscribe();
   }
 
   ngOnDestroy(): void {

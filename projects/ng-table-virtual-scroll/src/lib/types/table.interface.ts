@@ -1,11 +1,20 @@
 import {ComponentType} from "@angular/cdk/portal";
 
-export type PrColumn<AvailableColumns extends string = string> = {
-  columnDef: AvailableColumns;
-  title: string;
+export type PrColumnMetadata = {
   maxWidthInPx?: number;
   minWidthInPx?: number;
   isSticky?: boolean;
+}
+
+export type PrColumn<AvailableColumns extends string = string> = {
+  columnDef: AvailableColumns;
+  title: string;
+}
+
+export type PrColumnWithMetadata<AvailableColumns extends string = string> = PrColumn<AvailableColumns> & PrColumnMetadata;
+
+export type PrColumnGroup<AvailableColumns extends string = string> = PrColumn & {
+  columns: AvailableColumns[];
 }
 
 export type PrCell = PrTextCell | PrCustomCell;
@@ -26,7 +35,8 @@ export type PrCustomCell<ComponentInputs extends Record<string, unknown> = Recor
 export type PrRow = { id: string | number; }
 
 export type PrTableMetadata<AvailableColumns extends string = string> = {
-  columns: PrColumn<AvailableColumns>[];
+  columns: PrColumnWithMetadata<AvailableColumns>[];
+  columnGroups: PrColumnGroup<AvailableColumns>[]
   selectedRowsIds?: string[];
   pinnedRowsIds?: string[];
   selectedCells?: {
@@ -60,7 +70,7 @@ export interface PrTableVirtualScrollConfig {
   footerEnabled?: boolean;
 }
 
-export const columnDefaults: Omit<PrColumn, 'columnDef' | 'title'> = {
+export const columnDefaults: Omit<PrColumnWithMetadata, 'columnDef' | 'title'> = {
   minWidthInPx: 70,
   maxWidthInPx: 400,
   isSticky: false,
@@ -75,7 +85,7 @@ export const virtualScrollDefaults: PrTableVirtualScrollConfig = {
   footerEnabled: false,
 }
 
-export const tableDefaults: Omit<PrTableMetadata, 'columns'> = {
+export const tableDefaults: Omit<PrTableMetadata, 'columns' | 'columnGroups'> = {
   selectedCells: [],
   selectedRowsIds: [],
   pinnedRowsIds: [],
@@ -84,7 +94,7 @@ export const tableDefaults: Omit<PrTableMetadata, 'columns'> = {
   columnOrder: undefined,
 }
 
-export const defaults: Omit<PrColumn & PrTableVirtualScrollConfig & PrTableMetadata, 'columnDef' | 'title' | 'columns'> = {
+export const defaults: Omit<PrColumnWithMetadata & PrTableVirtualScrollConfig & PrTableMetadata, 'columnDef' | 'title' | 'columns' | 'columnGroups'> = {
   ...columnDefaults,
   ...virtualScrollDefaults,
   ...tableDefaults,

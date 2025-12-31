@@ -1,9 +1,26 @@
-<cdk-virtual-scroll-viewport tvsItemSize
-                             tvsTableSize
-                             class="wrapper mat-elevation-z2">
+<cdk-virtual-scroll-viewport
+  tvsItemSize
+  tvsTableSize
+  class="wrapper mat-elevation-z2"
+>
   <table mat-table [dataSource]="dataSource">
+    <tr mat-header-row *matHeaderRowDef="groupDefs"></tr>
     <tr mat-header-row *matHeaderRowDef="columnDefs"></tr>
     <tr mat-row *matRowDef="let row; columns: columnDefs;"></tr>
+
+    <ng-container
+      *ngFor="let group of table.columnGroups; trackBy: trackByColumnDef"
+      [matColumnDef]="group.columnDef"
+    >
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        [colSpan]="groupToColumnAmountMap[group.columnDef]"
+
+      >
+        {{ group.title }}
+      </th>
+    </ng-container>
 
     <ng-container
       *ngFor="let column of table.columns; trackBy: trackByColumnDef"
@@ -14,6 +31,7 @@
         mat-header-cell
         tvsColumnResize
         [prColumn]="column"
+        [columnGroups]="table.columnGroups"
         *matHeaderCellDef
         [style.max-width.px]="column.maxWidthInPx ?? defaults.maxWidthInPx"
         [style.min-width.px]="column.minWidthInPx ?? defaults.minWidthInPx"

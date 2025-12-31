@@ -5,7 +5,7 @@ import { Component, Type, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatLegacyTableModule } from '@angular/material/legacy-table';
 import { MatTableModule } from '@angular/material/table';
 import { mount } from 'cypress/angular';
-import { CdkTableVirtualScrollDataSource, TableVirtualScrollDataSource } from './table-data-source';
+import { CdkTableVirtualScrollDataSource, TableVirtualScrollDataSource } from '../services/table-data-source';
 import { TableItemSizeDirective } from './table-item-size.directive';
 
 interface Data {

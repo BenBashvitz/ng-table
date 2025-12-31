@@ -1,16 +1,19 @@
-import {AfterViewInit, Directive, ElementRef, Input, NgZone, OnDestroy, Renderer2,} from '@angular/core';
+import {AfterViewInit, Directive, ElementRef, Input, NgZone, OnDestroy, OnInit, Renderer2,} from '@angular/core';
 import {fromEvent, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {TableSizeService} from "./table-size.service";
-import {columnDefaults, PrColumn} from "ng-table-virtual-scroll";
+import {TableSizeService} from "../services/table-size.service";
+import {columnDefaults, PrColumn, PrColumnGroup, PrColumnWithMetadata} from "ng-table-virtual-scroll";
 
 @Directive({
   selector: '[tvsColumnResize]',
   standalone: true,
 })
-export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
+export class ColumnResizeDirective implements AfterViewInit, OnDestroy, OnInit {
   @Input() resizableTable: HTMLElement | null = null;
-  @Input() prColumn: PrColumn;
+  @Input() prColumn: PrColumnWithMetadata;
+  @Input() columnGroups: PrColumnGroup[];
+
+  prGroup: PrColumn;
 
   private startX!: number;
   private startWidth!: number;
@@ -30,8 +33,11 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
     this.column = this.el.nativeElement;
   }
 
+  ngOnInit(): void {
+  }
+
   ngAfterViewInit() {
-    this.tableSizeService.updateTableSize((previousSize) => previousSize + this.column.offsetWidth);
+    this.tableSizeService.updateSize((previousSize) => previousSize + this.column.offsetWidth);
     this.resizer = this.column.lastElementChild as HTMLElement;
     this.initializeResizeListener();
   }
@@ -75,7 +81,8 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
     this.renderer.setStyle(this.column, 'width', `${newColumnWidth}px`);
 
     if(this._previousDiff != mousePositionDiff) {
-      this.tableSizeService.updateTableSize((previousSize) => previousSize + adjustedMousePositionDiff);
+
+      this.tableSizeService.updateSize((previousSize) => previousSize + adjustedMousePositionDiff);
       this._previousDiff = mousePositionDiff;
     }
   }
@@ -102,7 +109,7 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
     const clampedMaxWidth = Math.min(maxWidth, this.prColumn.maxWidthInPx ?? columnDefaults.maxWidthInPx);
     const adjustedMaxWidth = clampedMaxWidth - this.column.offsetWidth;
     this.renderer.setStyle(this.column, 'width', `${clampedMaxWidth}px`);
-    this.tableSizeService.updateTableSize((previousSize) => previousSize + adjustedMaxWidth);
+    this.tableSizeService.updateSize((previousSize) => previousSize + adjustedMaxWidth);
   }
 
   ngOnDestroy() {

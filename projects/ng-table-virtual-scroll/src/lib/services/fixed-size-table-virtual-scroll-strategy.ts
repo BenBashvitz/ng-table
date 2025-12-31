@@ -3,7 +3,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { CdkVirtualScrollViewport, VirtualScrollStrategy } from '@angular/cdk/scrolling';
 import { ListRange } from '@angular/cdk/collections';
-import {PrTableVirtualScrollConfig} from "./table.interface";
+import {PrTableVirtualScrollConfig} from "../types/table.interface";
 
 @Injectable()
 export class FixedSizeTableVirtualScrollStrategy implements VirtualScrollStrategy {

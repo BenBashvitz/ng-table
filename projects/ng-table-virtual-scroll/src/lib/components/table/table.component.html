@@ -3,22 +3,44 @@
   tvsTableSize
   class="wrapper mat-elevation-z2"
 >
-  <table mat-table [dataSource]="dataSource">
+  <table
+    mat-table
+    [dataSource]="dataSource"
+    cdkDropListGroup
+  >
     <tr mat-header-row *matHeaderRowDef="groupDefs"></tr>
     <tr mat-header-row *matHeaderRowDef="columnDefs"></tr>
     <tr mat-row *matRowDef="let row; columns: columnDefs;"></tr>
 
     <ng-container
-      *ngFor="let group of table.columnGroups; trackBy: trackByColumnDef"
+      *ngFor="let group of table.columnGroups; let i = index; trackBy: trackByColumnDef"
       [matColumnDef]="group.columnDef"
     >
       <th
-        mat-header-cell
         *matHeaderCellDef
+        mat-header-cell
         [colSpan]="groupToColumnAmountMap[group.columnDef]"
-
+        [class.hovered]="currentHoveredColumn?.columnDef === group.columnDef"
       >
-        {{ group.title }}
+        <div
+          cdkDropList
+          cdkDropListOrientation="horizontal"
+          (cdkDropListEntered)="onEnter($event, group)"
+          (cdkDropListDropped)="onDrop($event, group)"
+          class="header-row"
+        >
+          <div
+            cdkDrag
+            cdkDragLockAxis="x"
+            [cdkDragData]="group"
+            class="header-cell"
+          >
+            {{ group.title }}
+            <ng-template cdkDragPlaceholder>
+              <div class="drag-placeholder"></div>
+            </ng-template>
+          </div>
+        </div>
       </th>
     </ng-container>
 
@@ -35,9 +57,28 @@
         *matHeaderCellDef
         [style.max-width.px]="column.maxWidthInPx ?? defaults.maxWidthInPx"
         [style.min-width.px]="column.minWidthInPx ?? defaults.minWidthInPx"
+        [class.hovered]="currentHoveredColumn?.columnDef === column.columnDef"
       >
-        {{ column.title }}
-        <div class="resizer"></div>
+        <div
+          cdkDropList
+          cdkDropListOrientation="horizontal"
+          (cdkDropListEntered)="onEnter($event, column)"
+          (cdkDropListDropped)="onDrop($event, column)"
+          class="header-row"
+        >
+          <div
+            cdkDrag
+            cdkDragLockAxis="x"
+            [cdkDragData]="column"
+            class="header-cell"
+          >
+            {{ column.title }}
+            <ng-template cdkDragPlaceholder>
+              <div class="drag-placeholder"></div>
+            </ng-template>
+          </div>
+          <div class="resizer" (click)="$event.stopPropagation()"></div>
+        </div>
       </th>
       <td
         mat-cell
@@ -51,7 +92,8 @@
             {{ ((table | tableCell: column: row) | toNormalCell).cellText }}
           </ng-container>
           <ng-container *ngIf="isCustomCell(table | tableCell: column: row)">
-            <ng-container *ngComponentOutlet="((table | tableCell: column: row) | toComponentCell).component;"></ng-container>
+            <ng-container
+              *ngComponentOutlet="((table | tableCell: column: row) | toComponentCell).component;"></ng-container>
           </ng-container>
         </ng-container>
         <ng-container *ngIf="!(table | tableCell: column: row)">

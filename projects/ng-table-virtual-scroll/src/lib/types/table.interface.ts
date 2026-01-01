@@ -61,6 +61,10 @@ export function isNormalCell(cell: PrCell): cell is PrCell {
   return !('component' in cell);
 }
 
+export function isColumnGroup(column: PrColumn): column is PrColumnGroup {
+  return 'columns' in column;
+}
+
 export interface PrTableVirtualScrollConfig {
   rowHeight: number;
   headerHeight: number;

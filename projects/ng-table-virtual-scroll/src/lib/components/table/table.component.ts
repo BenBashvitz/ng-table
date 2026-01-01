@@ -1,15 +1,33 @@
-import {ChangeDetectorRef, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {TableVirtualScrollDataSource} from "../../services/table-data-source";
-import {defaults, isCustomCell, isNormalCell, PrCell, PrColumnWithMetadata, PrRow, PrTable} from "../../types/table.interface";
+import {
+  defaults,
+  isColumnGroup,
+  isCustomCell,
+  isNormalCell,
+  PrCell,
+  PrColumn,
+  PrColumnWithMetadata,
+  PrTable
+} from "../../types/table.interface";
 import {CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 import {MatTableModule} from "@angular/material/table";
-import { NgComponentOutlet, NgForOf, NgIf } from "@angular/common";
+import {NgComponentOutlet, NgForOf, NgIf} from "@angular/common";
 import {TableItemSizeDirective} from "../../directives/table-item-size.directive";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
 import {TableSizeDirective} from "../../directives/table-size.directive";
 import {TableCellPipe} from "../../pipes/table-cell.pipe";
 import {ToNormalCellPipe} from "../../pipes/to-normal-cell.pipe";
 import {ToComponentCellPipe} from "../../pipes/to-component-cell.pipe";
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragEnter,
+  CdkDragPlaceholder,
+  CdkDropList,
+  CdkDropListGroup,
+  moveItemInArray
+} from "@angular/cdk/drag-drop";
 
 @Component({
   selector: 'tvs-table',
@@ -28,32 +46,31 @@ import {ToComponentCellPipe} from "../../pipes/to-component-cell.pipe";
     TableCellPipe,
     ToNormalCellPipe,
     ToComponentCellPipe,
+    CdkDropList,
+    CdkDrag,
+    CdkDragPlaceholder,
+    CdkDropListGroup,
   ]
 })
 export class TableComponent implements OnChanges, OnInit {
-  _table: PrTable;
   @Input() table: PrTable
   columnDefs: string[] = []
   groupDefs: string[] = []
   groupToColumnAmountMap: Record<string, number> = {}
   dataSource = new TableVirtualScrollDataSource([]);
-  defaults = defaults;
+  currentHoveredColumn: PrColumn | null = null;
 
-  constructor(
-    private cd: ChangeDetectorRef,
-  ) { }
+  defaults = defaults;
 
   ngOnInit() {
     this.initDatasource(this.table);
     this.initColumns(this.table);
-    this.cd.detectChanges();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['table']) {
       this.initDatasource(this.table);
       this.initColumns(this.table);
-      this.cd.detectChanges();
     }
   }
 
@@ -71,7 +88,10 @@ export class TableComponent implements OnChanges, OnInit {
   }
 
   private setColumnDefs(table: PrTable) {
-    this.columnDefs = table.columns.map(({columnDef}) => columnDef);
+    this.columnDefs = table.columnGroups.reduce((columnDefs,{columns}) => {
+      columnDefs.push(...columns.filter(column => !!this.table.columns.find(({columnDef}) => column === columnDef)));
+      return columnDefs
+    }, [] as string[]);
   }
 
   private setGroupDefs(table: PrTable) {
@@ -95,5 +115,56 @@ export class TableComponent implements OnChanges, OnInit {
 
   trackByColumnDef(_:number, column: PrColumnWithMetadata) {
     return column.columnDef
+  }
+
+  onDropColumn(event: CdkDragDrop<unknown, unknown, PrColumn>, prColumn: PrColumn) {
+    const group = this.getColumnGroupByColumn(event.item.data)
+    const previousIndex = group.columns.findIndex((columnDef) => event.item.data.columnDef === columnDef);
+    const currentIndex = group.columns.findIndex((columnDef) => prColumn.columnDef === columnDef);
+
+    if(currentIndex === -1) return;
+
+    this.moveColumnInArray(group.columns, previousIndex, currentIndex)
+  }
+
+  onDropGroup(event: CdkDragDrop<unknown, unknown, PrColumn>) {
+    this.moveColumnInArray(this.table.columnGroups, event.previousIndex, event.currentIndex)
+  }
+
+  onDrop(event: CdkDragDrop<unknown, unknown, PrColumn>, column: PrColumn) {
+    this.currentHoveredColumn = null;
+
+    if(!event) return;
+
+    if(isColumnGroup(event.item.data)) {
+      this.onDropGroup(event);
+    } else {
+      this.onDropColumn(event, column);
+    }
+  }
+
+  onEnter(event: CdkDragEnter<unknown, PrColumn>, column: PrColumn) {
+    if(isColumnGroup(event.item.data)) {
+      this.currentHoveredColumn = column;
+      return;
+    }
+
+    const group = this.getColumnGroupByColumn(column)
+    const isDraggedColumnInGroup = !!group.columns.find((columnDef) => event.item.data.columnDef === columnDef);
+
+    if(!isDraggedColumnInGroup) {
+      this.currentHoveredColumn = null
+    } else {
+      this.currentHoveredColumn = column;
+    }
+  }
+
+  private moveColumnInArray(columns: (string | PrColumn)[], previousIndex: number, currentIndex: number) {
+    moveItemInArray(columns, previousIndex, currentIndex);
+    this.initColumns(this.table);
+  }
+
+  private getColumnGroupByColumn(column: PrColumn) {
+    return this.table.columnGroups.find(({columns}) => columns.includes(column.columnDef));
   }
 }

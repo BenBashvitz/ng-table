@@ -38,8 +38,14 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy, OnInit {
 
   ngAfterViewInit() {
     this.tableSizeService.updateSize((previousSize) => previousSize + this.column.offsetWidth);
-    this.resizer = this.column.lastElementChild as HTMLElement;
+    this.resizer = (this.column.getElementsByClassName('resizer')).item(0) as HTMLElement;
     this.initializeResizeListener();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.tableSizeService.reset();
   }
 
   private initializeResizeListener() {
@@ -110,10 +116,5 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy, OnInit {
     const adjustedMaxWidth = clampedMaxWidth - this.column.offsetWidth;
     this.renderer.setStyle(this.column, 'width', `${clampedMaxWidth}px`);
     this.tableSizeService.updateSize((previousSize) => previousSize + adjustedMaxWidth);
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

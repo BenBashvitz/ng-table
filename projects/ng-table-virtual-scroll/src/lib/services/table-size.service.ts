@@ -17,4 +17,9 @@ export class TableSizeService {
     const newSize = _(this._size$.value)
     if(newSize > this.minSizeInPx) this._size$.next(newSize);
   }
+
+  reset() {
+    this._size$.next(0);
+    this.minSizeInPx = 0;
+  }
 }

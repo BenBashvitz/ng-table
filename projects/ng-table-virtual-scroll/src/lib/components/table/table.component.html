@@ -8,9 +8,23 @@
     [dataSource]="dataSource"
     cdkDropListGroup
   >
-    <tr mat-header-row *matHeaderRowDef="groupDefs"></tr>
-    <tr mat-header-row *matHeaderRowDef="columnDefs"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnDefs;"></tr>
+    <tr
+      mat-header-row
+      *matHeaderRowDef="groupDefs"
+      class="group-row"
+    ></tr>
+    <tr
+      mat-header-row
+      *matHeaderRowDef="columnDefs"
+      class="column-row"
+    ></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: columnDefs;"
+      class="cell-row"
+      [class.selected]="isRowSelected(row)"
+      (click)="onClickRow($event, row)"
+    ></tr>
 
     <ng-container
       *ngFor="let group of table.columnGroups; let i = index; trackBy: trackByColumnDef"
@@ -20,6 +34,7 @@
         *matHeaderCellDef
         mat-header-cell
         [colSpan]="groupToColumnAmountMap[group.columnDef]"
+        class="group"
         [class.hovered]="currentHoveredColumn?.columnDef === group.columnDef"
       >
         <div
@@ -33,6 +48,7 @@
             cdkDrag
             cdkDragLockAxis="x"
             [cdkDragData]="group"
+            cdkDragPreviewClass="group"
             class="header-cell"
           >
             {{ group.title }}
@@ -55,6 +71,7 @@
         [prColumn]="column"
         [columnGroups]="table.columnGroups"
         *matHeaderCellDef
+        class="column"
         [style.max-width.px]="column.maxWidthInPx ?? defaults.maxWidthInPx"
         [style.min-width.px]="column.minWidthInPx ?? defaults.minWidthInPx"
         [class.hovered]="currentHoveredColumn?.columnDef === column.columnDef"
@@ -82,7 +99,6 @@
       </th>
       <td
         mat-cell
-        [class]="'cell ' + column.columnDef"
         *matCellDef="let row"
         [style.max-width.px]="column.maxWidthInPx ?? defaults.maxWidthInPx"
         [style.min-width.px]="column.minWidthInPx  ?? defaults.minWidthInPx"

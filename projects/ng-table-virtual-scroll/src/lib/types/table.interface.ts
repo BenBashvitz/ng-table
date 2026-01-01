@@ -32,15 +32,17 @@ export type PrCustomCell<ComponentInputs extends Record<string, unknown> = Recor
   value: () => string;
 }
 
-export type PrRow = { id: string | number; }
+export type PrRow = {
+  id: string | number;
+}
 
 export type PrTableMetadata<AvailableColumns extends string = string> = {
   columns: PrColumnWithMetadata<AvailableColumns>[];
   columnGroups: PrColumnGroup<AvailableColumns>[]
-  selectedRowsIds?: string[];
-  pinnedRowsIds?: string[];
+  selectedRowsIds?: (string | number)[];
+  pinnedRowsIds?: (string | number)[];
   selectedCells?: {
-    rowId: string;
+    rowId: string | number;
     columnDef: string;
   }[]
   groupByColumnIds?: AvailableColumns[]
@@ -81,8 +83,8 @@ export const columnDefaults: Omit<PrColumnWithMetadata, 'columnDef' | 'title'> =
 }
 
 export const virtualScrollDefaults: PrTableVirtualScrollConfig = {
-  rowHeight: 52,
-  headerHeight: 56,
+  rowHeight: 36,
+  headerHeight: 54,
   footerHeight: 52,
   bufferMultiplier: 0.7,
   headerEnabled: true,

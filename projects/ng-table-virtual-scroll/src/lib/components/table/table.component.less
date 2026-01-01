@@ -1,0 +1,113 @@
+:host {
+  .wrapper {
+    height: 300px;
+
+    table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: separate;
+      border-spacing: 2px 2px;
+      background: #21242B;
+
+      tr {
+        background: transparent;
+        border-radius: 5px;
+
+        &.group-row {
+          height: 30px;
+        }
+
+        &.column-row {
+          height: 18px;
+        }
+
+        &.cell-row {
+          height: 36px;
+        }
+
+        &.selected {
+          outline: 1px solid #40a0ff;
+          outline-offset: -1px;
+        }
+      }
+
+      th {
+        position: relative;
+
+        &.group {
+          color: #999DA7;
+          background: #2C2F37;
+          border-top-left-radius: 10px;
+          border-top-right-radius: 10px;
+        }
+
+        &.column {
+          color: #FFFFFF;
+          background: #5D6371;
+
+          &:first-child {
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+          }
+
+          &:last-child {
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+          }
+        }
+
+        &.hovered {
+          filter: brightness(80%);
+        }
+
+        .resizer {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          width: 10px;
+          cursor: col-resize;
+          z-index: 1;
+
+          &:hover {
+            border-right: 2px solid red;
+          }
+        }
+
+        .cdk-drag-preview {
+          box-sizing: border-box;
+          pointer-events: auto;
+        }
+
+        .drag-placeholder {
+          width: 0;
+          height: 0;
+        }
+
+        .header-cell {
+          cursor: move;
+        }
+      }
+
+      td {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        background: #3E414A;
+        color: #E7EAEF;
+        border: 1px solid transparent;
+        user-select: none;
+
+        &:first-child {
+          border-top-left-radius: 5px;
+          border-bottom-left-radius: 5px;
+        }
+
+        &:last-child {
+          border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px;
+        }
+      }
+    }
+  }
+}

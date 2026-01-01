@@ -1,12 +1,13 @@
 <cdk-virtual-scroll-viewport
   tvsItemSize
-  tvsTableSize
   class="wrapper mat-elevation-z2"
 >
   <table
     mat-table
     [dataSource]="dataSource"
     cdkDropListGroup
+    [style.grid-template-columns]="gridTemplate"
+    #tableElement
   >
     <tr
       mat-header-row
@@ -33,7 +34,9 @@
       <th
         *matHeaderCellDef
         mat-header-cell
-        [colSpan]="groupToColumnAmountMap[group.columnDef]"
+        tvsColumnResize
+        [prColumn]="group"
+        [style.grid-column]="groupToColumnAmountMap[group.columnDef]"
         class="group"
         [class.hovered]="currentHoveredColumn?.columnDef === group.columnDef"
       >
@@ -56,12 +59,13 @@
               <div class="drag-placeholder"></div>
             </ng-template>
           </div>
+          <div class="resizer" (click)="$event.stopPropagation()"></div>
         </div>
       </th>
     </ng-container>
 
     <ng-container
-      *ngFor="let column of table.columns; trackBy: trackByColumnDef"
+      *ngFor="let column of tableColumns; let i = index trackBy: trackByColumnDef"
       [matColumnDef]="column.columnDef"
       [sticky]="column.isSticky ?? defaults.isSticky"
     >
@@ -69,7 +73,6 @@
         mat-header-cell
         tvsColumnResize
         [prColumn]="column"
-        [columnGroups]="table.columnGroups"
         *matHeaderCellDef
         class="column"
         [style.max-width.px]="column.maxWidthInPx ?? defaults.maxWidthInPx"
@@ -100,6 +103,7 @@
       <td
         mat-cell
         *matCellDef="let row"
+        [class]="column.columnDef"
         [style.max-width.px]="column.maxWidthInPx ?? defaults.maxWidthInPx"
         [style.min-width.px]="column.minWidthInPx  ?? defaults.minWidthInPx"
       >

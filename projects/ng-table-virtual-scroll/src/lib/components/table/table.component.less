@@ -1,47 +1,49 @@
+:host ::ng-deep .mat-mdc-table thead,
+:host ::ng-deep .mat-mdc-table tbody {
+  display: contents;
+}
+
 :host {
   .wrapper {
     height: 300px;
 
     table {
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: separate;
-      border-spacing: 2px 2px;
+      width: max-content;
+      display: grid;
+      gap: 2px;
+      grid-template-rows: 30px 18px;
+      grid-auto-rows: minmax(36px, auto);
+      border-collapse: collapse;
+      box-sizing: border-box;
+      min-width: 0;
       background: #21242B;
 
+      > * {
+        display: contents !important;
+      }
+
       tr {
-        background: transparent;
-        border-radius: 5px;
-
-        &.group-row {
-          height: 30px;
-        }
-
-        &.column-row {
-          height: 18px;
-        }
-
-        &.cell-row {
-          height: 36px;
-        }
-
-        &.selected {
-          outline: 1px solid #40a0ff;
-          outline-offset: -1px;
-        }
+        display: contents;
       }
 
       th {
         position: relative;
+        width: auto;
+        min-width: 0;
 
         &.group {
+          height: 30px;
           color: #999DA7;
           background: #2C2F37;
           border-top-left-radius: 10px;
           border-top-right-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         &.column {
+          height: 18px;
           color: #FFFFFF;
           background: #5D6371;
 
@@ -70,7 +72,7 @@
           z-index: 1;
 
           &:hover {
-            border-right: 2px solid red;
+            border-right: 2px solid #40a0ff;
           }
         }
 
@@ -90,6 +92,8 @@
       }
 
       td {
+        width: auto;
+        min-width: 0;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;

@@ -1,5 +1,5 @@
 import {
-  Component,
+  Component, ElementRef,
   EventEmitter,
   HostBinding,
   HostListener,
@@ -7,7 +7,7 @@ import {
   OnChanges,
   OnInit,
   Output,
-  SimpleChanges
+  SimpleChanges, ViewChild
 } from '@angular/core';
 import {TableVirtualScrollDataSource} from "../../services/table-data-source";
 import {
@@ -67,11 +67,13 @@ export class TableComponent implements OnChanges, OnInit {
   @Input() table: PrTable
   columnDefs: string[] = []
   groupDefs: string[] = []
-  groupToColumnAmountMap: Record<string, number> = {}
+  groupToColumnAmountMap: Record<string, string> = {}
   dataSource = new TableVirtualScrollDataSource([]);
   currentHoveredColumn: PrColumn | null = null;
 
   @Output() selectedRows = new EventEmitter<PrRow[]>();
+
+  @ViewChild('tableElement') tableRef: ElementRef<HTMLTableElement>;
 
   @HostListener('document:click', ['$event'])
   public onClick(event: MouseEvent): void {
@@ -119,25 +121,25 @@ export class TableComponent implements OnChanges, OnInit {
   }
 
   private initColumns(table: PrTable) {
-    this.setColumnDefs(table);
+    this.setColumnDefs();
     this.setGroupDefs(table);
   }
 
-  private setColumnDefs(table: PrTable) {
-    this.columnDefs = table.columnGroups.reduce((columnDefs, {columns}) => {
-      columnDefs.push(...columns.filter(column => !!this.table.columns.find(({columnDef}) => column === columnDef)));
-      return columnDefs
-    }, [] as string[]);
+  private setColumnDefs() {
+    this.columnDefs = this.tableColumns.map(({columnDef}) => columnDef);
   }
 
   private setGroupDefs(table: PrTable) {
-    this.groupToColumnAmountMap = table.columnGroups.reduce((groupToColumnAmount, group) => {
-      const shownColumnsInGroup = group.columns.filter(groupColumn => this.columnDefs.includes(groupColumn)).length
+    let previousColumnAmount = 1
 
-      if (shownColumnsInGroup > 0) groupToColumnAmount[group.columnDef] = shownColumnsInGroup
+    this.groupToColumnAmountMap = table.columnGroups.reduce((groupToColumnAmount, group, index) => {
+      const shownColumnsInGroup = group.columns.filter(groupColumn => this.columnDefs.includes(groupColumn.columnDef)).length
+
+      groupToColumnAmount[group.columnDef] = `${previousColumnAmount} / ${shownColumnsInGroup + previousColumnAmount}`
+      previousColumnAmount = shownColumnsInGroup + previousColumnAmount;
 
       return groupToColumnAmount
-    }, {} as Record<string, number>)
+    }, {} as Record<string, string>)
     this.groupDefs = Object.keys(this.groupToColumnAmountMap)
   }
 
@@ -155,8 +157,8 @@ export class TableComponent implements OnChanges, OnInit {
 
   onDropColumn(event: CdkDragDrop<unknown, unknown, PrColumn>, prColumn: PrColumn) {
     const group = this.getColumnGroupByColumn(event.item.data)
-    const previousIndex = group.columns.findIndex((columnDef) => event.item.data.columnDef === columnDef);
-    const currentIndex = group.columns.findIndex((columnDef) => prColumn.columnDef === columnDef);
+    const previousIndex = group.columns.findIndex((groupColumn) => event.item.data.columnDef === groupColumn.columnDef);
+    const currentIndex = group.columns.findIndex((groupColumn) => prColumn.columnDef === groupColumn.columnDef);
 
     if (currentIndex === -1) return;
 
@@ -186,7 +188,7 @@ export class TableComponent implements OnChanges, OnInit {
     }
 
     const group = this.getColumnGroupByColumn(column)
-    const isDraggedColumnInGroup = !!group.columns.find((columnDef) => event.item.data.columnDef === columnDef);
+    const isDraggedColumnInGroup = !!group.columns.find((groupColumn) => event.item.data.columnDef === groupColumn.columnDef);
 
     if (!isDraggedColumnInGroup) {
       this.currentHoveredColumn = null
@@ -204,7 +206,6 @@ export class TableComponent implements OnChanges, OnInit {
       this.handleShiftClickOnRow(row)
     }
 
-    console.log(this.table.selectedRowsIds.map(selectedRowId => this.table.rows.find(({id}) => selectedRowId === id)))
     this.selectedRows.emit(this.table.selectedRowsIds.map(selectedRowId => this.table.rows.find(({id}) => selectedRowId === id)));
   }
 
@@ -238,12 +239,23 @@ export class TableComponent implements OnChanges, OnInit {
     return this.table.selectedRowsIds.find((id) => row.id === id)
   }
 
+  get tableColumns(): PrColumnWithMetadata[] {
+    return this.table.columnGroups.reduce((columns, group) => {
+      columns.push(...group.columns)
+      return columns
+    }, [] as PrColumnWithMetadata[])
+  }
+
+  get gridTemplate() {
+    return this.tableColumns.map(col => `${col.widthInPx ?? defaults.widthInPx}px`).join(' ');
+  }
+
   private moveColumnInArray(columns: (string | PrColumn)[], previousIndex: number, currentIndex: number) {
     moveItemInArray(columns, previousIndex, currentIndex);
     this.initColumns(this.table);
   }
 
   private getColumnGroupByColumn(column: PrColumn) {
-    return this.table.columnGroups.find(({columns}) => columns.includes(column.columnDef));
+    return this.table.columnGroups.find(({columns}) => columns.includes(column));
   }
 }

@@ -1,43 +1,45 @@
-import {AfterViewInit, Directive, ElementRef, Input, NgZone, OnDestroy, OnInit, Renderer2,} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Directive,
+  ElementRef, EventEmitter,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit, Output,
+  Renderer2,
+} from '@angular/core';
 import {fromEvent, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {TableSizeService} from "../services/table-size.service";
-import {columnDefaults, PrColumn, PrColumnGroup, PrColumnWithMetadata} from "ng-table-virtual-scroll";
+import {columnDefaults, isColumnGroup, PrColumnGroup, PrColumnWithMetadata} from "ng-table-virtual-scroll";
 
 @Directive({
   selector: '[tvsColumnResize]',
   standalone: true,
 })
-export class ColumnResizeDirective implements AfterViewInit, OnDestroy, OnInit {
+export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
   @Input() resizableTable: HTMLElement | null = null;
   @Input() prColumn: PrColumnWithMetadata;
-  @Input() columnGroups: PrColumnGroup[];
-
-  prGroup: PrColumn;
+  @Output() resize = new EventEmitter<MouseEvent>()
 
   private startX!: number;
   private startWidth!: number;
+  private startWidths!: number[];
   private isResizing = false;
   private column: HTMLElement;
   private resizer!: HTMLElement;
   private destroy$ = new Subject<void>();
 
-  private _previousDiff = 0;
 
   constructor(
     private el: ElementRef,
-    private renderer: Renderer2,
     private zone: NgZone,
-    private tableSizeService: TableSizeService,
+    private cd: ChangeDetectorRef,
   ) {
     this.column = this.el.nativeElement;
   }
 
-  ngOnInit(): void {
-  }
-
   ngAfterViewInit() {
-    this.tableSizeService.updateSize((previousSize) => previousSize + this.column.offsetWidth);
     this.resizer = (this.column.getElementsByClassName('resizer')).item(0) as HTMLElement;
     this.initializeResizeListener();
   }
@@ -45,7 +47,6 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy, OnInit {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-    this.tableSizeService.reset();
   }
 
   private initializeResizeListener() {
@@ -72,31 +73,48 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy, OnInit {
     event.preventDefault();
     this.isResizing = true;
     this.startX = event.pageX;
+
     this.startWidth = this.column.offsetWidth;
+
+
+    if (isColumnGroup(this.prColumn)) {
+      this.startWidths = this.prColumn.columns.map(({widthInPx}) => widthInPx ?? columnDefaults.widthInPx)
+      console.log(this.startWidths);
+    } else {
+      this.startWidth = this.prColumn.widthInPx ?? columnDefaults.widthInPx;
+    }
   }
 
   private onMouseMove(event: MouseEvent) {
     if (!this.isResizing) return;
 
     const mousePositionDiff = (event.pageX - this.startX);
-    const newColumnWidth = this.startWidth + mousePositionDiff;
-    const adjustedMousePositionDiff =  mousePositionDiff - this._previousDiff
 
-    if (newColumnWidth >= parseFloat(this.column.style.maxWidth) || newColumnWidth <= parseFloat(this.column.style.minWidth)) return;
+    if (!isColumnGroup(this.prColumn)) {
+      const newColumnWidth = this.startWidth + mousePositionDiff;
 
-    this.renderer.setStyle(this.column, 'width', `${newColumnWidth}px`);
+      if (newColumnWidth >= parseFloat(this.column.style.maxWidth) || newColumnWidth <= parseFloat(this.column.style.minWidth)) return;
 
-    if(this._previousDiff != mousePositionDiff) {
+      this.prColumn.widthInPx = newColumnWidth;
+    } else {
+      const newColumnWidths = this.startWidths.map(startWidth => startWidth + (mousePositionDiff / 3));
 
-      this.tableSizeService.updateSize((previousSize) => previousSize + adjustedMousePositionDiff);
-      this._previousDiff = mousePositionDiff;
+      for (let i = 0; i < this.prColumn.columns.length; i++) {
+        if (
+          (newColumnWidths[i] <= (this.prColumn.columns[i].maxWidthInPx ?? columnDefaults.maxWidthInPx)) &&
+          (newColumnWidths[i] >= (this.prColumn.columns[i].minWidthInPx ?? columnDefaults.minWidthInPx))) {
+          this.prColumn.columns[i].widthInPx = newColumnWidths[i];
+        }
+      }
     }
+
+    this.cd.detectChanges();
+    this.resize.emit(event);
   }
 
   private onMouseUp() {
     if (!this.isResizing) return;
     this.isResizing = false;
-    this._previousDiff = 0
   }
 
 
@@ -107,14 +125,12 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy, OnInit {
     for (let i = 0; i < columnCells.length; i++) {
       const cell = columnCells.item(i) as HTMLElement;
 
-      if(cell.scrollWidth > maxWidth) {
+      if (cell.scrollWidth > maxWidth) {
         maxWidth = cell.scrollWidth;
       }
     }
 
-    const clampedMaxWidth = Math.min(maxWidth, this.prColumn.maxWidthInPx ?? columnDefaults.maxWidthInPx);
-    const adjustedMaxWidth = clampedMaxWidth - this.column.offsetWidth;
-    this.renderer.setStyle(this.column, 'width', `${clampedMaxWidth}px`);
-    this.tableSizeService.updateSize((previousSize) => previousSize + adjustedMaxWidth);
+    this.prColumn.widthInPx = Math.min(maxWidth, this.prColumn.maxWidthInPx ?? columnDefaults.maxWidthInPx);
+    this.cd.detectChanges()
   }
 }

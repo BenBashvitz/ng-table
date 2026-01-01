@@ -1,6 +1,7 @@
 import {ComponentType} from "@angular/cdk/portal";
 
 export type PrColumnMetadata = {
+  widthInPx?: number;
   maxWidthInPx?: number;
   minWidthInPx?: number;
   isSticky?: boolean;
@@ -14,7 +15,7 @@ export type PrColumn<AvailableColumns extends string = string> = {
 export type PrColumnWithMetadata<AvailableColumns extends string = string> = PrColumn<AvailableColumns> & PrColumnMetadata;
 
 export type PrColumnGroup<AvailableColumns extends string = string> = PrColumn & {
-  columns: AvailableColumns[];
+  columns: PrColumnWithMetadata<AvailableColumns>[];
 }
 
 export type PrCell = PrTextCell | PrCustomCell;
@@ -37,7 +38,6 @@ export type PrRow = {
 }
 
 export type PrTableMetadata<AvailableColumns extends string = string> = {
-  columns: PrColumnWithMetadata<AvailableColumns>[];
   columnGroups: PrColumnGroup<AvailableColumns>[]
   selectedRowsIds?: (string | number)[];
   pinnedRowsIds?: (string | number)[];
@@ -76,7 +76,8 @@ export interface PrTableVirtualScrollConfig {
   footerEnabled?: boolean;
 }
 
-export const columnDefaults: Omit<PrColumnWithMetadata, 'columnDef' | 'title'> = {
+export const columnDefaults: Omit<Required<PrColumnWithMetadata>, 'columnDef' | 'title'> = {
+  widthInPx: 100,
   minWidthInPx: 70,
   maxWidthInPx: 400,
   isSticky: false,

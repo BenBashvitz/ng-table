@@ -9,7 +9,7 @@ const NEW_DATA: PrRow[] = Array.from({length: 10000}, (v, i) => ({
   id: i + 2,
 }));
 
-const columns = ['id' , 'name' , 'type' , 'status' , 'more'] as const;
+const columns = ['id', 'name', 'type', 'status', 'more'] as const;
 type Column = typeof columns[number];
 
 @Component({
@@ -42,37 +42,37 @@ export class TableComponent {
         cellText: `Element #${+row.id}`,
       }),
     },
-    columns: [
-      {
-        columnDef: 'id',
-        title: 'No.',
-      },
-      {
-        columnDef: 'name',
-        title: 'Name',
-      },
-      {
-        columnDef: 'type',
-        title: 'Type',
-      },
-      {
-        columnDef: 'status',
-        title: 'Status',
-      },
-      {
-        columnDef: 'more',
-        title: 'More',
-      },
-    ],
     columnGroups: [
       {
         columnDef: 'category1',
-        columns: ['id', 'name', 'type'],
+        columns: [
+          {
+            columnDef: 'id',
+            title: 'No.',
+          },
+          {
+            columnDef: 'name',
+            title: 'Name',
+          },
+          {
+            columnDef: 'type',
+            title: 'Type',
+          },
+        ],
         title: 'Category 1'
       },
       {
         columnDef: 'category2',
-        columns: ['status', 'more',],
+        columns: [
+          {
+            columnDef: 'status',
+            title: 'Status',
+          },
+          {
+            columnDef: 'more',
+            title: 'More',
+          },
+        ],
         title: 'Category 2'
       },
     ]

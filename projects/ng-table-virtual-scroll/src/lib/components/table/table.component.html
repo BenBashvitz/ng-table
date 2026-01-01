@@ -23,9 +23,10 @@
       mat-row
       *matRowDef="let row; columns: columnDefs;"
       class="cell-row"
-      [class.selected]="isRowSelected(row)"
       (click)="onClickRow($event, row)"
-    ></tr>
+    >
+
+    </tr>
 
     <ng-container
       *ngFor="let group of table.columnGroups; let i = index; trackBy: trackByColumnDef"
@@ -104,6 +105,7 @@
         mat-cell
         *matCellDef="let row"
         [class]="column.columnDef"
+        [class.selected]="isRowSelected(row)"
         [style.max-width.px]="column.maxWidthInPx ?? defaults.maxWidthInPx"
         [style.min-width.px]="column.minWidthInPx  ?? defaults.minWidthInPx"
       >
@@ -122,4 +124,12 @@
       </td>
     </ng-container>
   </table>
+  <div
+    class="row-selection-outline"
+    *ngFor="let row of groupedSelectedRows;"
+    [style.top.px]="52 + ((rowHeight + 2) * row[0])"
+    [style.left.px]="0"
+    [style.width.px]="tableRef.nativeElement.offsetWidth"
+    [style.height.px]="rowHeight * (row.length) + (2 * (row.length - 1))"
+  ></div>
 </cdk-virtual-scroll-viewport>

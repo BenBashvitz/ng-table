@@ -73,7 +73,7 @@ export class TableComponent implements OnChanges, OnInit {
 
   @Output() selectedRows = new EventEmitter<PrRow[]>();
 
-  @ViewChild('tableElement') tableRef: ElementRef<HTMLTableElement>;
+  @ViewChild('tableElement', {read: ElementRef}) tableRef: ElementRef<HTMLTableElement>;
 
   @HostListener('document:click', ['$event'])
   public onClick(event: MouseEvent): void {
@@ -86,6 +86,10 @@ export class TableComponent implements OnChanges, OnInit {
   }
 
   defaults = defaults;
+
+  rowWidth = 0;
+  rowHeight = 0;
+  groupedSelectedRows: Array<Array<number>> = []
 
   ngOnInit() {
     this.initTable(this.table);
@@ -199,13 +203,26 @@ export class TableComponent implements OnChanges, OnInit {
 
   onClickRow(event: MouseEvent, row: PrRow) {
     if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
-      this.table.selectedRowsIds = [row.id]
+      this.table.selectedRowsIds = [row.id];
+
+      const target = event.target as HTMLElement;
+
+      // find the cell that was clicked
+      const cell = target.closest('td') as HTMLElement;
+      if (!cell) return;
+
+      const cellRect = cell.getBoundingClientRect();
+      const tableRect = this.tableRef.nativeElement.getBoundingClientRect();
+
+      this.rowHeight = cellRect.height;
+      this.rowWidth = tableRect.width;
     } else if (!event.shiftKey) {
       this.handleControlClickOnRow(row)
     } else {
       this.handleShiftClickOnRow(row)
     }
 
+    this.groupedSelectedRows = this.groupSelectedRows();
     this.selectedRows.emit(this.table.selectedRowsIds.map(selectedRowId => this.table.rows.find(({id}) => selectedRowId === id)));
   }
 
@@ -257,5 +274,18 @@ export class TableComponent implements OnChanges, OnInit {
 
   private getColumnGroupByColumn(column: PrColumn) {
     return this.table.columnGroups.find(({columns}) => columns.includes(column));
+  }
+
+   private groupSelectedRows() {
+    return this.table.rows.filter(({id}) => this.table.selectedRowsIds.includes(id)).reduce((groupedRows, row, i) => {
+      const index = this.table.rows.findIndex((rowToFind) => rowToFind.id === row.id);
+      if(i === 0 || index !== groupedRows[groupedRows.length - 1][groupedRows[groupedRows.length - 1].length - 1] + 1) {
+        groupedRows.push([index])
+      } else {
+        groupedRows[groupedRows.length - 1].push(index)
+      }
+
+      return groupedRows
+    }, [] as Array<Array<number>>)
   }
 }

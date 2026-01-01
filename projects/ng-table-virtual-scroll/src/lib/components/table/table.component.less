@@ -113,5 +113,21 @@
         }
       }
     }
+    .row-selection-outline {
+      position: absolute;
+      border: 1px solid #40a0ff;
+      border-radius: 5px;
+      pointer-events: none;
+      z-index: 1000;
+      box-sizing: border-box;
+
+      &.no-top {
+        border-top: none;
+      }
+
+      &.no-bottom {
+        border-bottom: none;
+      }
+    }
   }
 }

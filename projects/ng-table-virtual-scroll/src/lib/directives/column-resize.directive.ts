@@ -119,6 +119,8 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
 
 
   private onDoubleClick() {
+    if(isColumnGroup(this.prColumn)) return;
+
     let maxWidth = this.column.offsetWidth;
     const columnCells = document.getElementsByClassName(this.prColumn.columnDef);
 

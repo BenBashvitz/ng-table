@@ -7,6 +7,7 @@
     [dataSource]="dataSource"
     cdkDropListGroup
     [style.grid-template-columns]="gridTemplate"
+    [style.grid-auto-rows.px]="(table.rowHeightInPx ?? defaults.rowHeight)"
     #tableElement
   >
     <tr
@@ -127,9 +128,9 @@
   <div
     class="row-selection-outline"
     *ngFor="let row of groupedSelectedRows;"
-    [style.top.px]="52 + ((rowHeight + 2) * row[0])"
+    [style.top.px]="52 + (((table.rowHeightInPx ?? defaults.rowHeight) + 2) * row[0])"
     [style.left.px]="0"
     [style.width.px]="tableRef.nativeElement.offsetWidth"
-    [style.height.px]="rowHeight * (row.length) + (2 * (row.length - 1))"
+    [style.height.px]="(table.rowHeightInPx ?? defaults.rowHeight) * (row.length) + (2 * (row.length - 1))"
   ></div>
 </cdk-virtual-scroll-viewport>

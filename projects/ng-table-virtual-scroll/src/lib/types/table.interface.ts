@@ -48,6 +48,7 @@ export type PrTableMetadata<AvailableColumns extends string = string> = {
   groupByColumnIds?: AvailableColumns[]
   sortByColumn?: AvailableColumns[];
   columnOrder?: AvailableColumns[];
+  rowHeightInPx?: number;
 }
 
 export type PrTable<AvailableColumns extends string = string> = PrTableMetadata<AvailableColumns> & {
@@ -99,6 +100,7 @@ export const tableDefaults: Omit<PrTableMetadata, 'columns' | 'columnGroups'> = 
   groupByColumnIds: [],
   sortByColumn: undefined,
   columnOrder: undefined,
+  rowHeightInPx: 36,
 }
 
 export const defaults: Omit<PrColumnWithMetadata & PrTableVirtualScrollConfig & PrTableMetadata, 'columnDef' | 'title' | 'columns' | 'columnGroups'> = {

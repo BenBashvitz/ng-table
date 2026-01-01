@@ -86,9 +86,6 @@ export class TableComponent implements OnChanges, OnInit {
   }
 
   defaults = defaults;
-
-  rowWidth = 0;
-  rowHeight = 0;
   groupedSelectedRows: Array<Array<number>> = []
 
   ngOnInit() {
@@ -204,18 +201,6 @@ export class TableComponent implements OnChanges, OnInit {
   onClickRow(event: MouseEvent, row: PrRow) {
     if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
       this.table.selectedRowsIds = [row.id];
-
-      const target = event.target as HTMLElement;
-
-      // find the cell that was clicked
-      const cell = target.closest('td') as HTMLElement;
-      if (!cell) return;
-
-      const cellRect = cell.getBoundingClientRect();
-      const tableRect = this.tableRef.nativeElement.getBoundingClientRect();
-
-      this.rowHeight = cellRect.height;
-      this.rowWidth = tableRect.width;
     } else if (!event.shiftKey) {
       this.handleControlClickOnRow(row)
     } else {
@@ -242,13 +227,14 @@ export class TableComponent implements OnChanges, OnInit {
     } else if(this.table.selectedRowsIds.length === 1 && this.table.selectedRowsIds[0] === row.id) {
       this.table.selectedRowsIds = []
     } else {
-      const firstSelectedRowIndex = this.table.rows.findIndex((row) => row.id === this.table.selectedRowsIds[0]);
+      const firstSelectedRowId = this.table.selectedRowsIds[0]
+      const firstSelectedRowIndex = this.table.rows.findIndex((row) => row.id === firstSelectedRowId);
       const currentRowIndex = this.table.rows.findIndex((tableRow) => tableRow.id === row.id);
 
       const startIndex = Math.min(currentRowIndex, firstSelectedRowIndex);
       const endIndex = Math.max(currentRowIndex, firstSelectedRowIndex);
 
-      this.table.selectedRowsIds = this.table.rows.filter((row, index) => index >= startIndex && index <= endIndex).map(({id}) => id)
+      this.table.selectedRowsIds = [firstSelectedRowId, ...this.table.rows.filter((row, index) => index >= startIndex && index <= endIndex && index !== firstSelectedRowIndex).map(({id}) => id)]
     }
   }
 

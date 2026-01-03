@@ -19,7 +19,7 @@ import {columnDefaults, isColumnGroup, PrColumnGroup, PrColumnWithMetadata} from
 })
 export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
   @Input() resizableTable: HTMLElement | null = null;
-  @Input() prColumn: PrColumnWithMetadata;
+  @Input('tvsColumnResize') prColumn: PrColumnWithMetadata;
   @Output() resize = new EventEmitter<MouseEvent>()
 
   private startX!: number;
@@ -96,6 +96,7 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
       if (newColumnWidth >= parseFloat(this.column.style.maxWidth) || newColumnWidth <= parseFloat(this.column.style.minWidth)) return;
 
       this.prColumn.widthInPx = newColumnWidth;
+      console.log(this.prColumn);
     } else {
       const newColumnWidths = this.startWidths.map(startWidth => startWidth + (mousePositionDiff / 3));
 

@@ -64,8 +64,12 @@ export function isNormalCell(cell: PrCell): cell is PrCell {
   return !('component' in cell);
 }
 
-export function isColumnGroup(column: PrColumn): column is PrColumnGroup {
-  return 'columns' in column;
+export function isColumnGroup(column: object): column is PrColumnGroup {
+  return isColumn(column) && 'columns' in column;
+}
+
+export function isColumn(column: object): column is PrColumn {
+  return 'columnDef' in column && 'title' in column;
 }
 
 export interface PrTableVirtualScrollConfig {

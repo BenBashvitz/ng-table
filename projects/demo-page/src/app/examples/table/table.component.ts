@@ -1,11 +1,11 @@
 import {Component} from '@angular/core';
 import {PrRow, PrTable} from "ng-table-virtual-scroll";
 
-const DATA: PrRow[] = Array.from({length: 10000}, (v, i) => ({
+const DATA: PrRow[] = Array.from({length: 1000}, (v, i) => ({
   id: i + 1,
 }));
 
-const NEW_DATA: PrRow[] = Array.from({length: 10000}, (v, i) => ({
+const NEW_DATA: PrRow[] = Array.from({length: 10}, (v, i) => ({
   id: i + 2,
 }));
 
@@ -35,11 +35,11 @@ export class TableComponent {
       }),
       status: (row: PrRow) => ({
         discriminator: "Text",
-        cellText: `Element #${+row.id}`,
+        cellText: `Status #${+row.id}`,
       }),
       more: (row: PrRow) => ({
         discriminator: "Text",
-        cellText: `Element #${+row.id}`,
+        cellText: `More #${+row.id}`,
       }),
     },
     columnGroups: [

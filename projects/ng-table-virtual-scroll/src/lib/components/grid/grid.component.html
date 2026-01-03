@@ -1,0 +1,93 @@
+<div
+  cdkDropListGroup
+  class="grid-table"
+>
+  <div
+    class="grid-header"
+    [style.grid-template-columns]="gridTemplate"
+    [style.grid-auto-rows.px]="30"
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    (cdkDropListDropped)="onDropGroup($event)"
+  >
+    <div
+      *ngFor="let group of table.columnGroups; trackBy: trackByColumn"
+      cdkDrag
+      cdkDragLockAxis="x"
+      cdkDragPreviewContainer="parent"
+      [cdkDragData]="group"
+      [tvsColumnResize]="group"
+      class="cell group drag"
+      [style.grid-column]="groupToColumnAmountMap[group.columnDef]"
+    >
+      {{ group.title }}
+      <span class="resizer"></span>
+    </div>
+  </div>
+  <div
+    class="grid-header"
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    (cdkDropListDropped)="onDropColumn($event)"
+    [style.grid-template-columns]="gridTemplate"
+    [style.grid-auto-rows.px]="18"
+  >
+    <div
+      *ngFor="let column of tableColumns; trackBy: trackByColumn"
+      cdkDrag
+      cdkDragLockAxis="x"
+      cdkDragPreviewContainer="parent"
+      [cdkDragData]="column"
+      [tvsColumnResize]="column"
+      class="cell header drag"
+    >
+      {{ column.title }}
+      <span class="resizer"></span>
+    </div>
+  </div>
+
+  <cdk-virtual-scroll-viewport
+    [itemSize]="table.rowHeightInPx ?? defaults.rowHeightInPx"
+    class="grid-viewport"
+  >
+    <div
+      cdkDropList
+      (cdkDropListDropped)="onDropRow($event)"
+      class="grid-body"
+    >
+      <div
+        class="grid-row"
+        *cdkVirtualFor="let row of table.rows; trackBy: trackByRow"
+        [style.grid-template-columns]="gridTemplate"
+        [style.grid-auto-rows.px]="36"
+        cdkDrag
+        cdkDragPreviewContainer="parent"
+        [cdkDragData]="row"
+        (click)="onClickRow($event, row)"
+      >
+        <div class="cell" [ngClass]="column.columnDef" *ngFor="let column of tableColumns">
+          <ng-container *ngIf="table | tableCell: column: row">
+            <ng-container *ngIf="isNormalCell(table | tableCell: column: row)">
+              {{ ((table | tableCell: column: row) | toNormalCell).cellText }}
+            </ng-container>
+            <ng-container *ngIf="isCustomCell(table | tableCell: column: row)">
+              <ng-container
+                *ngComponentOutlet="((table | tableCell: column: row) | toComponentCell).component;"></ng-container>
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="!(table | tableCell: column: row)">
+            row does not have a cell for this column
+          </ng-container>
+        </div>
+      </div>
+    </div>
+<!--    <div-->
+<!--      class="row-selection-outline"-->
+<!--      *ngFor="let row of groupedSelectedRows;"-->
+<!--      [style.top.px]="52 + (((table.rowHeightInPx ?? defaults.rowHeight) + 2) * row[0])"-->
+<!--      [style.left.px]="0"-->
+<!--      [style.width.px]="tableRef.nativeElement.offsetWidth"-->
+<!--      [style.height.px]="(table.rowHeightInPx ?? defaults.rowHeight) * (row.length) + (2 * (row.length - 1))"-->
+<!--    ></div>-->
+  </cdk-virtual-scroll-viewport>
+</div>

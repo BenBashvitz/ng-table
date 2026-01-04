@@ -1,4 +1,14 @@
-import {Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+  Component, ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnChanges,
+  OnInit,
+  Output, QueryList,
+  SimpleChanges,
+  ViewChild, ViewChildren
+} from '@angular/core';
 import {
   defaults,
   isCustomCell,
@@ -17,7 +27,14 @@ import {ColumnResizeDirective} from "../../directives/column-resize.directive";
 import {TableCellPipe} from "../../pipes/table-cell.pipe";
 import {ToNormalCellPipe} from "../../pipes/to-normal-cell.pipe";
 import {ToComponentCellPipe} from "../../pipes/to-component-cell.pipe";
-import {CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray} from "@angular/cdk/drag-drop";
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragPreview,
+  CdkDropList,
+  CdkDropListGroup,
+  moveItemInArray
+} from "@angular/cdk/drag-drop";
 
 @Component({
   selector: 'tvs-grid',
@@ -40,11 +57,14 @@ import {CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray} fr
     CdkVirtualForOf,
     CdkFixedSizeVirtualScroll,
     NgClass,
+    CdkDragPreview,
   ]
 })
 export class GridComponent implements OnChanges, OnInit {
   @Input() table: PrTable
   @Output() selectedRows = new EventEmitter<PrRow[]>();
+  @ViewChildren('scroll', {read: ElementRef}) scrollViews: QueryList<ElementRef<Element>>;
+
   @HostListener('document:click', ['$event'])
   public onClick(event: MouseEvent): void {
     const element = event.target as Element;
@@ -58,41 +78,50 @@ export class GridComponent implements OnChanges, OnInit {
   defaults = defaults;
   groupedSelectedRows: Array<Array<number>> = []
   groupToColumnAmountMap: Record<string, string> = {}
+  columnGroups: PrColumnGroup[] = []
 
   ngOnInit() {
     this.initTable(this.table);
     this.setGroupToColumnAmountMap(this.table);
+    this.setColumnGroups(this.table);
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['table']) {
+      this.initTable(this.table);
       this.setGroupToColumnAmountMap(this.table);
+      this.setColumnGroups(this.table);
     }
   }
 
-  private initTable(table: PrTable) {
-    this.table = {
-      selectedRowsIds: [],
-      pinnedRowsIds: [],
-      selectedCells: [],
-      groupByColumnIds: [],
-      sortByColumn: [],
-      columnOrder: [],
-      ...table
-    }
+  get tableColumns(): PrColumnWithMetadata[] {
+    return this.columnGroups.reduce((columns, group) => {
+      columns.push(...group.columns)
+      return columns
+    }, [] as PrColumnWithMetadata[])
   }
 
-  private setGroupToColumnAmountMap(table: PrTable) {
-    let previousColumnAmount = 1
+  get gridTemplate() {
+    return this.tableColumns.map(col => `${col.widthInPx ?? defaults.widthInPx}px`).join(' ');
+  }
 
-    this.groupToColumnAmountMap = table.columnGroups.reduce((groupToColumnAmount, group) => {
-      const columnAmountInGroup = group.columns.length
+  getStickyLeft(index: number): number {
+    let left = 0;
 
-      groupToColumnAmount[group.columnDef] = `${previousColumnAmount} / ${columnAmountInGroup + previousColumnAmount}`
-      previousColumnAmount = columnAmountInGroup + previousColumnAmount;
+    for (let i = 0; i < index; i++) {
+      const column = this.tableColumns[i]
+      if (column.isSticky) {
+        left += column.widthInPx + 2;
+      }
+    }
 
-      return groupToColumnAmount
-    }, {} as Record<string, string>)
+    return left;
+  }
+
+  getGroupStickyLeft(group: PrColumnGroup) {
+    const index = this.tableColumns.indexOf(group.columns[0]);
+
+    return this.getStickyLeft(index);
   }
 
   isCustomCell(cell: PrCell) {
@@ -111,6 +140,14 @@ export class GridComponent implements OnChanges, OnInit {
     return row.id
   }
 
+  onDragStart() {
+    document.body.style.cursor = 'grabbing';
+  }
+
+  onDragEnd() {
+    document.body.style.cursor = 'unset';
+  }
+
   onDropColumn(event: CdkDragDrop<unknown, unknown, PrColumn>) {
     const group = this.getColumnGroupByColumn(event.item.data);
     const column = this.tableColumns.find((_, index) => event.currentIndex === index)
@@ -123,7 +160,7 @@ export class GridComponent implements OnChanges, OnInit {
   }
 
   onDropGroup(event: CdkDragDrop<unknown, unknown, PrColumnGroup>) {
-    moveItemInArray(this.table.columnGroups, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.columnGroups, event.previousIndex, event.currentIndex);
     this.setGroupToColumnAmountMap(this.table);
   }
 
@@ -144,6 +181,86 @@ export class GridComponent implements OnChanges, OnInit {
 
     this.groupedSelectedRows = this.groupSelectedRows();
     this.selectedRows.emit(this.table.selectedRowsIds.map(selectedRowId => this.table.rows.find(({id}) => selectedRowId === id)));
+  }
+
+  onScroll(event: Event) {
+    const scrollLeft = (event.target as Element).scrollLeft;
+
+    this.scrollViews.forEach((scrollView) => {
+      scrollView.nativeElement.scrollLeft = scrollLeft;
+    })
+  }
+
+  isRowSelected(row: PrRow) {
+    return this.table.selectedRowsIds.find((id) => row.id === id)
+  }
+
+  private initTable(table: PrTable) {
+    this.table = {
+      selectedRowsIds: [],
+      pinnedRowsIds: [],
+      selectedCells: [],
+      groupByColumnIds: [],
+      sortByColumn: [],
+      columnOrder: [],
+      ...table,
+      columnGroups: table.columnGroups.map(group => ({
+        ...group,
+        columns: group.columns.map(column => ({
+          ...column,
+          widthInPx: column.widthInPx ?? defaults.widthInPx,
+        }))
+      })),
+    }
+  }
+
+  private setColumnGroups(table: PrTable) {
+    this.columnGroups = []
+
+    table.columnGroups.forEach(columnGroup => {
+      let dividedGroup: PrColumnGroup[] = []
+
+      columnGroup.columns
+        .forEach((column, index) => {
+        if(!column.isSticky) {
+          if(dividedGroup.length === 0 || dividedGroup[dividedGroup.length - 1].isSticky) {
+            dividedGroup = [...dividedGroup, {
+              columnDef: columnGroup.columnDef + `-${index}`,
+              title: columnGroup.title,
+              columns: [column],
+              isSticky: false
+            }]
+          } else {
+            dividedGroup[dividedGroup.length - 1].columns.push(column);
+            dividedGroup[dividedGroup.length - 1].columnDef = dividedGroup[dividedGroup.length - 1].columnDef + `-${index}`
+          }
+        } else {
+          dividedGroup = [...dividedGroup, {
+            columnDef: columnGroup.columnDef + `-${index}`,
+            title: columnGroup.title,
+            columns: [column],
+            isSticky: true
+          }]
+        }
+      })
+
+      if(dividedGroup[dividedGroup.length - 1].columns.length === 0) dividedGroup.pop()
+
+      this.columnGroups = [...this.columnGroups, ...dividedGroup]
+    })
+  }
+
+  private setGroupToColumnAmountMap(table: PrTable) {
+    let previousColumnAmount = 1
+
+    this.groupToColumnAmountMap = this.columnGroups.reduce((groupToColumnAmount, group) => {
+      const columnAmountInGroup = group.columns.length
+
+      groupToColumnAmount[group.columnDef] = `${previousColumnAmount} / ${columnAmountInGroup + previousColumnAmount}`
+      previousColumnAmount = columnAmountInGroup + previousColumnAmount;
+
+      return groupToColumnAmount
+    }, {} as Record<string, string>)
   }
 
   private handleControlClickOnRow(row: PrRow) {
@@ -173,23 +290,8 @@ export class GridComponent implements OnChanges, OnInit {
     }
   }
 
-  isRowSelected(row: PrRow) {
-    return this.table.selectedRowsIds.find((id) => row.id === id)
-  }
-
-  get tableColumns(): PrColumnWithMetadata[] {
-    return this.table.columnGroups.reduce((columns, group) => {
-      columns.push(...group.columns)
-      return columns
-    }, [] as PrColumnWithMetadata[])
-  }
-
-  get gridTemplate() {
-    return this.tableColumns.map(col => `${col.widthInPx ?? defaults.widthInPx}px`).join(' ');
-  }
-
   private getColumnGroupByColumn(column: PrColumn) {
-    return this.table.columnGroups.find(({columns}) => columns.includes(column));
+    return this.columnGroups.find(({columns}) => columns.includes(column));
   }
 
   private groupSelectedRows() {

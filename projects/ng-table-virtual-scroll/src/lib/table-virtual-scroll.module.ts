@@ -20,6 +20,9 @@ import {GridComponent} from "./components/grid/grid.component";
     NgStyle
   ],
   exports: [TableItemSizeDirective, ColumnResizeDirective, GridComponent],
+  declarations: [
+
+  ],
 })
 export class TableVirtualScrollModule {
 }

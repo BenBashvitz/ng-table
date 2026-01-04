@@ -9,19 +9,28 @@
     cdkDropList
     cdkDropListOrientation="horizontal"
     (cdkDropListDropped)="onDropGroup($event)"
+    (scroll)="onScroll($event)"
+    #scroll
   >
     <div
-      *ngFor="let group of table.columnGroups; trackBy: trackByColumn"
+      *ngFor="let group of columnGroups; trackBy: trackByColumn"
       cdkDrag
       cdkDragLockAxis="x"
       cdkDragPreviewContainer="parent"
       [cdkDragData]="group"
+      (cdkDragStarted)="onDragStart()"
+      (cdkDragEnded)="onDragEnd()"
       [tvsColumnResize]="group"
       class="cell group drag"
+      [class.sticky]="group.isSticky"
+      [style.left.px]="group.isSticky ? getGroupStickyLeft(group) : null"
       [style.grid-column]="groupToColumnAmountMap[group.columnDef]"
     >
       {{ group.title }}
       <span class="resizer"></span>
+      <ng-template cdkDragPreview>
+
+      </ng-template>
     </div>
   </div>
   <div
@@ -31,24 +40,35 @@
     (cdkDropListDropped)="onDropColumn($event)"
     [style.grid-template-columns]="gridTemplate"
     [style.grid-auto-rows.px]="18"
+    #scroll
   >
     <div
-      *ngFor="let column of tableColumns; trackBy: trackByColumn"
+      *ngFor="let column of tableColumns; let i = index trackBy: trackByColumn"
       cdkDrag
       cdkDragLockAxis="x"
       cdkDragPreviewContainer="parent"
+      [cdkDragDisabled]="column.isSticky"
       [cdkDragData]="column"
       [tvsColumnResize]="column"
+      (cdkDragStarted)="onDragStart()"
+      (cdkDragEnded)="onDragEnd()"
+      [class.sticky]="column.isSticky"
+      [style.left.px]="column.isSticky ? getStickyLeft(i) : null"
       class="cell header drag"
     >
       {{ column.title }}
       <span class="resizer"></span>
+      <ng-template cdkDragPreview>
+
+      </ng-template>
     </div>
   </div>
 
   <cdk-virtual-scroll-viewport
     [itemSize]="table.rowHeightInPx ?? defaults.rowHeightInPx"
     class="grid-viewport"
+    (scroll)="onScroll($event)"
+    #scroll
   >
     <div
       cdkDropList
@@ -61,11 +81,16 @@
         [style.grid-template-columns]="gridTemplate"
         [style.grid-auto-rows.px]="36"
         cdkDrag
-        cdkDragPreviewContainer="parent"
         [cdkDragData]="row"
         (click)="onClickRow($event, row)"
       >
-        <div class="cell" [ngClass]="column.columnDef" *ngFor="let column of tableColumns">
+        <div
+          *ngFor="let column of tableColumns; let i = index"
+          class="cell"
+          [ngClass]="column.columnDef"
+          [class.sticky]="column.isSticky"
+          [style.left.px]="column.isSticky ? getStickyLeft(i) : null"
+        >
           <ng-container *ngIf="table | tableCell: column: row">
             <ng-container *ngIf="isNormalCell(table | tableCell: column: row)">
               {{ ((table | tableCell: column: row) | toNormalCell).cellText }}
@@ -81,13 +106,5 @@
         </div>
       </div>
     </div>
-<!--    <div-->
-<!--      class="row-selection-outline"-->
-<!--      *ngFor="let row of groupedSelectedRows;"-->
-<!--      [style.top.px]="52 + (((table.rowHeightInPx ?? defaults.rowHeight) + 2) * row[0])"-->
-<!--      [style.left.px]="0"-->
-<!--      [style.width.px]="tableRef.nativeElement.offsetWidth"-->
-<!--      [style.height.px]="(table.rowHeightInPx ?? defaults.rowHeight) * (row.length) + (2 * (row.length - 1))"-->
-<!--    ></div>-->
   </cdk-virtual-scroll-viewport>
 </div>

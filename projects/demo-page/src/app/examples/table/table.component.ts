@@ -49,6 +49,7 @@ export class TableComponent {
           {
             columnDef: 'id',
             title: 'No.',
+            isSticky: true,
           },
           {
             columnDef: 'name',
@@ -57,6 +58,7 @@ export class TableComponent {
           {
             columnDef: 'type',
             title: 'Type',
+            isSticky: true,
           },
         ],
         title: 'Category 1'
@@ -75,6 +77,6 @@ export class TableComponent {
         ],
         title: 'Category 2'
       },
-    ]
+    ],
   }
 }

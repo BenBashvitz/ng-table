@@ -14,7 +14,7 @@ export type PrColumn<AvailableColumns extends string = string> = {
 
 export type PrColumnWithMetadata<AvailableColumns extends string = string> = PrColumn<AvailableColumns> & PrColumnMetadata;
 
-export type PrColumnGroup<AvailableColumns extends string = string> = PrColumn & {
+export type PrColumnGroup<AvailableColumns extends string = string> = PrColumnWithMetadata & {
   columns: PrColumnWithMetadata<AvailableColumns>[];
 }
 
@@ -30,7 +30,7 @@ export type PrCustomCell<ComponentInputs extends Record<string, unknown> = Recor
   discriminator: 'Component';
   inputs: ComponentInputs
   component: ComponentType<unknown>;
-  value: () => string;
+  value: () => any;
 }
 
 export type PrRow = {

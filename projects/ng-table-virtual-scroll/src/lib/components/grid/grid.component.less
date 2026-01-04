@@ -1,6 +1,7 @@
 :host {
   display: block;
   overflow-x: scroll;
+  max-width: inherit;
 
   .grid-table {
     display: flex;
@@ -8,11 +9,12 @@
     gap: 2px;
     width: max-content;
     background: #21242B;
-    overflow: scroll;
-
+    max-width: inherit;
 
     .grid-header {
       display: grid;
+      overflow: auto;
+      background: inherit;
       gap: 2px;
 
       .group {
@@ -46,13 +48,20 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: move;
+        cursor: grab;
+
+        &:active {
+          cursor: grabbing;
+        }
+      }
+
+      &::-webkit-scrollbar {
+        display: none;
       }
     }
 
     .grid-viewport {
       height: 250px;
-      width: 100%;
       overflow: auto;
 
       .grid-body {
@@ -131,6 +140,12 @@
         border-right: 2px solid #40a0ff;
       }
     }
+  }
+
+  .sticky {
+    position: sticky !important;
+    left: 0;
+    z-index: 3;
   }
 }
 

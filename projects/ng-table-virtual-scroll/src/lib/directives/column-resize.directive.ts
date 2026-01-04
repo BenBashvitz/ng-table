@@ -71,6 +71,7 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
 
   private onMouseDown(event: MouseEvent) {
     event.preventDefault();
+    event.stopPropagation();
     this.isResizing = true;
     this.startX = event.pageX;
 
@@ -86,6 +87,7 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
   }
 
   private onMouseMove(event: MouseEvent) {
+    event.stopPropagation();
     if (!this.isResizing) return;
 
     const mousePositionDiff = (event.pageX - this.startX);

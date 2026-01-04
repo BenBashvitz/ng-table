@@ -54,11 +54,11 @@ export class TableComponent {
           {
             columnDef: 'name',
             title: 'Name',
+            isSticky: true,
           },
           {
             columnDef: 'type',
             title: 'Type',
-            isSticky: true,
           },
         ],
         title: 'Category 1'

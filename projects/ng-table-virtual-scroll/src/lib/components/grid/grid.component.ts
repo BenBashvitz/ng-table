@@ -63,13 +63,17 @@ import {
 export class GridComponent implements OnChanges, OnInit {
   @Input() table: PrTable
   @Output() selectedRows = new EventEmitter<PrRow[]>();
+  @Output() dblclickRow = new EventEmitter<PrRow>();
   @ViewChildren('scroll', {read: ElementRef}) scrollViews: QueryList<ElementRef<Element>>;
+  @ViewChild('body') body: ElementRef<Element>
+  @ViewChild(CdkVirtualScrollViewport)
+  cdkVirtualScrollViewport: CdkVirtualScrollViewport
 
   @HostListener('document:click', ['$event'])
-  public onClick(event: MouseEvent): void {
+  onClickOutside(event: MouseEvent): void {
     const element = event.target as Element;
 
-    if (element.tagName.toLowerCase() !== 'tr' && element.tagName.toLowerCase() !== 'td') {
+    if (!this.body.nativeElement.contains(element)) {
       this.table.selectedRowsIds = [];
       this.selectedRows.emit([])
     }
@@ -100,6 +104,8 @@ export class GridComponent implements OnChanges, OnInit {
       return columns
     }, [] as PrColumnWithMetadata[])
   }
+
+
 
   get gridTemplate() {
     return this.tableColumns.map(col => `${col.widthInPx ?? defaults.widthInPx}px`).join(' ');
@@ -181,6 +187,10 @@ export class GridComponent implements OnChanges, OnInit {
 
     this.groupedSelectedRows = this.groupSelectedRows();
     this.selectedRows.emit(this.table.selectedRowsIds.map(selectedRowId => this.table.rows.find(({id}) => selectedRowId === id)));
+  }
+
+  onDoubleClickRow(row: PrRow) {
+    this.dblclickRow.emit(row);
   }
 
   onScroll(event: Event) {
@@ -305,5 +315,9 @@ export class GridComponent implements OnChanges, OnInit {
 
       return groupedRows
     }, [] as Array<Array<number>>)
+  }
+
+  getRowIndex(rowId: string | number) {
+    return this.table.rows.findIndex((row) => row.id === rowId) - this.cdkVirtualScrollViewport.getRenderedRange().start
   }
 }

@@ -10,6 +10,7 @@
     width: max-content;
     background: #21242B;
     max-width: inherit;
+    position: relative;
 
     .grid-header {
       display: grid;
@@ -74,45 +75,31 @@
           gap: 2px;
           align-items: center;
           background: #21242B;
+          border-radius: 5px;
 
           .cell {
             width: auto;
             min-width: 0;
             background: #3E414A;
             color: #E7EAEF;
-            border: 1px solid transparent;
-
-            &:first-child {
-              border-top-left-radius: 5px;
-              border-bottom-left-radius: 5px;
-            }
-
-            &:last-child {
-              border-top-right-radius: 5px;
-              border-bottom-right-radius: 5px;
-            }
           }
-        }
-      }
 
-      .row-selection-outline {
-        position: absolute;
-        border: 1px solid #40a0ff;
-        border-radius: 5px;
-        pointer-events: none;
-        z-index: 1000;
-        box-sizing: border-box;
-
-        &.no-top {
-          border-top: none;
-        }
-
-        &.no-bottom {
-          border-bottom: none;
+          &.selected {
+            border-top: 2px solid #40a0ff;
+            border-bottom: 2px solid #40a0ff;
+          }
         }
       }
     }
 
+    .row-selection-outline {
+      position: absolute;
+      border: 1px solid #40a0ff;
+      border-radius: 5px;
+      pointer-events: none;
+      z-index: 1000;
+      box-sizing: border-box;
+    }
 
     .cell {
       overflow: hidden;
@@ -146,6 +133,10 @@
     position: sticky !important;
     left: 0;
     z-index: 3;
+  }
+
+  .cdk-drag-placeholder {
+    filter: brightness(80%);
   }
 }
 

@@ -109,10 +109,6 @@ export class GridComponent implements OnChanges, OnInit {
     return this.tableColumns.map(col => `${col.widthInPx ?? defaults.widthInPx}px`).join(' ');
   }
 
-  get gridGroupTemplate() {
-    return this.tableColumns.map((col, index) => `${(col.widthInPx ?? defaults.widthInPx) + (((index === 0) || (index === this.tableColumns.length - 1)) ? 4 : 0)}px`).join(' ');
-  }
-
   getStickyLeft(index: number): number {
     let left = 0;
 
@@ -201,10 +197,6 @@ export class GridComponent implements OnChanges, OnInit {
     this.scrollViews.forEach((scrollView) => {
       scrollView.nativeElement.scrollLeft = scrollLeft;
     })
-  }
-
-  isRowSelected(row: PrRow) {
-    return this.table.selectedRowsIds.find((id) => row.id === id)
   }
 
   private initTable(table: PrTable) {

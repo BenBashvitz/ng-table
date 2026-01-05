@@ -15,12 +15,15 @@ body {
   --pr-table-group-bg: #{variables.$pr-table-header-group-background-color};
   --pr-table-group-color: #{variables.$pr-table-header-group-text-color};
   --pr-table-group-radius: #{variables.$pr-table-header-group-border-radius};
+  --pr-table-group-row-height: #{variables.$pr-table-header-group-row-height};
   --pr-table-column-bg: #{variables.$pr-table-header-column-background-color};
   --pr-table-column-color: #{variables.$pr-table-header-column-text-color};
   --pr-table-column-radius: #{variables.$pr-table-header-column-border-radius};
+  --pr-table-column-row-height: #{variables.$pr-table-header-column-row-height};
   --pr-table-cell-bg: #{variables.$pr-table-cell-background-color};
   --pr-table-cell-color: #{variables.$pr-table-cell-text-color};
   --pr-table-cell-radius: #{variables.$pr-table-cell-border-radius};
+  --pr-table-cell-row-height: #{variables.$pr-table-cell-row-height};
   --pr-table-primary: #{variables.$pr-table-primary-color};
   --pr-table-primary-opacity: #{variables.$pr-table-primary-color-opacity};
 }

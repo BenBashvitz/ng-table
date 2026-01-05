@@ -3,9 +3,8 @@
   class="grid-table"
 >
   <div
-    class="grid-header groups"
-    [style.grid-template-columns]="gridGroupTemplate"
-    [style.grid-auto-rows.px]="30"
+    class="grid-row grid-header-row grid-groups-row"
+    [style.grid-template-columns]="gridTemplate"
     cdkDropList
     cdkDropListOrientation="horizontal"
     (cdkDropListDropped)="onDropGroup($event)"
@@ -21,7 +20,7 @@
       (cdkDragStarted)="onDragStart()"
       (cdkDragEnded)="onDragEnd()"
       [tvsColumnResize]="group"
-      class="cell group drag"
+      class="grid-cell grid-group-cell grid-header-cell"
       [class.sticky]="group.isSticky"
       [style.left.px]="group.isSticky ? getGroupStickyLeft(group) : null"
       [style.grid-column]="groupToColumnAmountMap[group.columnDef]"
@@ -34,18 +33,19 @@
     </div>
   </div>
   <div
-    class="grid-header columns"
+    class="grid-row grid-header-row grid-columns-row"
     cdkDropList
     cdkDropListOrientation="horizontal"
     (cdkDropListDropped)="onDropColumn($event)"
-    [style.grid-template-columns]="gridGroupTemplate"
-    [style.grid-auto-rows.px]="18"
+    [style.grid-template-columns]="gridTemplate"
     #scroll
   >
     <div
-      *ngFor="let group of columnGroups; trackBy: trackByColumn"
-      class="column-group"
+      *ngFor="let group of columnGroups; let i = index; trackBy: trackByColumn"
+      class="grid-cell-group grid-column-cell-group"
       [style.grid-column]="groupToColumnAmountMap[group.columnDef]"
+      [class.sticky]="group.isSticky"
+      [style.left.px]="group.isSticky ? getStickyLeft(i) : null"
     >
 
       <div
@@ -58,9 +58,7 @@
         [tvsColumnResize]="column"
         (cdkDragStarted)="onDragStart()"
         (cdkDragEnded)="onDragEnd()"
-        [class.sticky]="column.isSticky"
-        [style.left.px]="column.isSticky ? getStickyLeft(i) : null"
-        class="cell header drag"
+        class="grid-cell grid-column-cell grid-header-cell"
       >
         {{ column.title }}
         <span class="resizer"></span>
@@ -84,26 +82,25 @@
       #body
     >
       <div
-        class="grid-row"
+        class="grid-row grid-body-row"
         *cdkVirtualFor="let row of table.rows; trackBy: trackByRow"
-        [style.grid-template-columns]="gridGroupTemplate"
-        [style.grid-auto-rows.px]="36"
+        [style.grid-template-columns]="gridTemplate"
         cdkDrag
         [cdkDragData]="row"
         (click)="onClickRow($event, row)"
         (dblclick)="onDoubleClickRow(row)"
       >
         <div
-          *ngFor="let group of columnGroups; trackBy: trackByColumn"
-          class="cell-group"
+          *ngFor="let group of columnGroups; let i = index; trackBy: trackByColumn"
+          class="grid-cell-group grid-body-cell-group"
           [style.grid-column]="groupToColumnAmountMap[group.columnDef]"
+          [class.sticky]="group.isSticky"
+          [style.left.px]="group.isSticky ? getStickyLeft(i) : null"
         >
           <div
             *ngFor="let column of group.columns; let i = index"
-            class="cell"
+            class="grid-cell grid-body-cell"
             [ngClass]="column.columnDef"
-            [class.sticky]="column.isSticky"
-            [style.left.px]="column.isSticky ? getStickyLeft(i) : null"
           >
             <ng-container *ngIf="table | tableCell: column: row">
               <ng-container *ngIf="isNormalCell(table | tableCell: column: row)">
@@ -123,10 +120,9 @@
     </div>
     <div
       *ngFor="let rowId of table.selectedRowsIds;"
-      class="row-selection-outline"
+      class="grid-row-selection"
       [style.height.px]="table.rowHeightInPx ?? defaults.rowHeightInPx"
-      [style.width]="'100%'"
-      [style.top.px]="(((table.rowHeightInPx ?? defaults.rowHeightInPx) + 2) * getRowIndex(rowId))"
+      [style.top.px]="(((table.rowHeightInPx ?? defaults.rowHeightInPx)) * getRowIndex(rowId))"
     >
     </div>
   </cdk-virtual-scroll-viewport>

@@ -3,8 +3,8 @@
   class="grid-table"
 >
   <div
-    class="grid-header"
-    [style.grid-template-columns]="gridTemplate"
+    class="grid-header groups"
+    [style.grid-template-columns]="gridGroupTemplate"
     [style.grid-auto-rows.px]="30"
     cdkDropList
     cdkDropListOrientation="horizontal"
@@ -34,33 +34,40 @@
     </div>
   </div>
   <div
-    class="grid-header"
+    class="grid-header columns"
     cdkDropList
     cdkDropListOrientation="horizontal"
     (cdkDropListDropped)="onDropColumn($event)"
-    [style.grid-template-columns]="gridTemplate"
+    [style.grid-template-columns]="gridGroupTemplate"
     [style.grid-auto-rows.px]="18"
     #scroll
   >
     <div
-      *ngFor="let column of tableColumns; let i = index trackBy: trackByColumn"
-      cdkDrag
-      cdkDragLockAxis="x"
-      cdkDragPreviewContainer="parent"
-      [cdkDragDisabled]="column.isSticky"
-      [cdkDragData]="column"
-      [tvsColumnResize]="column"
-      (cdkDragStarted)="onDragStart()"
-      (cdkDragEnded)="onDragEnd()"
-      [class.sticky]="column.isSticky"
-      [style.left.px]="column.isSticky ? getStickyLeft(i) : null"
-      class="cell header drag"
+      *ngFor="let group of columnGroups; trackBy: trackByColumn"
+      class="column-group"
+      [style.grid-column]="groupToColumnAmountMap[group.columnDef]"
     >
-      {{ column.title }}
-      <span class="resizer"></span>
-      <ng-template cdkDragPreview>
 
-      </ng-template>
+      <div
+        *ngFor="let column of group.columns; let i = index trackBy: trackByColumn"
+        cdkDrag
+        cdkDragLockAxis="x"
+        cdkDragPreviewContainer="parent"
+        [cdkDragDisabled]="column.isSticky"
+        [cdkDragData]="column"
+        [tvsColumnResize]="column"
+        (cdkDragStarted)="onDragStart()"
+        (cdkDragEnded)="onDragEnd()"
+        [class.sticky]="column.isSticky"
+        [style.left.px]="column.isSticky ? getStickyLeft(i) : null"
+        class="cell header drag"
+      >
+        {{ column.title }}
+        <span class="resizer"></span>
+        <ng-template cdkDragPreview>
+
+        </ng-template>
+      </div>
     </div>
   </div>
 
@@ -79,7 +86,7 @@
       <div
         class="grid-row"
         *cdkVirtualFor="let row of table.rows; trackBy: trackByRow"
-        [style.grid-template-columns]="gridTemplate"
+        [style.grid-template-columns]="gridGroupTemplate"
         [style.grid-auto-rows.px]="36"
         cdkDrag
         [cdkDragData]="row"
@@ -87,24 +94,30 @@
         (dblclick)="onDoubleClickRow(row)"
       >
         <div
-          *ngFor="let column of tableColumns; let i = index"
-          class="cell"
-          [ngClass]="column.columnDef"
-          [class.sticky]="column.isSticky"
-          [style.left.px]="column.isSticky ? getStickyLeft(i) : null"
+          *ngFor="let group of columnGroups; trackBy: trackByColumn"
+          class="cell-group"
+          [style.grid-column]="groupToColumnAmountMap[group.columnDef]"
         >
-          <ng-container *ngIf="table | tableCell: column: row">
-            <ng-container *ngIf="isNormalCell(table | tableCell: column: row)">
-              {{ ((table | tableCell: column: row) | toNormalCell).cellText }}
+          <div
+            *ngFor="let column of group.columns; let i = index"
+            class="cell"
+            [ngClass]="column.columnDef"
+            [class.sticky]="column.isSticky"
+            [style.left.px]="column.isSticky ? getStickyLeft(i) : null"
+          >
+            <ng-container *ngIf="table | tableCell: column: row">
+              <ng-container *ngIf="isNormalCell(table | tableCell: column: row)">
+                {{ ((table | tableCell: column: row) | toNormalCell).cellText }}
+              </ng-container>
+              <ng-container *ngIf="isCustomCell(table | tableCell: column: row)">
+                <ng-container
+                  *ngComponentOutlet="((table | tableCell: column: row) | toComponentCell).component;"></ng-container>
+              </ng-container>
             </ng-container>
-            <ng-container *ngIf="isCustomCell(table | tableCell: column: row)">
-              <ng-container
-                *ngComponentOutlet="((table | tableCell: column: row) | toComponentCell).component;"></ng-container>
+            <ng-container *ngIf="!(table | tableCell: column: row)">
+              row does not have a cell for this column
             </ng-container>
-          </ng-container>
-          <ng-container *ngIf="!(table | tableCell: column: row)">
-            row does not have a cell for this column
-          </ng-container>
+          </div>
         </div>
       </div>
     </div>

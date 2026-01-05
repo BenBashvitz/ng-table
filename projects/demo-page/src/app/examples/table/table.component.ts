@@ -54,7 +54,6 @@ export class TableComponent {
           {
             columnDef: 'name',
             title: 'Name',
-            isSticky: true,
           },
           {
             columnDef: 'type',

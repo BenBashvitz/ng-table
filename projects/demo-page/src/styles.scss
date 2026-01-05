@@ -1,5 +1,6 @@
 @use '@angular/material' as mat;
 @use 'helpers';
+@use './variables.scss';
 
 @include mat.core();
 
@@ -10,6 +11,18 @@
 html,
 body {
   height: 100%;
+  --pr-table-bg: #{variables.$pr-table-background-color};
+  --pr-table-group-bg: #{variables.$pr-table-header-group-background-color};
+  --pr-table-group-color: #{variables.$pr-table-header-group-text-color};
+  --pr-table-group-radius: #{variables.$pr-table-header-group-border-radius};
+  --pr-table-column-bg: #{variables.$pr-table-header-column-background-color};
+  --pr-table-column-color: #{variables.$pr-table-header-column-text-color};
+  --pr-table-column-radius: #{variables.$pr-table-header-column-border-radius};
+  --pr-table-cell-bg: #{variables.$pr-table-cell-background-color};
+  --pr-table-cell-color: #{variables.$pr-table-cell-text-color};
+  --pr-table-cell-radius: #{variables.$pr-table-cell-border-radius};
+  --pr-table-primary: #{variables.$pr-table-primary-color};
+  --pr-table-primary-opacity: #{variables.$pr-table-primary-color-opacity};
 }
 
 body {

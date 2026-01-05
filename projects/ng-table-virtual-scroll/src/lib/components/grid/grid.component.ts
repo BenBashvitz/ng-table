@@ -105,10 +105,12 @@ export class GridComponent implements OnChanges, OnInit {
     }, [] as PrColumnWithMetadata[])
   }
 
-
-
   get gridTemplate() {
     return this.tableColumns.map(col => `${col.widthInPx ?? defaults.widthInPx}px`).join(' ');
+  }
+
+  get gridGroupTemplate() {
+    return this.tableColumns.map((col, index) => `${(col.widthInPx ?? defaults.widthInPx) + (((index === 0) || (index === this.tableColumns.length - 1)) ? 4 : 0)}px`).join(' ');
   }
 
   getStickyLeft(index: number): number {

@@ -100,11 +100,12 @@
           <div
             *ngFor="let column of group.columns; let i = index"
             class="grid-cell grid-body-cell"
-            [ngClass]="column.columnDef"
           >
             <ng-container *ngIf="table | tableCell: column: row">
               <ng-container *ngIf="isNormalCell(table | tableCell: column: row)">
+                <div class="grid-cell-text" [ngClass]="column.columnDef">
                 {{ ((table | tableCell: column: row) | toNormalCell).cellText }}
+                </div>
               </ng-container>
               <ng-container *ngIf="isCustomCell(table | tableCell: column: row)">
                 <ng-container

@@ -98,7 +98,6 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
       if (newColumnWidth >= parseFloat(this.column.style.maxWidth) || newColumnWidth <= parseFloat(this.column.style.minWidth)) return;
 
       this.prColumn.widthInPx = newColumnWidth;
-      console.log(this.prColumn);
     } else {
       const newColumnWidths = this.startWidths.map(startWidth => startWidth + (mousePositionDiff / 3));
 
@@ -136,6 +135,7 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
     }
 
     this.prColumn.widthInPx = Math.min(maxWidth, this.prColumn.maxWidthInPx ?? columnDefaults.maxWidthInPx);
+    console.log(this.prColumn.widthInPx);
     this.cd.detectChanges()
   }
 }

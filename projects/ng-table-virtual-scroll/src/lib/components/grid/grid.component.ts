@@ -106,7 +106,10 @@ export class GridComponent implements OnChanges, OnInit {
   }
 
   get gridTemplate() {
-    return this.tableColumns.map(col => `${col.widthInPx ?? defaults.widthInPx}px`).join(' ');
+    return this.tableColumns.map(col => {
+      console.log(`${col.widthInPx ?? defaults.widthInPx}px`)
+      return `${col.widthInPx ?? defaults.widthInPx}px`
+    }).join(' ');
   }
 
   getStickyLeft(index: number): number {

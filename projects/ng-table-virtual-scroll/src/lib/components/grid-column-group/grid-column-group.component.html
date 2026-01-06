@@ -1,0 +1,37 @@
+<div class="grid-column-group-wrapper" [tvsColumnResize]="columnGroup" [elementToResize]="columnGroupElement"
+     [resizerElement]="columnGroupResizerElement">
+  <div
+    class="grid-column-group-row"
+    [style.grid-template-columns]="gridTemplate">
+    <div
+      class="grid-column-group-cell"
+      [style.grid-column]="'1 / ' + (columnGroup.columns.length + 1)"
+      #columnGroupElement
+    >
+      {{ columnGroup.title }}
+    </div>
+  </div>
+  <tvs-grid-header-row
+    [columns]="columnGroup.columns"
+    [gridTemplateColumns]="gridTemplate"
+  ></tvs-grid-header-row>
+  <cdk-virtual-scroll-viewport
+    [itemSize]="tableStore.rowHeightInPx$ | async"
+    class="grid-viewport">
+    <div
+      cdkDropList
+      (cdkDropListDropped)="onDropRow($event)"
+      class="grid-body"
+      #body>
+      <tvs-grid-row
+        *cdkVirtualFor="let row of (tableStore.rows$ | async); trackBy: trackByRow"
+        cdkDrag
+        [cdkDragData]="row"
+        [row]="row"
+        [columns]="columnGroup.columns"
+        [gridTemplateColumns]="gridTemplate">
+      </tvs-grid-row>
+    </div>
+  </cdk-virtual-scroll-viewport>
+  <span class="resizer" #columnGroupResizerElement></span>
+</div>

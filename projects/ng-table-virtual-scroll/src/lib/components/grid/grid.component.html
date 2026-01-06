@@ -1,130 +1,20 @@
 <div
-  cdkDropListGroup
+  cdkDropList
+  cdkDropListOrientation="horizontal"
+  (cdkDropListDropped)="onDropGroup($event)"
   class="grid-table"
 >
-  <div
-    class="grid-row grid-header-row grid-groups-row"
-    [style.grid-template-columns]="gridTemplate"
-    cdkDropList
-    cdkDropListOrientation="horizontal"
-    (cdkDropListDropped)="onDropGroup($event)"
-    (scroll)="onScroll($event)"
-    #scroll
+  <tvs-grid-column-group
+    *ngFor="let columnGroup of (splitColumnGroups | async); trackBy: trackByColumn"
+    cdkDrag
+    cdkDragLockAxis="x"
+    cdkDragPreviewContainer="parent"
+    [cdkDragData]="columnGroup"
+    (cdkDragStarted)="onDragStart()"
+    (cdkDragEnded)="onDragEnd()"
+    [columnGroup]="columnGroup"
+    [class.sticky]="columnGroup.isSticky"
   >
-    <div
-      *ngFor="let group of columnGroups; trackBy: trackByColumn"
-      cdkDrag
-      cdkDragLockAxis="x"
-      cdkDragPreviewContainer="parent"
-      [cdkDragData]="group"
-      (cdkDragStarted)="onDragStart()"
-      (cdkDragEnded)="onDragEnd()"
-      [tvsColumnResize]="group"
-      class="grid-cell grid-group-cell grid-header-cell"
-      [class.sticky]="group.isSticky"
-      [style.left.px]="group.isSticky ? getGroupStickyLeft(group) : null"
-      [style.grid-column]="groupToColumnAmountMap[group.columnDef]"
-    >
-      {{ group.title }}
-      <span class="resizer"></span>
-      <ng-template cdkDragPreview>
-
-      </ng-template>
-    </div>
-  </div>
-  <div
-    class="grid-row grid-header-row grid-columns-row"
-    cdkDropList
-    cdkDropListOrientation="horizontal"
-    (cdkDropListDropped)="onDropColumn($event)"
-    [style.grid-template-columns]="gridTemplate"
-    #scroll
-  >
-    <div
-      *ngFor="let group of columnGroups; let i = index; trackBy: trackByColumn"
-      class="grid-cell-group grid-column-cell-group"
-      [style.grid-column]="groupToColumnAmountMap[group.columnDef]"
-      [class.sticky]="group.isSticky"
-      [style.left.px]="group.isSticky ? getStickyLeft(i) : null"
-    >
-
-      <div
-        *ngFor="let column of group.columns; let i = index trackBy: trackByColumn"
-        cdkDrag
-        cdkDragLockAxis="x"
-        cdkDragPreviewContainer="parent"
-        [cdkDragDisabled]="column.isSticky"
-        [cdkDragData]="column"
-        [tvsColumnResize]="column"
-        (cdkDragStarted)="onDragStart()"
-        (cdkDragEnded)="onDragEnd()"
-        class="grid-cell grid-column-cell grid-header-cell"
-      >
-        {{ column.title }}
-        <span class="resizer"></span>
-        <ng-template cdkDragPreview>
-
-        </ng-template>
-      </div>
-    </div>
-  </div>
-
-  <cdk-virtual-scroll-viewport
-    [itemSize]="table.rowHeightInPx ?? defaults.rowHeightInPx"
-    class="grid-viewport"
-    (scroll)="onScroll($event)"
-    #scroll
-  >
-    <div
-      cdkDropList
-      (cdkDropListDropped)="onDropRow($event)"
-      class="grid-body"
-      #body
-    >
-      <div
-        class="grid-row grid-body-row"
-        *cdkVirtualFor="let row of table.rows; trackBy: trackByRow"
-        [style.grid-template-columns]="gridTemplate"
-        cdkDrag
-        [cdkDragData]="row"
-        (click)="onClickRow($event, row)"
-        (dblclick)="onDoubleClickRow(row)"
-      >
-        <div
-          *ngFor="let group of columnGroups; let i = index; trackBy: trackByColumn"
-          class="grid-cell-group grid-body-cell-group"
-          [style.grid-column]="groupToColumnAmountMap[group.columnDef]"
-          [class.sticky]="group.isSticky"
-          [style.left.px]="group.isSticky ? getStickyLeft(i) : null"
-        >
-          <div
-            *ngFor="let column of group.columns; let i = index"
-            class="grid-cell grid-body-cell"
-          >
-            <ng-container *ngIf="table | tableCell: column: row">
-              <ng-container *ngIf="isNormalCell(table | tableCell: column: row)">
-                <div class="grid-cell-text" [ngClass]="column.columnDef">
-                {{ ((table | tableCell: column: row) | toNormalCell).cellText }}
-                </div>
-              </ng-container>
-              <ng-container *ngIf="isCustomCell(table | tableCell: column: row)">
-                <ng-container
-                  *ngComponentOutlet="((table | tableCell: column: row) | toComponentCell).component;"></ng-container>
-              </ng-container>
-            </ng-container>
-            <ng-container *ngIf="!(table | tableCell: column: row)">
-              row does not have a cell for this column
-            </ng-container>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      *ngFor="let rowId of table.selectedRowsIds;"
-      class="grid-row-selection"
-      [style.height.px]="table.rowHeightInPx ?? defaults.rowHeightInPx"
-      [style.top.px]="(((table.rowHeightInPx ?? defaults.rowHeightInPx)) * getRowIndex(rowId))"
-    >
-    </div>
-  </cdk-virtual-scroll-viewport>
+    <ng-template cdkDragPreview></ng-template>
+  </tvs-grid-column-group>
 </div>

@@ -20,6 +20,8 @@ import {columnDefaults, isColumnGroup, PrColumnGroup, PrColumnWithMetadata} from
 export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
   @Input() resizableTable: HTMLElement | null = null;
   @Input('tvsColumnResize') prColumn: PrColumnWithMetadata;
+  @Input() elementToResize: HTMLElement | null = null;
+  @Input() resizerElement: HTMLElement | null = null;
   @Output() resize = new EventEmitter<MouseEvent>()
 
   private startX!: number;
@@ -36,11 +38,11 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
     private zone: NgZone,
     private cd: ChangeDetectorRef,
   ) {
-    this.column = this.el.nativeElement;
   }
 
   ngAfterViewInit() {
-    this.resizer = (this.column.getElementsByClassName('resizer')).item(0) as HTMLElement;
+    this.column = this.elementToResize ?? this.el.nativeElement;
+    this.resizer = this.resizerElement ?? (this.column.getElementsByClassName('resizer')).item(0) as HTMLElement;
     this.initializeResizeListener();
   }
 
@@ -80,7 +82,6 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
 
     if (isColumnGroup(this.prColumn)) {
       this.startWidths = this.prColumn.columns.map(({widthInPx}) => widthInPx ?? columnDefaults.widthInPx)
-      console.log(this.startWidths);
     } else {
       this.startWidth = this.prColumn.widthInPx ?? columnDefaults.widthInPx;
     }

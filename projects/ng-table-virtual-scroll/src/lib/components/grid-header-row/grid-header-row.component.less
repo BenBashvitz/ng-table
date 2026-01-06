@@ -1,0 +1,40 @@
+.grid-header-row {
+  display: grid;
+  gap: 2px;
+  grid-auto-rows: calc(var(--pr-table-column-row-height) + 4px);
+
+  .grid-header-cell {
+    cursor: grab;
+    position: relative;
+    color: var(--pr-table-column-color);
+    background-color: var(--pr-table-column-bg);
+    border-radius: var(--pr-table-column-radius);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    height: 100%;
+    width: 100%;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    .resizer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 10px;
+      cursor: col-resize;
+      z-index: 1;
+
+      &:hover {
+        border-right: 2px solid var(--pr-table-primary);
+      }
+    }
+  }
+}

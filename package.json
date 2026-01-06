@@ -47,6 +47,7 @@
     "@angular/platform-browser": "^15.1.4",
     "@angular/platform-browser-dynamic": "^15.1.4",
     "@angular/router": "^15.1.4",
+    "@ngrx/component-store": "15.4.0",
     "@stackblitz/sdk": "^1.8.2",
     "highlight.js": "^11.5.1",
     "ngx-highlightjs": "^6.1.2",

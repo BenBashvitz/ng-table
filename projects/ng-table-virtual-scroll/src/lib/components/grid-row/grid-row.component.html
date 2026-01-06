@@ -1,0 +1,8 @@
+<div
+  class="grid-row"
+  [style.grid-template-columns]="gridTemplateColumns"
+  (click)="onClickRow()"
+  (dblclick)="onDoubleClickRow()">
+  <tvs-grid-cell *ngFor="let column of columns;" [cell]="(tableStore.table$ | async) | tableCell:column:row"
+                 [columnDef]="column.columnDef"></tvs-grid-cell>
+</div>

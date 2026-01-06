@@ -1,0 +1,14 @@
+<ng-container *ngIf="cell">
+  <ng-container *ngIf="isNormalCell(cell)">
+    <div class="grid-cell-text" [ngClass]="columnDef">
+      {{ ((cell) | toNormalCell).cellText }}
+    </div>
+  </ng-container>
+  <ng-container *ngIf="isCustomCell(cell)">
+    <ng-container
+      *ngComponentOutlet="((cell) | toComponentCell).component;"></ng-container>
+  </ng-container>
+</ng-container>
+<ng-container *ngIf="!(cell)">
+  row does not have a cell for this column
+</ng-container>

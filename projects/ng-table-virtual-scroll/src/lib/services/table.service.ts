@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import {PrColumn, PrColumnGroup, PrRow, PrTable} from "../types/table.interface";
 import {moveItemInArray} from "@angular/cdk/drag-drop";
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -72,6 +71,7 @@ export class TableService {
     const actualCurrentIndex = actualPreviousIndex + (currentIndex - previousIndex);
     moveItemInArray(table.rows, actualPreviousIndex, actualCurrentIndex);
 
+    console.log(table.rows)
     return table;
   }
 }

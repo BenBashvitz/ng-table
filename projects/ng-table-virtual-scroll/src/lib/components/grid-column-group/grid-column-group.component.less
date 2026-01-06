@@ -40,6 +40,7 @@
     .grid-viewport {
       height: 250px;
       overflow: auto;
+      position: relative;
 
       .grid-body {
         display: flex;
@@ -49,6 +50,18 @@
 
       &::-webkit-scrollbar {
         display: none;
+      }
+
+
+      .grid-row-selection {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        border: 1px solid var(--pr-table-primary);
+        background-color: var(--pr-table-primary-opacity);
+        border-radius: var(--pr-table-cell-radius);
+        width: 100%;
+        z-index: 1000;
       }
     }
 

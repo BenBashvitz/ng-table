@@ -39,7 +39,7 @@ export type PrRow = {
 
 export type PrTableMetadata<AvailableColumns extends string = string> = {
   columnGroups: PrColumnGroup<AvailableColumns>[]
-  selectedRowsIds?: (string | number)[];
+  selectedRowIds?: (string | number)[];
   pinnedRowsIds?: (string | number)[];
   selectedCells?: {
     rowId: string | number;
@@ -99,7 +99,7 @@ export const virtualScrollDefaults: PrTableVirtualScrollConfig = {
 
 export const tableDefaults: Omit<PrTableMetadata, 'columns' | 'columnGroups'> = {
   selectedCells: [],
-  selectedRowsIds: [],
+  selectedRowIds: [],
   pinnedRowsIds: [],
   groupByColumnIds: [],
   sortByColumn: undefined,

@@ -30,7 +30,20 @@
         [row]="row"
         [columns]="columnGroup.columns"
         [gridTemplateColumns]="gridTemplate">
+        <ng-template cdkDragPreview>
+          <tvs-grid-row
+            [row]="row"
+            [columns]="tableStore.columns$ | async"
+            [gridTemplateColumns]="tableStore.tableGridTemplate$ | async"
+          ></tvs-grid-row>
+        </ng-template>
       </tvs-grid-row>
+    </div>
+    <div
+      *ngFor="let selectedRowId of (this.tableStore.selectedRowIds$ | async)"
+      class="grid-row-selection"
+      [style.height.px]="tableStore.rowHeightInPx$ | async"
+      [style.top.px]="((this.tableStore.rowIndex$(selectedRowId) | async) - virtualViewport.getRenderedRange().start) * ((tableStore.rowHeightInPx$ | async) + 2)">
     </div>
   </cdk-virtual-scroll-viewport>
   <span class="resizer" #columnGroupResizerElement></span>

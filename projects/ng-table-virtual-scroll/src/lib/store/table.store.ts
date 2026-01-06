@@ -1,12 +1,15 @@
 import {Injectable} from "@angular/core";
-import {defaults, PrColumn, PrColumnGroup, PrRow, PrTable} from "../types/table.interface";
+import {defaults, PrColumn, PrColumnGroup, PrColumnWithMetadata, PrRow, PrTable} from "../types/table.interface";
 import {ComponentStore} from "@ngrx/component-store";
 import {TableService} from "../services/table.service";
 import {tap} from "rxjs/operators";
+import {ListRange} from "@angular/cdk/collections";
+import {Observable} from "rxjs";
 
 export interface TableState {
   table: PrTable,
   scrollTop: number;
+  scrollRange: ListRange
 }
 
 const initialState: TableState = {
@@ -14,7 +17,7 @@ const initialState: TableState = {
     columnGroups: [],
     rows: [],
     columnToCellMapper: {},
-    selectedRowsIds: [],
+    selectedRowIds: [],
     pinnedRowsIds: [],
     selectedCells: [],
     groupByColumnIds: [],
@@ -22,7 +25,11 @@ const initialState: TableState = {
     columnOrder: [],
     rowHeightInPx: defaults.rowHeightInPx,
   },
-  scrollTop: 0
+  scrollTop: 0,
+  scrollRange: {
+    start: 0,
+    end: 0,
+  }
 }
 
 interface MoveItem<T = PrRow | PrColumn | PrColumnGroup> {
@@ -40,8 +47,18 @@ export class TableStore extends ComponentStore<TableState> {
   readonly table$ = this.select(state => state.table);
   readonly columnGroups$ = this.select(this.table$, table => table.columnGroups);
   readonly rows$ = this.select(this.table$, table => table.rows);
+  readonly columns$ = this.select(this.table$, table => table.columnGroups.reduce((tableColumns,{columns}) => {
+    return [...tableColumns, ...columns]
+  }, [] as PrColumnWithMetadata[]));
+  readonly selectedRowIds$ = this.select(this.table$, table => table.selectedRowIds);
   readonly scrollTop$ = this.select(state => state.scrollTop);
   readonly rowHeightInPx$ = this.select(this.table$, table => table.rowHeightInPx ?? defaults.rowHeightInPx);
+  readonly tableGridTemplate$ = this.select(this.columns$, columns => {
+    return columns.map(col => {
+      return `${col.widthInPx ?? defaults.widthInPx}px`
+    }).join(' ');
+  });
+  readonly rowIndex$ = (rowId: string | number): Observable<number> => this.select(this.rows$, (rows) => rows.findIndex(row => row.id === rowId));
 
   readonly setTable = this.updater((state, table: PrTable) => ({
     ...state,
@@ -51,20 +68,36 @@ export class TableStore extends ComponentStore<TableState> {
     ...state,
     scrollTop,
   }))
+  readonly setScrollRange = this.updater((state, scrollRange: ListRange) => ({
+    ...state,
+    scrollRange,
+  }))
   readonly moveColumnGroup = this.updater((state, moveGroup: MoveItem<PrColumnGroup>) => ({
     ...state,
     table: {
       ...this.tableService.changeColumnGroupOrder(state.table, moveGroup.item, moveGroup.previousIndex, moveGroup.currentIndex)
     },
   }))
-  readonly moveColumn = this.updater((state, moveColumn: MoveItem<PrColumn>) => ({...state,
-    table: {
-      ...this.tableService.changeColumnOrder(state.table, moveColumn.item, moveColumn.previousIndex, moveColumn.currentIndex)
-    },}))
+  readonly moveColumn = this.updater((state, moveColumn: MoveItem<PrColumn>) => {
+    const newTable = this.tableService.changeColumnOrder(state.table, moveColumn.item, moveColumn.previousIndex, moveColumn.currentIndex)
+
+    return {...state,
+      table: {
+        ...newTable,
+        rows: [...newTable.rows],
+      },}
+  })
   readonly moveRow = this.updater((state, moveRow: MoveItem<PrRow>) => ({
     ...state,
     table: {
       ...this.tableService.changeRowOrder(state.table, moveRow.item, moveRow.previousIndex, moveRow.currentIndex)
     },
+  }))
+  readonly selectRow = this.updater((state, rowId: string | number) => ({
+    ...state,
+    table: {
+      ...state.table,
+      selectedRowIds: [rowId]
+    }
   }))
 }

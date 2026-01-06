@@ -12,6 +12,7 @@ import {ToNormalCellPipe} from "./pipes/to-normal-cell.pipe";
 import { GridRowComponent } from './components/grid-row/grid-row.component';
 import {CdkDrag, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import { GridHeaderRowComponent } from './components/grid-header-row/grid-header-row.component';
+import { GridCellEditMenuComponent } from './components/grid-cell-edit-menu/grid-cell-edit-menu.component';
 
 @NgModule({
   imports: [
@@ -36,6 +37,9 @@ import { GridHeaderRowComponent } from './components/grid-header-row/grid-header
     CdkDropList
   ],
   exports: [TableItemSizeDirective, ColumnResizeDirective, GridComponent],
+  declarations: [
+    GridCellEditMenuComponent
+  ],
 })
 export class TableVirtualScrollModule {
 }

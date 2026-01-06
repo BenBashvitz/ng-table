@@ -136,7 +136,6 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
     }
 
     this.prColumn.widthInPx = Math.min(maxWidth, this.prColumn.maxWidthInPx ?? columnDefaults.maxWidthInPx);
-    console.log(this.prColumn.widthInPx);
     this.cd.detectChanges()
   }
 }

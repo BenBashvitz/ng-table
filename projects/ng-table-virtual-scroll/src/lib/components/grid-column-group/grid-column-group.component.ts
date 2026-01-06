@@ -12,11 +12,11 @@ import {defaults, PrColumnGroup, PrRow, PrTable} from "../../types/table.interfa
 import {CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 import {MatTableModule} from "@angular/material/table";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
-import {CdkDrag, CdkDragDrop, CdkDropList} from "@angular/cdk/drag-drop";
+import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {GridRowComponent} from "../grid-row/grid-row.component";
 import {GridHeaderRowComponent} from "../grid-header-row/grid-header-row.component";
 import {TableStore} from "../../store/table.store";
-import {AsyncPipe} from "@angular/common";
+import {AsyncPipe, NgForOf} from "@angular/common";
 import {combineLatest, Subject, tap} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 
@@ -36,13 +36,12 @@ import {takeUntil} from "rxjs/operators";
     GridRowComponent,
     GridHeaderRowComponent,
     AsyncPipe,
+    CdkDragPreview,
+    NgForOf,
   ]
 })
 export class GridColumnGroupComponent implements AfterViewInit, OnDestroy{
   @Input() columnGroup: PrColumnGroup
-  @Output() selectedRows = new EventEmitter<PrRow[]>();
-  @Output() dblclickRow = new EventEmitter<PrRow>();
-  @Output() dropRow = new EventEmitter<CdkDragDrop<unknown, unknown, PrRow>>();
   @ViewChild('body') body: ElementRef<Element>
   @ViewChild(CdkVirtualScrollViewport)
   virtualViewport: CdkVirtualScrollViewport;
@@ -52,11 +51,9 @@ export class GridColumnGroupComponent implements AfterViewInit, OnDestroy{
     const element = event.target as Element;
 
     if (!this.body.nativeElement.contains(element)) {
-      this.selectedRows.emit([])
     }
   }
 
-  defaults = defaults;
   destroyed$ = new Subject<void>();
 
   constructor(public tableStore: TableStore) {}
@@ -66,6 +63,7 @@ export class GridColumnGroupComponent implements AfterViewInit, OnDestroy{
       this.virtualViewport.elementScrolled().pipe(
         tap((event) => {
           this.tableStore.setScrollTop((event.target as HTMLElement).scrollTop);
+          this.tableStore.setScrollRange(this.virtualViewport.getRenderedRange())
         })
       ),
       this.tableStore.scrollTop$.pipe(

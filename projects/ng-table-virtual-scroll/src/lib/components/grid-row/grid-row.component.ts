@@ -25,7 +25,7 @@ export class GridRowComponent {
   constructor(public tableStore: TableStore) {}
 
   onClickRow() {
-
+    this.tableStore.selectRow(this.row.id)
   }
 
   onDoubleClickRow() {

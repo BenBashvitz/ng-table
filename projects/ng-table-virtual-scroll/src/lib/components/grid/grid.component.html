@@ -1,8 +1,6 @@
 <div class="grid-table">
   <tvs-grid-rows
     [table]="tableStore.table$ | async"
-    [gridTemplateColumns]="tableStore.gridTemplate$ | async"
     [columns]="tableStore.columns$ | async"
-    [tableWidthInPx]="tableStore.tableWidth$ | async"
   ></tvs-grid-rows>
 </div>

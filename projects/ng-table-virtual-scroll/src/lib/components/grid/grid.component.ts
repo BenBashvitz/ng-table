@@ -5,6 +5,7 @@ import {AsyncPipe} from "@angular/common";
 import {TableStore} from "../../store/table.store";
 import {Observable} from "rxjs";
 import {GridRowsComponent} from "../grid-rows/grid-rows.component";
+import {tap} from "rxjs/operators";
 
 @Component({
   selector: 'tvs-grid',
@@ -20,12 +21,12 @@ import {GridRowsComponent} from "../grid-rows/grid-rows.component";
 })
 export class GridComponent implements OnInit {
   @Input() table: PrTable
-  splitColumnGroups: Observable<PrColumnGroup[]>;
+  gridTemplate: Observable<string>;
 
   constructor(public tableStore: TableStore) {}
 
   ngOnInit() {
     this.tableStore.setTable(this.table);
-    this.splitColumnGroups = this.tableStore.columnGroups$;
+    this.gridTemplate = this.tableStore.gridTemplate$.pipe(tap(console.log));
   }
 }

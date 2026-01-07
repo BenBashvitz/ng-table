@@ -7,8 +7,6 @@ import {Observable} from "rxjs";
 
 export interface TableState {
   table: PrTable,
-  scrollTop: number;
-  scrollRange: ListRange
 }
 
 const initialState: TableState = {
@@ -24,17 +22,17 @@ const initialState: TableState = {
     columnOrder: [],
     rowHeightInPx: defaults.rowHeightInPx,
   },
-  scrollTop: 0,
-  scrollRange: {
-    start: 0,
-    end: 0,
-  }
 }
 
 interface MoveItem<T = PrRow | PrColumn | PrColumnGroup> {
   item: T,
   currentIndex: number,
   previousIndex: number,
+}
+
+interface ColumnResize {
+  columnDef: string;
+  newWidthInPx: number;
 }
 
 @Injectable()
@@ -44,12 +42,10 @@ export class TableStore extends ComponentStore<TableState> {
   }
 
   readonly table$ = this.select(state => state.table);
-  readonly columnGroups$ = this.select(this.table$, table => table.columnGroups);
   readonly rows$ = this.select(this.table$, table => table.rows);
-  readonly columns$ = this.select(this.table$, table => table.columnGroups.reduce((tableColumns,{columns}) => {
+  readonly columns$ = this.select(this.table$, table => table.columnGroups.reduce((tableColumns, {columns}) => {
     return [...tableColumns, ...columns]
   }, [] as PrColumnWithMetadata[]));
-  readonly scrollTop$ = this.select(state => state.scrollTop);
   readonly gridTemplate$ = this.select(this.columns$, columns => {
     return columns.map(col => {
       return `${col.widthInPx ?? defaults.widthInPx}px`
@@ -66,14 +62,6 @@ export class TableStore extends ComponentStore<TableState> {
     ...state,
     table: this.tableService.initializeTable(table)
   }));
-  readonly setScrollTop = this.updater((state, scrollTop: number) => ({
-    ...state,
-    scrollTop,
-  }))
-  readonly setScrollRange = this.updater((state, scrollRange: ListRange) => ({
-    ...state,
-    scrollRange,
-  }))
   readonly moveColumnGroup = this.updater((state, moveGroup: MoveItem<PrColumnGroup>) => ({
     ...state,
     table: {
@@ -83,11 +71,13 @@ export class TableStore extends ComponentStore<TableState> {
   readonly moveColumn = this.updater((state, moveColumn: MoveItem<PrColumn>) => {
     const newTable = this.tableService.changeColumnOrder(state.table, moveColumn.item, moveColumn.previousIndex, moveColumn.currentIndex)
 
-    return {...state,
+    return {
+      ...state,
       table: {
         ...newTable,
         rows: [...newTable.rows],
-      },}
+      },
+    }
   })
   readonly moveRow = this.updater((state, moveRow: MoveItem<PrRow>) => ({
     ...state,
@@ -100,6 +90,20 @@ export class TableStore extends ComponentStore<TableState> {
     table: {
       ...state.table,
       selectedRowIds: [rowId]
+    }
+  }))
+
+  readonly setColumnWidthInPx = this.updater((state, columnResize: ColumnResize) => ({
+    ...state,
+    table: {
+      ...state.table,
+      columnGroups: state.table.columnGroups.map(columnGroup => ({
+        ...columnGroup,
+        columns: columnGroup.columns.map(column => ({
+          ...column,
+          widthInPx: column.columnDef === columnResize.columnDef ? columnResize.newWidthInPx : column.widthInPx
+        }))
+      }))
     }
   }))
 }

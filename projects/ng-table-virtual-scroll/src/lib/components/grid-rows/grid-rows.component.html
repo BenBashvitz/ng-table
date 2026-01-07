@@ -1,7 +1,7 @@
 <cdk-virtual-scroll-viewport
   [itemSize]="table.rowHeightInPx"
   class="grid-viewport"
-  [style.width.px]="tableWidthInPx"
+  [style.width.px]="tableWidthInPx$ | async"
 >
   <div
     cdkDropList
@@ -10,11 +10,11 @@
     #body>
     <tvs-grid-column-group-row
       [columnGroups]="table.columnGroups"
-      [gridTemplateColumns]="gridTemplateColumns"
+      [gridTemplateColumns]="gridTemplate$ | async"
     ></tvs-grid-column-group-row>
     <tvs-grid-header-row
       [columns]="columns"
-      [gridTemplateColumns]="gridTemplateColumns"
+      [gridTemplateColumns]="gridTemplate$ | async"
     ></tvs-grid-header-row>
     <tvs-grid-row
       *cdkVirtualFor="let row of table.rows; trackBy: trackByRow"
@@ -23,13 +23,13 @@
       [row]="row"
       [columns]="columns"
       [columnToCellMapper]="table.columnToCellMapper"
-      [gridTemplateColumns]="gridTemplateColumns">
+      [gridTemplateColumns]="gridTemplate$ | async">
       <ng-template cdkDragPreview>
         <tvs-grid-row
           [row]="row"
           [columns]="columns"
           [columnToCellMapper]="table.columnToCellMapper"
-          [gridTemplateColumns]="gridTemplateColumns"
+          [gridTemplateColumns]="gridTemplate$ | async"
         ></tvs-grid-row>
       </ng-template>
     </tvs-grid-row>

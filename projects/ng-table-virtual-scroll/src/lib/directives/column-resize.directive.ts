@@ -12,6 +12,7 @@ import {
 import {fromEvent, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {columnDefaults, isColumnGroup, PrColumnGroup, PrColumnWithMetadata} from "ng-table-virtual-scroll";
+import {TableStore} from "../store/table.store";
 
 @Directive({
   selector: '[tvsColumnResize]',
@@ -37,6 +38,7 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
     private el: ElementRef,
     private zone: NgZone,
     private cd: ChangeDetectorRef,
+    private tableStore: TableStore,
   ) {
   }
 
@@ -91,7 +93,7 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
     event.stopPropagation();
     if (!this.isResizing) return;
 
-    const mousePositionDiff = (event.pageX - this.startX);
+    const mousePositionDiff = (this.startX - event.pageX);
 
     if (!isColumnGroup(this.prColumn)) {
       const newColumnWidth = this.startWidth + mousePositionDiff;
@@ -99,6 +101,7 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
       if (newColumnWidth >= parseFloat(this.column.style.maxWidth) || newColumnWidth <= parseFloat(this.column.style.minWidth)) return;
 
       this.prColumn.widthInPx = newColumnWidth;
+      this.tableStore.setColumnWidthInPx({columnDef: this.prColumn.columnDef, newWidthInPx: newColumnWidth});
     } else {
       const newColumnWidths = this.startWidths.map(startWidth => startWidth + (mousePositionDiff / 3));
 
@@ -107,11 +110,11 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
           (newColumnWidths[i] <= (this.prColumn.columns[i].maxWidthInPx ?? columnDefaults.maxWidthInPx)) &&
           (newColumnWidths[i] >= (this.prColumn.columns[i].minWidthInPx ?? columnDefaults.minWidthInPx))) {
           this.prColumn.columns[i].widthInPx = newColumnWidths[i];
+          this.tableStore.setColumnWidthInPx({columnDef: this.prColumn.columns[i].columnDef, newWidthInPx: newColumnWidths[i]});
         }
       }
     }
 
-    this.cd.detectChanges();
     this.resize.emit(event);
   }
 
@@ -122,7 +125,7 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
 
 
   private onDoubleClick() {
-    if(isColumnGroup(this.prColumn)) return;
+    if (isColumnGroup(this.prColumn)) return;
 
     let maxWidth = this.column.offsetWidth;
     const columnCells = document.getElementsByClassName(this.prColumn.columnDef);
@@ -135,7 +138,7 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
       }
     }
 
-    this.prColumn.widthInPx = Math.min(maxWidth, this.prColumn.maxWidthInPx ?? columnDefaults.maxWidthInPx);
-    this.cd.detectChanges()
+    this.prColumn.widthInPx = maxWidth;
+    this.tableStore.setColumnWidthInPx({columnDef: this.prColumn.columnDef, newWidthInPx: maxWidth});
   }
 }

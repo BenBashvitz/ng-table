@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {PrCell, PrCustomCell} from "ng-table-virtual-scroll";
+import {PrCell, PrCustomCell} from "../types/table.interface";
 
 @Pipe({
   name: 'toComponentCell',

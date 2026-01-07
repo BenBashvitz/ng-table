@@ -1,8 +1,8 @@
-import {ChangeDetectorRef, Component, Input} from '@angular/core';
-import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
+import {Component, Input} from '@angular/core';
+import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
 import {NgForOf} from "@angular/common";
-import {PrColumn, PrColumnWithMetadata, PrTable} from "ng-table-virtual-scroll";
+import {PrColumn, PrColumnWithMetadata} from "../../types/table.interface";
 import {TableStore} from "../../store/table.store";
 
 @Component({

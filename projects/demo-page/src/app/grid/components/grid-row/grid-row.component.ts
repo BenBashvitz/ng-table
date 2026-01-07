@@ -1,5 +1,5 @@
 import {Component, Input, SimpleChanges} from '@angular/core';
-import {PrColumnWithMetadata, PrRow, PrTable} from "ng-table-virtual-scroll";
+import {PrColumnWithMetadata, PrRow, PrTable} from "../../types/table.interface";
 import {AsyncPipe, NgForOf} from "@angular/common";
 import {GridCellComponent} from "../grid-cell/grid-cell.component";
 import {TableCellPipe} from "../../pipes/table-cell.pipe";

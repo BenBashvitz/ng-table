@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {PrCell, PrColumnWithMetadata, PrRow, PrTable} from "ng-table-virtual-scroll";
+import {PrCell, PrColumnWithMetadata, PrRow, PrTable} from "../types/table.interface";
 
 @Pipe({
   name: 'tableCell',

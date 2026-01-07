@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {NgForOf} from '@angular/common';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
-import {PrColumnGroup} from "ng-table-virtual-scroll";
+import {PrColumnGroup} from "../../types/table.interface";
 import {TableStore} from "../../store/table.store";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
 

@@ -2,16 +2,16 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Directive,
-  ElementRef, EventEmitter,
+  ElementRef,
+  EventEmitter,
   Input,
   NgZone,
   OnDestroy,
-  OnInit, Output,
-  Renderer2,
+  Output,
 } from '@angular/core';
 import {fromEvent, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {columnDefaults, isColumnGroup, PrColumnGroup, PrColumnWithMetadata} from "ng-table-virtual-scroll";
+import {columnDefaults, isColumnGroup, PrColumnWithMetadata} from "../types/table.interface";
 import {TableStore} from "../store/table.store";
 
 @Directive({

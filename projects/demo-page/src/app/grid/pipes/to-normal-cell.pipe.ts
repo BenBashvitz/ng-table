@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {PrCell, PrTextCell} from "ng-table-virtual-scroll";
+import {PrCell, PrTextCell} from "../types/table.interface";
 
 @Pipe({
   name: 'toNormalCell',

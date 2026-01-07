@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import {defaults, PrColumn, PrColumnGroup, PrColumnWithMetadata, PrRow, PrTable} from "../types/table.interface";
 import {ComponentStore} from "@ngrx/component-store";
 import {TableService} from "../services/table.service";
-import {ListRange} from "@angular/cdk/collections";
 import {Observable} from "rxjs";
 
 export interface TableState {

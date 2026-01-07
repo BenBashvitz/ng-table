@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {PrRow, PrTable} from "ng-table-virtual-scroll";
+import {PrRow, PrTable} from "../../grid/types/table.interface";
 
 const DATA: PrRow[] = Array.from({length: 1000}, (v, i) => ({
   id: i + 1,

@@ -9,7 +9,7 @@ const NEW_DATA: PrRow[] = Array.from({length: 10}, (v, i) => ({
   id: i + 2,
 }));
 
-const columns = ['id', 'name', 'type', 'status', 'more'] as const;
+const columns = ['id', 'name', 'type', 'status', 'more', 'shir'] as const;
 type Column = typeof columns[number];
 
 @Component({
@@ -27,57 +27,71 @@ export class TableComponent {
       }),
       name: (row: PrRow) => ({
         discriminator: "Text",
-        cellText: `Element #${+row.id} ${+row.id % 5 !== 0 ? '' : 'longggggg texttttttttttttt'}`,
+        cellText: `שם ישות ${row.id}`,
         onEdit: (newValue: string) => {
           console.log(newValue);
         }
       }),
       type: (row: PrRow) => ({
         discriminator: "Text",
-        cellText: `${+row.id}`,
+        cellText: `טיפוס ${row.id}`,
       }),
       status: (row: PrRow) => ({
         discriminator: "Text",
-        cellText: `Status #${+row.id}`,
+        cellText: `סטטוס ישות ${row.id}`,
       }),
       more: (row: PrRow) => ({
         discriminator: "Text",
-        cellText: `More #${+row.id}`,
+        cellText: `עוד מידע ${row.id}`,
       }),
+      shir: (row: PrRow) => ({
+        discriminator: "Text",
+        cellText: `עוד מידע ${row.id}`,
+      })
     },
     columnGroups: [
       {
-        columnDef: 'category1',
+        columnDef: 'Info',
         columns: [
           {
             columnDef: 'id',
-            title: 'No.',
+            title: 'מזהה ישות',
             isSticky: true,
           },
           {
             columnDef: 'name',
-            title: 'Name',
+            title: 'שם',
           },
           {
             columnDef: 'type',
-            title: 'Type',
+            title: 'טיפוס',
           },
         ],
-        title: 'Category 1'
+        title: 'נתוני ישות'
       },
       {
-        columnDef: 'category2',
+        columnDef: 'Statuses',
         columns: [
           {
             columnDef: 'status',
-            title: 'Status',
+            title: 'סטטוס',
           },
           {
             columnDef: 'more',
-            title: 'More',
+            title: 'עוד',
           },
         ],
-        title: 'Category 2'
+        title: 'סטטוסים'
+      },
+      {
+        columnDef: 'Shir',
+        columns: [
+          {
+            columnDef: 'shir',
+            title: 'שיר',
+          },
+        ],
+        title: 'קבוצה שיר'
       },
     ],
   }

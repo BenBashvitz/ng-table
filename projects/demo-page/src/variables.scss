@@ -1,15 +1,33 @@
-$pr-table-background-color: #000000;
-$pr-table-header-group-background-color: #212428;
-$pr-table-header-group-text-color: #ADB6CC;
-$pr-table-header-group-row-height: 30px;
-$pr-table-header-group-border-radius: 6px;
-$pr-table-header-column-background-color: #545A66;
-$pr-table-header-column-text-color: #F4F5F7;
-$pr-table-header-column-row-height: 30px;
-$pr-table-header-column-border-radius: 4px;
-$pr-table-cell-background-color: #3C414C;
-$pr-table-cell-text-color: #E7EAEF;
-$pr-table-cell-border-radius: 4px;
-$pr-table-cell-row-height: 30px;
 $pr-table-primary-color: #40a0ff;
 $pr-table-primary-color-opacity: #40a0ff30;
+
+$pr-table-background-color-dark: #000000;
+$pr-table-header-group-background-color-dark: #212428;
+$pr-table-header-group-text-color-dark: #ADB6CC;
+$pr-table-header-column-background-color-dark: #545A66;
+$pr-table-header-column-text-color-dark: #F4F5F7;
+$pr-table-cell-background-color-dark: #3C414C;
+$pr-table-cell-text-color-dark: #E7EAEF;
+
+$pr-table-background-color-light: #F9FAFF;
+$pr-table-header-group-background-color-light: #FFFFFF;
+$pr-table-header-group-text-color-light: #636874;
+$pr-table-header-column-background-color-light: #F1F5FD;
+$pr-table-header-column-text-color-light: #808BA6;
+$pr-table-cell-background-color-light: #F2F6FFB2;
+$pr-table-cell-text-color-light: #646F8C;
+
+$pr-table-header-group-row-height: 30px;
+$pr-table-header-group-border-radius: 8px;
+$pr-table-header-group-font-weight: 600;
+$pr-table-header-group-font-size: 14px;
+$pr-table-header-column-row-height: 30px;
+$pr-table-header-column-border-radius: 4px;
+$pr-table-header-column-font-weight: 400;
+$pr-table-header-column-font-size: 12px;
+$pr-table-cell-row-height: 30px;
+$pr-table-cell-border-radius: 4px;
+$pr-table-cell-font-weight: 400;
+$pr-table-cell-font-size: 12px;
+
+

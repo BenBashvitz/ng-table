@@ -12,21 +12,39 @@
 html,
 body {
   height: 100%;
-  --pr-table-bg: #{variables.$pr-table-background-color};
-  --pr-table-group-bg: #{variables.$pr-table-header-group-background-color};
-  --pr-table-group-color: #{variables.$pr-table-header-group-text-color};
-  --pr-table-group-radius: #{variables.$pr-table-header-group-border-radius};
-  --pr-table-group-row-height: #{variables.$pr-table-header-group-row-height};
-  --pr-table-column-bg: #{variables.$pr-table-header-column-background-color};
-  --pr-table-column-color: #{variables.$pr-table-header-column-text-color};
-  --pr-table-column-radius: #{variables.$pr-table-header-column-border-radius};
-  --pr-table-column-row-height: #{variables.$pr-table-header-column-row-height};
-  --pr-table-cell-bg: #{variables.$pr-table-cell-background-color};
-  --pr-table-cell-color: #{variables.$pr-table-cell-text-color};
-  --pr-table-cell-radius: #{variables.$pr-table-cell-border-radius};
-  --pr-table-cell-row-height: #{variables.$pr-table-cell-row-height};
   --pr-table-primary: #{variables.$pr-table-primary-color};
   --pr-table-primary-opacity: #{variables.$pr-table-primary-color-opacity};
+
+  --pr-table-bg: #{variables.$pr-table-background-color-dark};
+  --pr-table-group-bg: #{variables.$pr-table-header-group-background-color-dark};
+  --pr-table-group-color: #{variables.$pr-table-header-group-text-color-dark};
+  --pr-table-column-bg: #{variables.$pr-table-header-column-background-color-dark};
+  --pr-table-column-color: #{variables.$pr-table-header-column-text-color-dark};
+  --pr-table-cell-bg: #{variables.$pr-table-cell-background-color-dark};
+  --pr-table-cell-color: #{variables.$pr-table-cell-text-color-dark};
+
+  --pr-table-group-radius: #{variables.$pr-table-header-group-border-radius};
+  --pr-table-group-row-height: #{variables.$pr-table-header-group-row-height};
+  --pr-table-group-font-weight: #{variables.$pr-table-header-group-font-weight};
+  --pr-table-group-font-size: #{variables.$pr-table-header-group-font-size};
+  --pr-table-column-radius: #{variables.$pr-table-header-column-border-radius};
+  --pr-table-column-row-height: #{variables.$pr-table-header-column-row-height};
+  --pr-table-column-font-weight: #{variables.$pr-table-header-column-font-weight};
+  --pr-table-column-font-size: #{variables.$pr-table-header-column-font-size};
+  --pr-table-cell-radius: #{variables.$pr-table-cell-border-radius};
+  --pr-table-cell-row-height: #{variables.$pr-table-cell-row-height};
+  --pr-table-cell-font-weight: #{variables.$pr-table-cell-font-weight};
+  --pr-table-cell-font-size: #{variables.$pr-table-cell-font-size};
+
+  .light {
+    --pr-table-bg: #{variables.$pr-table-background-color-light};
+    --pr-table-group-bg: #{variables.$pr-table-header-group-background-color-light};
+    --pr-table-group-color: #{variables.$pr-table-header-group-text-color-light};
+    --pr-table-column-bg: #{variables.$pr-table-header-column-background-color-light};
+    --pr-table-column-color: #{variables.$pr-table-header-column-text-color-light};
+    --pr-table-cell-bg: #{variables.$pr-table-cell-background-color-light};
+    --pr-table-cell-color: #{variables.$pr-table-cell-text-color-light};
+  }
 }
 
 body {

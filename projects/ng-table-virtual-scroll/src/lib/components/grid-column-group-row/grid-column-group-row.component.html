@@ -1,0 +1,23 @@
+<div
+  class="grid-column-group-row"
+  cdkDropList
+  cdkDropListOrientation="horizontal"
+  (cdkDropListDropped)="onDropColumnGroup($event)"
+  [style.grid-template-columns]="gridTemplateColumns">
+  <div
+    *ngFor="let columnGroup of columnGroups; trackBy: trackByColumn"
+    cdkDrag
+    cdkDragLockAxis="x"
+    cdkDragPreviewContainer="parent"
+    [cdkDragData]="columnGroup"
+    [tvsColumnResize]="columnGroup"
+    (cdkDragStarted)="onDragStart()"
+    (cdkDragEnded)="onDragEnd()"
+    class="grid-column-group-cell"
+    [style.grid-column]="'span ' + columnGroup.columns.length"
+  >
+    {{ columnGroup.title }}
+    <span class="resizer"></span>
+    <ng-template cdkDragPreview></ng-template>
+  </div>
+</div>

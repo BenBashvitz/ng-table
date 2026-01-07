@@ -13,6 +13,7 @@ import { GridRowComponent } from './components/grid-row/grid-row.component';
 import {CdkDrag, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import { GridHeaderRowComponent } from './components/grid-header-row/grid-header-row.component';
 import { GridCellEditMenuComponent } from './components/grid-cell-edit-menu/grid-cell-edit-menu.component';
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   imports: [
@@ -34,12 +35,10 @@ import { GridCellEditMenuComponent } from './components/grid-cell-edit-menu/grid
     CdkVirtualForOf,
     GridCellComponent,
     CdkDragPreview,
-    CdkDropList
+    CdkDropList,
+    FormsModule
   ],
   exports: [TableItemSizeDirective, ColumnResizeDirective, GridComponent],
-  declarations: [
-    GridCellEditMenuComponent
-  ],
 })
 export class TableVirtualScrollModule {
 }

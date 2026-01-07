@@ -28,6 +28,9 @@ export class TableComponent {
       name: (row: PrRow) => ({
         discriminator: "Text",
         cellText: `Element #${+row.id} ${+row.id % 5 !== 0 ? '' : 'longggggg texttttttttttttt'}`,
+        onEdit: (newValue: string) => {
+          console.log(newValue);
+        }
       }),
       type: (row: PrRow) => ({
         discriminator: "Text",

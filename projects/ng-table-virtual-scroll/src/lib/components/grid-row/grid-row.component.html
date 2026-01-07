@@ -4,5 +4,5 @@
   (click)="onClickRow()"
   (dblclick)="onDoubleClickRow()">
   <tvs-grid-cell *ngFor="let column of columns;" [cell]="(tableStore.table$ | async) | tableCell:column:row"
-                 [columnDef]="column.columnDef"></tvs-grid-cell>
+                 [columnDef]="column.columnDef" [columnTitle]="column.title"></tvs-grid-cell>
 </div>

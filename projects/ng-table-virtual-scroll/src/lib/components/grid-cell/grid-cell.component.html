@@ -1,14 +1,18 @@
 <ng-container *ngIf="cell">
   <ng-container *ngIf="isNormalCell(cell)">
-    <div class="grid-cell-text" [ngClass]="columnDef">
+    <div class="grid-cell-text" [ngClass]="columnDef" (dblclick)="onDoubleClick()">
       {{ ((cell) | toNormalCell).cellText }}
     </div>
+    <div [matMenuTriggerFor]="menu"></div>
+    <mat-menu class="grid-cell-edit-menu" #menu>
+      <tvs-grid-cell-edit-menu [label]="columnTitle" (save)="onSave($event)" (cancel)="onCancel()"></tvs-grid-cell-edit-menu>
+    </mat-menu>
   </ng-container>
   <ng-container *ngIf="isCustomCell(cell)">
     <ng-container
-      *ngComponentOutlet="((cell) | toComponentCell).component;"></ng-container>
+      *ngComponentOutlet="(cell | toComponentCell).component;"></ng-container>
   </ng-container>
 </ng-container>
-<ng-container *ngIf="!(cell)">
+<ng-container *ngIf="!cell">
   row does not have a cell for this column
 </ng-container>

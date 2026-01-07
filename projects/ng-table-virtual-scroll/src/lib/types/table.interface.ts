@@ -23,7 +23,7 @@ export type PrCell = PrTextCell | PrCustomCell;
 export type PrTextCell = {
   discriminator: 'Text'
   cellText: string;
-  onEdit?: <T>(text: string) => T;
+  onEdit?: <T>(text: string) => void;
 }
 
 export type PrCustomCell<ComponentInputs extends Record<string, unknown> = Record<string, unknown>> =  {
@@ -60,7 +60,7 @@ export function isCustomCell(cell: PrCell): cell is PrCustomCell<{}> {
   return 'component' in cell;
 }
 
-export function isNormalCell(cell: PrCell): cell is PrCell {
+export function isNormalCell(cell: PrCell): cell is PrTextCell {
   return !('component' in cell);
 }
 

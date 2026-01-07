@@ -6,7 +6,6 @@ import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList, moveItemInArray} from
 import {GridColumnGroupComponent} from "../grid-column-group/grid-column-group.component";
 import {TableStore} from "../../store/table.store";
 import {Observable} from "rxjs";
-import {tap} from "rxjs/operators";
 
 @Component({
   selector: 'tvs-grid',

@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import {defaults, PrColumn, PrColumnGroup, PrColumnWithMetadata, PrRow, PrTable} from "../types/table.interface";
 import {ComponentStore} from "@ngrx/component-store";
 import {TableService} from "../services/table.service";
-import {tap} from "rxjs/operators";
 import {ListRange} from "@angular/cdk/collections";
 import {Observable} from "rxjs";
 
@@ -50,19 +49,22 @@ export class TableStore extends ComponentStore<TableState> {
   readonly columns$ = this.select(this.table$, table => table.columnGroups.reduce((tableColumns,{columns}) => {
     return [...tableColumns, ...columns]
   }, [] as PrColumnWithMetadata[]));
-  readonly selectedRowIds$ = this.select(this.table$, table => table.selectedRowIds);
   readonly scrollTop$ = this.select(state => state.scrollTop);
-  readonly rowHeightInPx$ = this.select(this.table$, table => table.rowHeightInPx ?? defaults.rowHeightInPx);
-  readonly tableGridTemplate$ = this.select(this.columns$, columns => {
+  readonly gridTemplate$ = this.select(this.columns$, columns => {
     return columns.map(col => {
       return `${col.widthInPx ?? defaults.widthInPx}px`
     }).join(' ');
   });
+  readonly tableWidth$ = this.select(this.columns$, columns => {
+    return columns.reduce((width, {widthInPx}) => {
+      return width + widthInPx + 2;
+    }, -2)
+  })
   readonly rowIndex$ = (rowId: string | number): Observable<number> => this.select(this.rows$, (rows) => rows.findIndex(row => row.id === rowId));
 
   readonly setTable = this.updater((state, table: PrTable) => ({
     ...state,
-    table: this.tableService.divideColumnGroups(table)
+    table: this.tableService.initializeTable(table)
   }));
   readonly setScrollTop = this.updater((state, scrollTop: number) => ({
     ...state,

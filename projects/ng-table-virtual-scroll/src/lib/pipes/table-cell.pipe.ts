@@ -6,7 +6,7 @@ import {PrCell, PrColumnWithMetadata, PrRow, PrTable} from "ng-table-virtual-scr
   standalone: true,
 })
 export class TableCellPipe implements PipeTransform {
-  transform(table: PrTable, column: PrColumnWithMetadata, row: PrRow): PrCell {
-    return table.columnToCellMapper[column.columnDef](row);
+  transform(columnToCellMapper: PrTable['columnToCellMapper'], column: PrColumnWithMetadata, row: PrRow): PrCell {
+    return columnToCellMapper[column.columnDef](row);
   }
 }

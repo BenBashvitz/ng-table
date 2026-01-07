@@ -1,11 +1,15 @@
 import {Injectable} from "@angular/core";
-import {PrColumn, PrColumnGroup, PrRow, PrTable} from "../types/table.interface";
+import {columnDefaults, PrColumn, PrColumnGroup, PrRow, PrTable, tableDefaults} from "../types/table.interface";
 import {moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Injectable({
   providedIn: 'root'
 })
 export class TableService {
+  initializeTable(table: PrTable) {
+    return this.divideColumnGroups(this.setTableColumnDefaultValues(this.setTableDefaultValues(table)));;
+  }
+
   divideColumnGroups(table: PrTable): PrTable {
     let dividedColumnGroups: PrColumnGroup[] = []
 
@@ -14,8 +18,8 @@ export class TableService {
 
       columnGroup.columns
         .forEach((column, index) => {
-          if(!column.isSticky) {
-            if(dividedGroup.length === 0 || dividedGroup[dividedGroup.length - 1].isSticky) {
+          if (!column.isSticky) {
+            if (dividedGroup.length === 0 || dividedGroup[dividedGroup.length - 1].isSticky) {
               dividedGroup = [...dividedGroup, {
                 columnDef: columnGroup.columnDef + `__${index}`,
                 title: columnGroup.title,
@@ -36,7 +40,7 @@ export class TableService {
           }
         })
 
-      if(dividedGroup[dividedGroup.length - 1].columns.length === 0) dividedGroup.pop()
+      if (dividedGroup[dividedGroup.length - 1].columns.length === 0) dividedGroup.pop()
 
       dividedColumnGroups = [...dividedColumnGroups, ...dividedGroup]
     })
@@ -71,7 +75,26 @@ export class TableService {
     const actualCurrentIndex = actualPreviousIndex + (currentIndex - previousIndex);
     moveItemInArray(table.rows, actualPreviousIndex, actualCurrentIndex);
 
-    console.log(table.rows)
     return table;
+  }
+
+  private setTableDefaultValues(table: PrTable): PrTable {
+    return {
+      ...tableDefaults,
+      ...table
+    }
+  }
+
+  private setTableColumnDefaultValues(table: PrTable): PrTable {
+    return {
+      ...table,
+      columnGroups: table.columnGroups.map((columnGroup) => ({
+        ...columnGroup,
+        columns: columnGroup.columns.map(column => ({
+          ...columnDefaults,
+          ...column
+        }))
+      }))
+    }
   }
 }

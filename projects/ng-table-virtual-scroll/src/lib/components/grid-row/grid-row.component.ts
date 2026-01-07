@@ -19,7 +19,8 @@ import {TableStore} from "../../store/table.store";
 })
 export class GridRowComponent {
   @Input() row: PrRow
-  @Input() columns: PrColumnWithMetadata[]
+  @Input() columns: PrColumnWithMetadata[];
+  @Input() columnToCellMapper: PrTable['columnToCellMapper'];
   @Input() gridTemplateColumns: string
 
   constructor(public tableStore: TableStore) {}

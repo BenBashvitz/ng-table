@@ -89,7 +89,7 @@ export const columnDefaults: Omit<Required<PrColumnWithMetadata>, 'columnDef' | 
 }
 
 export const virtualScrollDefaults: PrTableVirtualScrollConfig = {
-  rowHeight: 36,
+  rowHeight: 30,
   headerHeight: 54,
   footerHeight: 52,
   bufferMultiplier: 0.7,
@@ -104,7 +104,7 @@ export const tableDefaults: Omit<PrTableMetadata, 'columns' | 'columnGroups'> = 
   groupByColumnIds: [],
   sortByColumn: undefined,
   columnOrder: undefined,
-  rowHeightInPx: 36,
+  rowHeightInPx: 30,
 }
 
 export const defaults: Omit<PrColumnWithMetadata & PrTableVirtualScrollConfig & PrTableMetadata, 'columnDef' | 'title' | 'columns' | 'columnGroups'> = {

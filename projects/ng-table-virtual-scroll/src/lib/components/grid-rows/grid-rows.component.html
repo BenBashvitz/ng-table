@@ -1,0 +1,42 @@
+<cdk-virtual-scroll-viewport
+  [itemSize]="table.rowHeightInPx"
+  class="grid-viewport"
+  [style.width.px]="tableWidthInPx"
+>
+  <div
+    cdkDropList
+    (cdkDropListDropped)="onDropRow($event)"
+    class="grid-body"
+    #body>
+    <tvs-grid-column-group-row
+      [columnGroups]="table.columnGroups"
+      [gridTemplateColumns]="gridTemplateColumns"
+    ></tvs-grid-column-group-row>
+    <tvs-grid-header-row
+      [columns]="columns"
+      [gridTemplateColumns]="gridTemplateColumns"
+    ></tvs-grid-header-row>
+    <tvs-grid-row
+      *cdkVirtualFor="let row of table.rows; trackBy: trackByRow"
+      cdkDrag
+      [cdkDragData]="row"
+      [row]="row"
+      [columns]="columns"
+      [columnToCellMapper]="table.columnToCellMapper"
+      [gridTemplateColumns]="gridTemplateColumns">
+      <ng-template cdkDragPreview>
+        <tvs-grid-row
+          [row]="row"
+          [columns]="columns"
+          [gridTemplateColumns]="gridTemplateColumns"
+        ></tvs-grid-row>
+      </ng-template>
+    </tvs-grid-row>
+  </div>
+  <div
+    *ngFor="let selectedRowId of table.selectedRowIds"
+    class="grid-row-selection"
+    [style.height.px]="table.rowHeightInPx"
+    [style.top.px]="64 + (((this.tableStore.rowIndex$(selectedRowId) | async)) - virtualViewport.getRenderedRange().start) * (table.rowHeightInPx + 2)">
+  </div>
+</cdk-virtual-scroll-viewport>

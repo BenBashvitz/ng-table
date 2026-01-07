@@ -1,5 +1,5 @@
 <div
-  class="grid-row grid-header-row grid-columns-row"
+  class="grid-header-row"
   cdkDropList
   cdkDropListOrientation="horizontal"
   (cdkDropListDropped)="onDropColumn($event)"
@@ -9,7 +9,6 @@
     cdkDrag
     cdkDragLockAxis="x"
     cdkDragPreviewContainer="parent"
-    [cdkDragDisabled]="column.isSticky"
     [cdkDragData]="column"
     [tvsColumnResize]="column"
     (cdkDragStarted)="onDragStart()"

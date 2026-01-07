@@ -8,7 +8,7 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import {defaults, PrColumnGroup, PrRow, PrTable} from "../../types/table.interface";
+import {defaults, PrColumnGroup, PrColumnWithMetadata, PrRow, PrTable} from "../../types/table.interface";
 import {CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 import {MatTableModule} from "@angular/material/table";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
@@ -19,11 +19,12 @@ import {TableStore} from "../../store/table.store";
 import {AsyncPipe, NgForOf} from "@angular/common";
 import {combineLatest, Subject, tap} from "rxjs";
 import {takeUntil} from "rxjs/operators";
+import {GridColumnGroupRowComponent} from "../grid-column-group-row/grid-column-group-row.component";
 
 @Component({
-  selector: 'tvs-grid-column-group',
-  templateUrl: './grid-column-group.component.html',
-  styleUrls: ['./grid-column-group.component.less'],
+  selector: 'tvs-grid-rows',
+  templateUrl: './grid-rows.component.html',
+  styleUrls: ['./grid-rows.component.less'],
   standalone: true,
   imports: [
     CdkVirtualScrollViewport,
@@ -38,10 +39,14 @@ import {takeUntil} from "rxjs/operators";
     AsyncPipe,
     CdkDragPreview,
     NgForOf,
+    GridColumnGroupRowComponent,
   ]
 })
-export class GridColumnGroupComponent implements AfterViewInit, OnDestroy{
-  @Input() columnGroup: PrColumnGroup
+export class GridRowsComponent implements AfterViewInit, OnDestroy{
+  @Input() table: PrTable;
+  @Input() gridTemplateColumns: string;
+  @Input() columns: PrColumnWithMetadata[];
+  @Input() tableWidthInPx: number;
   @ViewChild('body') body: ElementRef<Element>
   @ViewChild(CdkVirtualScrollViewport)
   virtualViewport: CdkVirtualScrollViewport;
@@ -78,12 +83,6 @@ export class GridColumnGroupComponent implements AfterViewInit, OnDestroy{
 
   ngOnDestroy() {
     this.destroyed$.next()
-  }
-
-  get gridTemplate() {
-    return this.columnGroup.columns.map(col => {
-      return `${col.widthInPx ?? defaults.widthInPx}px`
-    }).join(' ');
   }
 
   trackByRow(_: number, row: PrRow) {

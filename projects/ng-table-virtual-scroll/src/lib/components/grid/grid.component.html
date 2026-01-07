@@ -1,20 +1,8 @@
-<div
-  cdkDropList
-  cdkDropListOrientation="horizontal"
-  (cdkDropListDropped)="onDropGroup($event)"
-  class="grid-table"
->
-  <tvs-grid-column-group
-    *ngFor="let columnGroup of (splitColumnGroups | async); trackBy: trackByColumn"
-    cdkDrag
-    cdkDragLockAxis="x"
-    cdkDragPreviewContainer="parent"
-    [cdkDragData]="columnGroup"
-    (cdkDragStarted)="onDragStart()"
-    (cdkDragEnded)="onDragEnd()"
-    [columnGroup]="columnGroup"
-    [class.sticky]="columnGroup.isSticky"
-  >
-    <ng-template cdkDragPreview></ng-template>
-  </tvs-grid-column-group>
+<div class="grid-table">
+  <tvs-grid-rows
+    [table]="tableStore.table$ | async"
+    [gridTemplateColumns]="tableStore.gridTemplate$ | async"
+    [columns]="tableStore.columns$ | async"
+    [tableWidthInPx]="tableStore.tableWidth$ | async"
+  ></tvs-grid-rows>
 </div>

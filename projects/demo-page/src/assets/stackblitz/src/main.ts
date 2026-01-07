@@ -6,11 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSortModule } from '@angular/material/sort';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-
-
 import { MatTableModule } from '@angular/material/table';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { TableVirtualScrollModule } from 'ng-basic-grid-example-virtual-scroll';
 
 
 import { <%exampleComponentName%> } from './app/<%exampleName%>.component';
@@ -22,7 +19,6 @@ import { <%exampleComponentName%> } from './app/<%exampleName%>.component';
     BrowserAnimationsModule,
     MatTableModule,
     ScrollingModule,
-    TableVirtualScrollModule,
     MatFormFieldModule,
     MatInputModule,
     MatSortModule,

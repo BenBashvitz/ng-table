@@ -1,15 +1,21 @@
 .grid-column-group-row {
-  display: grid;
+  display: contents;
   gap: 2px;
-  grid-auto-rows: var(--pr-table-group-row-height);
+  grid-auto-rows: var(--pr-grid-group-row-height);
+
+  .sticky {
+    position: sticky !important;
+    right: 0;
+    z-index: 1;
+  }
 
   .grid-column-group-cell {
     cursor: grab;
     position: relative;
-    color: var(--pr-table-group-color);
-    background-color: var(--pr-table-group-bg);
-    border-top-left-radius: var(--pr-table-group-radius);
-    border-top-right-radius: var(--pr-table-group-radius);
+    color: var(--pr-grid-group-color);
+    background-color: var(--pr-grid-group-bg);
+    border-top-left-radius: var(--pr-grid-group-radius);
+    border-top-right-radius: var(--pr-grid-group-radius);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -19,8 +25,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: var(--pr-table-group-font-weight);
-    font-size: var(--pr-table-group-font-size);
+    font-weight: var(--pr-grid-group-font-weight);
+    font-size: var(--pr-grid-group-font-size);
 
     &:active {
       cursor: grabbing;
@@ -36,7 +42,7 @@
       z-index: 1;
 
       &:hover {
-        border-left: 2px solid var(--pr-table-primary);
+        border-left: 2px solid var(--pr-grid-primary);
       }
     }
   }

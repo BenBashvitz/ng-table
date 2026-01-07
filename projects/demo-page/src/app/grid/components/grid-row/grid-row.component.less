@@ -1,8 +1,14 @@
 .grid-row {
-  display: grid;
+  display: contents;
   gap: 2px;
   align-items: center;
-  border-radius: var(--pr-table-cell-radius);
-  grid-auto-rows: var(--pr-table-cell-row-height);
-  background-color: var(--pr-table-group-bg);
+  border-radius: var(--pr-grid-cell-radius);
+  grid-auto-rows: var(--pr-grid-cell-row-height);
+  background-color: var(--pr-grid-group-bg);
+
+  .sticky {
+    position: sticky;
+    right: 0;
+    z-index: 1;
+  }
 }

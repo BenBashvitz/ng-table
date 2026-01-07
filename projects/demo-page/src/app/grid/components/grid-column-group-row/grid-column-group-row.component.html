@@ -10,10 +10,11 @@
     cdkDragLockAxis="x"
     cdkDragPreviewContainer="parent"
     [cdkDragData]="columnGroup"
-    [tvsColumnResize]="columnGroup"
     (cdkDragStarted)="onDragStart()"
     (cdkDragEnded)="onDragEnd()"
+    [tvsColumnResize]="columnGroup"
     class="grid-column-group-cell"
+    [class.sticky]="columnGroup.isSticky"
     [style.grid-column]="'span ' + columnGroup.columns.length"
   >
     {{ columnGroup.title }}

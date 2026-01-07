@@ -12,38 +12,38 @@
 html,
 body {
   height: 100%;
-  --pr-table-primary: #{variables.$pr-table-primary-color};
-  --pr-table-primary-opacity: #{variables.$pr-table-primary-color-opacity};
+  --pr-grid-primary: #{variables.$pr-grid-primary-color};
+  --pr-grid-primary-opacity: #{variables.$pr-grid-primary-color-opacity};
 
-  --pr-table-bg: #{variables.$pr-table-background-color-dark};
-  --pr-table-group-bg: #{variables.$pr-table-header-group-background-color-dark};
-  --pr-table-group-color: #{variables.$pr-table-header-group-text-color-dark};
-  --pr-table-column-bg: #{variables.$pr-table-header-column-background-color-dark};
-  --pr-table-column-color: #{variables.$pr-table-header-column-text-color-dark};
-  --pr-table-cell-bg: #{variables.$pr-table-cell-background-color-dark};
-  --pr-table-cell-color: #{variables.$pr-table-cell-text-color-dark};
+  --pr-grid-bg: #{variables.$pr-grid-background-color-dark};
+  --pr-grid-group-bg: #{variables.$pr-grid-header-group-background-color-dark};
+  --pr-grid-group-color: #{variables.$pr-grid-header-group-text-color-dark};
+  --pr-grid-column-bg: #{variables.$pr-grid-header-column-background-color-dark};
+  --pr-grid-column-color: #{variables.$pr-grid-header-column-text-color-dark};
+  --pr-grid-cell-bg: #{variables.$pr-grid-cell-background-color-dark};
+  --pr-grid-cell-color: #{variables.$pr-grid-cell-text-color-dark};
 
-  --pr-table-group-radius: #{variables.$pr-table-header-group-border-radius};
-  --pr-table-group-row-height: #{variables.$pr-table-header-group-row-height};
-  --pr-table-group-font-weight: #{variables.$pr-table-header-group-font-weight};
-  --pr-table-group-font-size: #{variables.$pr-table-header-group-font-size};
-  --pr-table-column-radius: #{variables.$pr-table-header-column-border-radius};
-  --pr-table-column-row-height: #{variables.$pr-table-header-column-row-height};
-  --pr-table-column-font-weight: #{variables.$pr-table-header-column-font-weight};
-  --pr-table-column-font-size: #{variables.$pr-table-header-column-font-size};
-  --pr-table-cell-radius: #{variables.$pr-table-cell-border-radius};
-  --pr-table-cell-row-height: #{variables.$pr-table-cell-row-height};
-  --pr-table-cell-font-weight: #{variables.$pr-table-cell-font-weight};
-  --pr-table-cell-font-size: #{variables.$pr-table-cell-font-size};
+  --pr-grid-group-radius: #{variables.$pr-grid-header-group-border-radius};
+  --pr-grid-group-row-height: #{variables.$pr-grid-header-group-row-height};
+  --pr-grid-group-font-weight: #{variables.$pr-grid-header-group-font-weight};
+  --pr-grid-group-font-size: #{variables.$pr-grid-header-group-font-size};
+  --pr-grid-column-radius: #{variables.$pr-grid-header-column-border-radius};
+  --pr-grid-column-row-height: #{variables.$pr-grid-header-column-row-height};
+  --pr-grid-column-font-weight: #{variables.$pr-grid-header-column-font-weight};
+  --pr-grid-column-font-size: #{variables.$pr-grid-header-column-font-size};
+  --pr-grid-cell-radius: #{variables.$pr-grid-cell-border-radius};
+  --pr-grid-cell-row-height: #{variables.$pr-grid-cell-row-height};
+  --pr-grid-cell-font-weight: #{variables.$pr-grid-cell-font-weight};
+  --pr-grid-cell-font-size: #{variables.$pr-grid-cell-font-size};
 
   .light {
-    --pr-table-bg: #{variables.$pr-table-background-color-light};
-    --pr-table-group-bg: #{variables.$pr-table-header-group-background-color-light};
-    --pr-table-group-color: #{variables.$pr-table-header-group-text-color-light};
-    --pr-table-column-bg: #{variables.$pr-table-header-column-background-color-light};
-    --pr-table-column-color: #{variables.$pr-table-header-column-text-color-light};
-    --pr-table-cell-bg: #{variables.$pr-table-cell-background-color-light};
-    --pr-table-cell-color: #{variables.$pr-table-cell-text-color-light};
+    --pr-grid-bg: #{variables.$pr-grid-background-color-light};
+    --pr-grid-group-bg: #{variables.$pr-grid-header-group-background-color-light};
+    --pr-grid-group-color: #{variables.$pr-grid-header-group-text-color-light};
+    --pr-grid-column-bg: #{variables.$pr-grid-header-column-background-color-light};
+    --pr-grid-column-color: #{variables.$pr-grid-header-column-text-color-light};
+    --pr-grid-cell-bg: #{variables.$pr-grid-cell-background-color-light};
+    --pr-grid-cell-color: #{variables.$pr-grid-cell-text-color-light};
   }
 }
 

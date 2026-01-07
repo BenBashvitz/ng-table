@@ -1,14 +1,20 @@
 .grid-header-row {
-  display: grid;
+  display: contents;
   gap: 2px;
-  grid-auto-rows: var(--pr-table-column-row-height);
+  grid-auto-rows: var(--pr-grid-column-row-height);
+
+  .sticky {
+    position: sticky !important;
+    right: 0;
+    z-index: 1;
+  }
 
   .grid-header-cell {
     cursor: grab;
     position: relative;
-    color: var(--pr-table-column-color);
-    background-color: var(--pr-table-column-bg);
-    border-radius: var(--pr-table-column-radius);
+    color: var(--pr-grid-column-color);
+    background-color: var(--pr-grid-column-bg);
+    border-radius: var(--pr-grid-column-radius);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -18,7 +24,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--pr-table-column-font-size);
+    font-size: var(--pr-grid-column-font-size);
 
     &:active {
       cursor: grabbing;
@@ -34,7 +40,7 @@
       z-index: 1;
 
       &:hover {
-        border-left: 2px solid var(--pr-table-primary);
+        border-left: 2px solid var(--pr-grid-primary);
       }
     }
   }

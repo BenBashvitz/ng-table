@@ -4,11 +4,11 @@
   display: block;
   width: fit-content;
 
-  .grid-table {
+  .grid {
     display: flex;
     flex-direction: row;
     width: max-content;
-    background-color: var(--pr-table-bg);
+    background-color: var(--pr-grid-bg);
     max-width: inherit;
     overflow-x: scroll;
     position: relative;

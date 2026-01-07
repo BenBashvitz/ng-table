@@ -10,10 +10,12 @@
     cdkDragLockAxis="x"
     cdkDragPreviewContainer="parent"
     [cdkDragData]="column"
-    [tvsColumnResize]="column"
     (cdkDragStarted)="onDragStart()"
     (cdkDragEnded)="onDragEnd()"
-    class="grid-header-cell">
+    class="grid-header-cell"
+    [class.sticky]="column.isSticky"
+    [tvsColumnResize]="column"
+  >
     {{ column.title }}
     <span class="resizer"></span>
     <ng-template cdkDragPreview></ng-template>

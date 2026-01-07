@@ -3,6 +3,11 @@
   [style.grid-template-columns]="gridTemplateColumns"
   (click)="onClickRow()"
   (dblclick)="onDoubleClickRow()">
-  <tvs-grid-cell *ngFor="let column of columns;" [cell]="columnToCellMapper | gridCell:column:row"
-                 [columnDef]="column.columnDef" [columnTitle]="column.title"></tvs-grid-cell>
+  <tvs-grid-cell
+    *ngFor="let column of columns;"
+    [class.sticky]="column.isSticky"
+    [cell]="columnToCellMapper | gridCell:column:row"
+    [columnDef]="column.columnDef"
+    [columnTitle]="column.title">
+  </tvs-grid-cell>
 </div>

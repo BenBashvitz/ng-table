@@ -7,12 +7,15 @@
     cdkDropList
     (cdkDropListDropped)="onDropRow($event)"
     class="grid-body"
+    [style.grid-template-columns]="gridTemplate$ | async"
     #body>
     <tvs-grid-column-group-row
+      class="row"
       [columnGroups]="table.columnGroups"
       [gridTemplateColumns]="gridTemplate$ | async"
     ></tvs-grid-column-group-row>
     <tvs-grid-header-row
+      class="row"
       [columns]="columns"
       [gridTemplateColumns]="gridTemplate$ | async"
     ></tvs-grid-header-row>
@@ -20,6 +23,7 @@
       *cdkVirtualFor="let row of table.rows; trackBy: trackByRow"
       cdkDrag
       [cdkDragData]="row"
+      class="row"
       [row]="row"
       [columns]="columns"
       [columnToCellMapper]="table.columnToCellMapper"

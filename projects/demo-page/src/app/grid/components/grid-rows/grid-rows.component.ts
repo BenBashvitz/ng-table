@@ -9,13 +9,13 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {PrColumnWithMetadata, PrRow, PrTable} from "../../types/table.interface";
+import {PrColumnWithMetadata, PrRow, PrGrid} from "../../types/grid.interface";
 import {CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 import {MatTableModule} from "@angular/material/table";
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {GridRowComponent} from "../grid-row/grid-row.component";
 import {GridHeaderRowComponent} from "../grid-header-row/grid-header-row.component";
-import {TableStore} from "../../store/table.store";
+import {GridStore} from "../../store/grid.store";
 import {AsyncPipe, NgForOf} from "@angular/common";
 import {combineLatest, Observable, Subject, tap} from "rxjs";
 import {takeUntil} from "rxjs/operators";
@@ -42,7 +42,7 @@ import {GridColumnGroupRowComponent} from "../grid-column-group-row/grid-column-
   ]
 })
 export class GridRowsComponent implements OnInit, OnDestroy{
-  @Input() table: PrTable;
+  @Input() table: PrGrid;
   @Input() columns: PrColumnWithMetadata[];
   @ViewChild('body') body: ElementRef<Element>
   @ViewChild(CdkVirtualScrollViewport)
@@ -62,10 +62,10 @@ export class GridRowsComponent implements OnInit, OnDestroy{
 
   destroyed$ = new Subject<void>();
 
-  constructor(public tableStore: TableStore ,private cd: ChangeDetectorRef) {}
+  constructor(public tableStore: GridStore , private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.tableWidthInPx$ = this.tableStore.tableWidth$.pipe(tap(() => this.cd.detectChanges()));
+    this.tableWidthInPx$ = this.tableStore.gridWidth$.pipe(tap(() => this.cd.detectChanges()));
     this.gridTemplate$ = this.tableStore.gridTemplate$.pipe(tap(() => this.cd.detectChanges()));
   }
 

@@ -1,5 +1,5 @@
 import {Component, Input, ViewChild} from '@angular/core';
-import {isCustomCell, isNormalCell, PrCell} from "../../types/table.interface";
+import {isCustomCell, isNormalCell, PrCell} from "../../types/grid.interface";
 import {NgClass, NgComponentOutlet, NgIf} from "@angular/common";
 import {ToNormalCellPipe} from "../../pipes/to-normal-cell.pipe";
 import {ToComponentCellPipe} from "../../pipes/to-component-cell.pipe";

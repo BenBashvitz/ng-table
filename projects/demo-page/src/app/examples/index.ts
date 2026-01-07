@@ -1,5 +1,6 @@
 import {Type} from '@angular/core';
-import {TableComponent} from "./table/table.component";
+import {BasicGridExample} from "./basic-grid-example/basic-grid-example.component";
+import {BasicDarkGridExample} from "./basic-dark-grid-example/basic-dark-grid-example.component";
 
 export * from './examples.module';
 
@@ -24,5 +25,6 @@ function getExample(title: string, component: Type<any>, name: string): Example 
 }
 
 export const examples: Example[] = [
-  getExample('Table', TableComponent, 'table'),
+  getExample('Basic Grid Example', BasicGridExample, 'basic-grid-example'),
+  getExample('Basic Dark Grid Example', BasicDarkGridExample, 'basic-dark-grid-example'),
 ];

@@ -11,8 +11,8 @@ import {
 } from '@angular/core';
 import {fromEvent, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {columnDefaults, isColumnGroup, PrColumnWithMetadata} from "../types/table.interface";
-import {TableStore} from "../store/table.store";
+import {columnDefaults, isColumnGroup, PrColumnWithMetadata} from "../types/grid.interface";
+import {GridStore} from "../store/grid.store";
 
 @Directive({
   selector: '[tvsColumnResize]',
@@ -38,7 +38,7 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
     private el: ElementRef,
     private zone: NgZone,
     private cd: ChangeDetectorRef,
-    private tableStore: TableStore,
+    private tableStore: GridStore,
   ) {
   }
 

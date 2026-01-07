@@ -1,9 +1,9 @@
 import {Component, Input, SimpleChanges} from '@angular/core';
-import {PrColumnWithMetadata, PrRow, PrTable} from "../../types/table.interface";
+import {PrColumnWithMetadata, PrRow, PrGrid} from "../../types/grid.interface";
 import {AsyncPipe, NgForOf} from "@angular/common";
 import {GridCellComponent} from "../grid-cell/grid-cell.component";
-import {TableCellPipe} from "../../pipes/table-cell.pipe";
-import {TableStore} from "../../store/table.store";
+import {GridCellPipe} from "../../pipes/table-cell.pipe";
+import {GridStore} from "../../store/grid.store";
 
 @Component({
   selector: 'tvs-grid-row',
@@ -13,17 +13,17 @@ import {TableStore} from "../../store/table.store";
   imports: [
     NgForOf,
     GridCellComponent,
-    TableCellPipe,
+    GridCellPipe,
     AsyncPipe
   ]
 })
 export class GridRowComponent {
   @Input() row: PrRow
   @Input() columns: PrColumnWithMetadata[];
-  @Input() columnToCellMapper: PrTable['columnToCellMapper'];
+  @Input() columnToCellMapper: PrGrid['columnToCellMapper'];
   @Input() gridTemplateColumns: string
 
-  constructor(public tableStore: TableStore) {}
+  constructor(public tableStore: GridStore) {}
 
   onClickRow() {
     this.tableStore.selectRow(this.row.id)

@@ -1,24 +1,20 @@
 import {Component} from '@angular/core';
-import {PrRow, PrTable} from "../../grid/types/table.interface";
+import {PrRow, PrGrid} from "../../grid/types/grid.interface";
 
 const DATA: PrRow[] = Array.from({length: 1000}, (v, i) => ({
   id: i + 1,
 }));
 
-const NEW_DATA: PrRow[] = Array.from({length: 10}, (v, i) => ({
-  id: i + 2,
-}));
-
-const columns = ['id', 'name', 'type', 'status', 'more', 'shir'] as const;
-type Column = typeof columns[number];
+const columns = ['id', 'name', 'type', 'status', 'more'] as const;
+type Columns = typeof columns[number];
 
 @Component({
-  selector: 'app-table',
-  templateUrl: './table.component.html',
-  styleUrls: ['./table.component.css']
+  selector: 'app-basic-dark-grid-example',
+  templateUrl: './basic-dark-grid-example.component.html',
+  styleUrls: ['./basic-dark-grid-example.component.css']
 })
-export class TableComponent {
-  table: PrTable<Column> = {
+export class BasicDarkGridExample {
+  table: PrGrid<Columns> = {
     rows: DATA,
     columnToCellMapper: {
       id: (row: PrRow) => ({
@@ -28,9 +24,6 @@ export class TableComponent {
       name: (row: PrRow) => ({
         discriminator: "Text",
         cellText: `שם ישות ${row.id}`,
-        onEdit: (newValue: string) => {
-          console.log(newValue);
-        }
       }),
       type: (row: PrRow) => ({
         discriminator: "Text",
@@ -44,10 +37,6 @@ export class TableComponent {
         discriminator: "Text",
         cellText: `עוד מידע ${row.id}`,
       }),
-      shir: (row: PrRow) => ({
-        discriminator: "Text",
-        cellText: `עוד מידע ${row.id}`,
-      })
     },
     columnGroups: [
       {
@@ -56,7 +45,6 @@ export class TableComponent {
           {
             columnDef: 'id',
             title: 'מזהה ישות',
-            isSticky: true,
           },
           {
             columnDef: 'name',
@@ -82,16 +70,6 @@ export class TableComponent {
           },
         ],
         title: 'סטטוסים'
-      },
-      {
-        columnDef: 'Shir',
-        columns: [
-          {
-            columnDef: 'shir',
-            title: 'שיר',
-          },
-        ],
-        title: 'קבוצה שיר'
       },
     ],
   }

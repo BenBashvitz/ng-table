@@ -10,7 +10,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { MatTableModule } from '@angular/material/table';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
+import { TableVirtualScrollModule } from 'ng-basic-grid-example-virtual-scroll';
 
 
 import { <%exampleComponentName%> } from './app/<%exampleName%>.component';

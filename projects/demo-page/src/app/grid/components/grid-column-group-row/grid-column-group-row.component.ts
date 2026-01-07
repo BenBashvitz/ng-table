@@ -1,8 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {NgForOf} from '@angular/common';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
-import {PrColumnGroup} from "../../types/table.interface";
-import {TableStore} from "../../store/table.store";
+import {PrColumnGroup} from "../../types/grid.interface";
+import {GridStore} from "../../store/grid.store";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
 
 @Component({
@@ -16,7 +16,7 @@ export class GridColumnGroupRowComponent {
   @Input() columnGroups: PrColumnGroup[]
   @Input() gridTemplateColumns: string
 
-  constructor(public tableStore: TableStore) {}
+  constructor(public tableStore: GridStore) {}
 
   onDropColumnGroup(event: CdkDragDrop<unknown, unknown, PrColumnGroup>) {
     this.tableStore.moveColumnGroup({item: event.item.data, previousIndex: event.previousIndex, currentIndex: event.currentIndex});

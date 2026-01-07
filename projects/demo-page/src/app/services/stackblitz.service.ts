@@ -48,7 +48,7 @@ export class StackblitzService {
     stackBlitzSDK.openProject(
       {
         files: this.getFiles(example),
-        title: 'ng-table-virtual-scroll | ' + example.title,
+        title: 'ng-basic-grid-example-virtual-scroll | ' + example.title,
         description: example.title,
         template: 'angular-cli',
         dependencies: {

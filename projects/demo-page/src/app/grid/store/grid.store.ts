@@ -1,15 +1,15 @@
 import {Injectable} from "@angular/core";
-import {defaults, PrColumn, PrColumnGroup, PrColumnWithMetadata, PrRow, PrTable} from "../types/table.interface";
+import {defaults, PrColumn, PrColumnGroup, PrColumnWithMetadata, PrRow, PrGrid} from "../types/grid.interface";
 import {ComponentStore} from "@ngrx/component-store";
-import {TableService} from "../services/table.service";
+import {GridService} from "../services/grid.service";
 import {Observable} from "rxjs";
 
-export interface TableState {
-  table: PrTable,
+export interface GridState {
+  grid: PrGrid,
 }
 
-const initialState: TableState = {
-  table: {
+const initialState: GridState = {
+  grid: {
     columnGroups: [],
     rows: [],
     columnToCellMapper: {},
@@ -35,14 +35,14 @@ interface ColumnResize {
 }
 
 @Injectable()
-export class TableStore extends ComponentStore<TableState> {
-  constructor(private tableService: TableService) {
+export class GridStore extends ComponentStore<GridState> {
+  constructor(private gridService: GridService) {
     super(initialState);
   }
 
-  readonly table$ = this.select(state => state.table);
-  readonly rows$ = this.select(this.table$, table => table.rows);
-  readonly columns$ = this.select(this.table$, table => table.columnGroups.reduce((tableColumns, {columns}) => {
+  readonly grid$ = this.select(state => state.grid);
+  readonly rows$ = this.select(this.grid$, table => table.rows);
+  readonly columns$ = this.select(this.grid$, table => table.columnGroups.reduce((tableColumns, {columns}) => {
     return [...tableColumns, ...columns]
   }, [] as PrColumnWithMetadata[]));
   readonly gridTemplate$ = this.select(this.columns$, columns => {
@@ -50,29 +50,29 @@ export class TableStore extends ComponentStore<TableState> {
       return `${col.widthInPx ?? defaults.widthInPx}px`
     }).join(' ');
   });
-  readonly tableWidth$ = this.select(this.columns$, columns => {
+  readonly gridWidth$ = this.select(this.columns$, columns => {
     return columns.reduce((width, {widthInPx}) => {
       return width + widthInPx + 2;
     }, -2)
   })
   readonly rowIndex$ = (rowId: string | number): Observable<number> => this.select(this.rows$, (rows) => rows.findIndex(row => row.id === rowId));
 
-  readonly setTable = this.updater((state, table: PrTable) => ({
+  readonly setGrid = this.updater((state, table: PrGrid) => ({
     ...state,
-    table: this.tableService.initializeTable(table)
+    grid: this.gridService.initializeGrid(table)
   }));
   readonly moveColumnGroup = this.updater((state, moveGroup: MoveItem<PrColumnGroup>) => ({
     ...state,
-    table: {
-      ...this.tableService.changeColumnGroupOrder(state.table, moveGroup.item, moveGroup.previousIndex, moveGroup.currentIndex)
+    grid: {
+      ...this.gridService.changeColumnGroupOrder(state.grid, moveGroup.item, moveGroup.previousIndex, moveGroup.currentIndex)
     },
   }))
   readonly moveColumn = this.updater((state, moveColumn: MoveItem<PrColumn>) => {
-    const newTable = this.tableService.changeColumnOrder(state.table, moveColumn.item, moveColumn.previousIndex, moveColumn.currentIndex)
+    const newTable = this.gridService.changeColumnOrder(state.grid, moveColumn.item, moveColumn.previousIndex, moveColumn.currentIndex)
 
     return {
       ...state,
-      table: {
+      grid: {
         ...newTable,
         rows: [...newTable.rows],
       },
@@ -80,23 +80,23 @@ export class TableStore extends ComponentStore<TableState> {
   })
   readonly moveRow = this.updater((state, moveRow: MoveItem<PrRow>) => ({
     ...state,
-    table: {
-      ...this.tableService.changeRowOrder(state.table, moveRow.item, moveRow.previousIndex, moveRow.currentIndex)
+    grid: {
+      ...this.gridService.changeRowOrder(state.grid, moveRow.item, moveRow.previousIndex, moveRow.currentIndex)
     },
   }))
   readonly selectRow = this.updater((state, rowId: string | number) => ({
     ...state,
-    table: {
-      ...state.table,
+    grid: {
+      ...state.grid,
       selectedRowIds: [rowId]
     }
   }))
 
   readonly setColumnWidthInPx = this.updater((state, columnResize: ColumnResize) => ({
     ...state,
-    table: {
-      ...state.table,
-      columnGroups: state.table.columnGroups.map(columnGroup => ({
+    grid: {
+      ...state.grid,
+      columnGroups: state.grid.columnGroups.map(columnGroup => ({
         ...columnGroup,
         columns: columnGroup.columns.map(column => ({
           ...column,

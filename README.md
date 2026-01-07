@@ -22,7 +22,7 @@ An Angular Directive, which allow to use [virtual scrolling](https://material.an
 **NPM**
 
 ```bash
-$ npm install -save ng-table-virtual-scroll
+$ npm install -save ng-basic-grid-example-virtual-scroll
 ```
 
 _**Version compatibility**_
@@ -41,7 +41,7 @@ _**Version compatibility**_
 ### Import `TableVirtualScrollModule`
 
 ```ts
-import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
+import { TableVirtualScrollModule } from 'ng-basic-grid-example-virtual-scroll';
 
 @NgModule({
   imports: [
@@ -63,7 +63,7 @@ used as the data source for the `mat-table` (`CdkTableVirtualScrollDataSource` f
 **Note: without `TableVirtualScrollDataSource` the directive won't work**
 
 ```ts
-import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
+import { TableVirtualScrollDataSource } from 'ng-basic-grid-example-virtual-scroll';
 
 @Component({...})
 export class MyComponent {

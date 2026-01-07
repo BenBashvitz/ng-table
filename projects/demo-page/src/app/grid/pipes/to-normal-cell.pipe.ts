@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {PrCell, PrTextCell} from "../types/table.interface";
+import {PrCell, PrTextCell} from "../types/grid.interface";
 
 @Pipe({
   name: 'toNormalCell',

@@ -7,10 +7,12 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatTableModule} from '@angular/material/table';
 import {GridComponent} from '../grid/components/grid/grid.component';
-import {TableComponent} from './table/table.component';
+import {BasicGridExample} from './basic-grid-example/basic-grid-example.component';
+import {BasicDarkGridExample} from "./basic-dark-grid-example/basic-dark-grid-example.component";
 
 const examples = [
-  TableComponent,
+  BasicGridExample,
+  BasicDarkGridExample
 ];
 
 @NgModule({

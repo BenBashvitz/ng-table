@@ -23,7 +23,7 @@ export type PrCell = PrTextCell | PrCustomCell;
 export type PrTextCell = {
   discriminator: 'Text'
   cellText: string;
-  onEdit?: <T>(text: string) => void;
+  onEdit?: (text: string) => void;
 }
 
 export type PrCustomCell<ComponentInputs extends Record<string, unknown> = Record<string, unknown>> =  {
@@ -37,7 +37,7 @@ export type PrRow = {
   id: string | number;
 }
 
-export type PrTableMetadata<AvailableColumns extends string = string> = {
+export type PrGridMetadata<AvailableColumns extends string = string> = {
   columnGroups: PrColumnGroup<AvailableColumns>[]
   selectedRowIds?: (string | number)[];
   pinnedRowsIds?: (string | number)[];
@@ -51,7 +51,7 @@ export type PrTableMetadata<AvailableColumns extends string = string> = {
   rowHeightInPx?: number;
 }
 
-export type PrTable<AvailableColumns extends string = string> = PrTableMetadata<AvailableColumns> & {
+export type PrGrid<AvailableColumns extends string = string> = PrGridMetadata<AvailableColumns> & {
   rows: PrRow[];
   columnToCellMapper: Record<AvailableColumns, (row: PrRow) => PrCell>;
 }
@@ -72,15 +72,6 @@ export function isColumn(column: object): column is PrColumn {
   return 'columnDef' in column && 'title' in column;
 }
 
-export interface PrTableVirtualScrollConfig {
-  rowHeight: number;
-  headerHeight: number;
-  footerHeight: number;
-  bufferMultiplier: number;
-  headerEnabled?: boolean;
-  footerEnabled?: boolean;
-}
-
 export const columnDefaults: Omit<Required<PrColumnWithMetadata>, 'columnDef' | 'title'> = {
   widthInPx: 100,
   minWidthInPx: 70,
@@ -88,16 +79,7 @@ export const columnDefaults: Omit<Required<PrColumnWithMetadata>, 'columnDef' | 
   isSticky: false,
 }
 
-export const virtualScrollDefaults: PrTableVirtualScrollConfig = {
-  rowHeight: 30,
-  headerHeight: 54,
-  footerHeight: 52,
-  bufferMultiplier: 0.7,
-  headerEnabled: true,
-  footerEnabled: false,
-}
-
-export const tableDefaults: Omit<PrTableMetadata, 'columns' | 'columnGroups'> = {
+export const gridDefaults: Omit<PrGridMetadata, 'columns' | 'columnGroups'> = {
   selectedCells: [],
   selectedRowIds: [],
   pinnedRowsIds: [],
@@ -107,8 +89,7 @@ export const tableDefaults: Omit<PrTableMetadata, 'columns' | 'columnGroups'> = 
   rowHeightInPx: 30,
 }
 
-export const defaults: Omit<PrColumnWithMetadata & PrTableVirtualScrollConfig & PrTableMetadata, 'columnDef' | 'title' | 'columns' | 'columnGroups'> = {
+export const defaults: Omit<PrColumnWithMetadata & PrGridMetadata, 'columnDef' | 'title' | 'columns' | 'columnGroups'> = {
   ...columnDefaults,
-  ...virtualScrollDefaults,
-  ...tableDefaults,
+  ...gridDefaults,
 }

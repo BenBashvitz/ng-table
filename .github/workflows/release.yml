@@ -6,7 +6,7 @@ on:
         description: 'Release type (one of): patch, minor, major, prepatch, preminor, premajor, prerelease'
         required: true
 env:
-  lib-path: projects/ng-table-virtual-scroll
+  lib-path: projects/ng-basic-grid-example-virtual-scroll
 jobs:
   release:
     runs-on: ubuntu-latest

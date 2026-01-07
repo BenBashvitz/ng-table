@@ -1,6 +1,6 @@
 <div class="grid-cell-edit-menu" (click)="$event.stopPropagation()">
   <div class="grid-cell-edit-menu-input-wrapper">
-    <input class="grid-cell-edit-menu-input" (input)="onInput($event)"/>
+    <input class="grid-cell-edit-menu-input" [value]="value" (input)="onInput($event)"/>
     <span *ngIf="label" class="grid-cell-edit-menu-input-label">
       {{ label }}
     </span>

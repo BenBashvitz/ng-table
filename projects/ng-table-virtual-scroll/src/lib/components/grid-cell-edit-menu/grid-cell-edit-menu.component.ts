@@ -17,13 +17,13 @@ export class GridCellEditMenuComponent {
   @Output() save = new EventEmitter<string>();
   @Output() cancel = new EventEmitter<void>();
 
-  value: string;
+  value: string | null = null
 
   onInput(event: Event) {
     this.value = (event.target as HTMLInputElement).value;
   }
 
   onClear() {
-    this.value = '';
+    this.value = null;
   }
 }

@@ -39,15 +39,9 @@ export type PrRow = {
 
 export type PrGridMetadata<AvailableColumns extends string = string> = {
   columnGroups: PrColumnGroup<AvailableColumns>[]
-  selectedRowIds?: (string | number)[];
   pinnedRowsIds?: (string | number)[];
-  selectedCells?: {
-    rowId: string | number;
-    columnDef: string;
-  }[]
   groupByColumnIds?: AvailableColumns[]
   sortByColumn?: AvailableColumns[];
-  columnOrder?: AvailableColumns[];
   rowHeightInPx?: number;
 }
 
@@ -80,12 +74,9 @@ export const columnDefaults: Omit<Required<PrColumnWithMetadata>, 'columnDef' | 
 }
 
 export const gridDefaults: Omit<PrGridMetadata, 'columns' | 'columnGroups'> = {
-  selectedCells: [],
-  selectedRowIds: [],
   pinnedRowsIds: [],
   groupByColumnIds: [],
   sortByColumn: undefined,
-  columnOrder: undefined,
   rowHeightInPx: 30,
 }
 

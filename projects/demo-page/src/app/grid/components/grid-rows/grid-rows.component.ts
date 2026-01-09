@@ -2,11 +2,11 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
-  ElementRef,
+  ElementRef, EventEmitter,
   HostListener,
   Input,
   OnDestroy,
-  OnInit,
+  OnInit, Output,
   ViewChild
 } from '@angular/core';
 import {PrColumnWithMetadata, PrRow, PrGrid} from "../../types/grid.interface";
@@ -44,6 +44,8 @@ import {GridColumnGroupRowComponent} from "../grid-column-group-row/grid-column-
 export class GridRowsComponent implements OnInit, OnDestroy{
   @Input() table: PrGrid;
   @Input() columns: PrColumnWithMetadata[];
+  @Output() clickRow = new EventEmitter<PrRow>();
+  @Output() dblclickRow = new EventEmitter<PrRow>();
   @ViewChild('body') body: ElementRef<Element>
   @ViewChild(CdkVirtualScrollViewport)
   virtualViewport: CdkVirtualScrollViewport;
@@ -83,5 +85,23 @@ export class GridRowsComponent implements OnInit, OnDestroy{
       previousIndex: event.previousIndex,
       currentIndex: event.currentIndex
     });
+  }
+
+  onClickRow(row: PrRow, index: number) {
+    this.tableStore.setSelectedRow({row, index});
+    this.clickRow.emit(row)
+  }
+
+  onDoubleClickRow(row: PrRow) {
+    this.dblclickRow.emit(row)
+  }
+
+  public get inverseOfTranslation(): string {
+    if (!this.virtualViewport) {
+      return '-0px';
+    }
+    const offset = this.virtualViewport.getOffsetToRenderedContentStart();
+
+    return `translateY(-${offset}px)`;
   }
 }

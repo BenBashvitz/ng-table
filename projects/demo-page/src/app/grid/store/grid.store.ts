@@ -1,11 +1,13 @@
 import {Injectable} from "@angular/core";
-import {defaults, PrColumn, PrColumnGroup, PrColumnWithMetadata, PrRow, PrGrid} from "../types/grid.interface";
+import {defaults, PrColumn, PrColumnGroup, PrColumnWithMetadata, PrRow, PrGrid, PrCell} from "../types/grid.interface";
 import {ComponentStore} from "@ngrx/component-store";
 import {GridService} from "../services/grid.service";
 import {Observable} from "rxjs";
 
 export interface GridState {
   grid: PrGrid,
+  selectedRows: (PrRow & {index: number})[],
+  selectedCells: PrCell[],
 }
 
 const initialState: GridState = {
@@ -13,14 +15,13 @@ const initialState: GridState = {
     columnGroups: [],
     rows: [],
     columnToCellMapper: {},
-    selectedRowIds: [],
     pinnedRowsIds: [],
-    selectedCells: [],
     groupByColumnIds: [],
     sortByColumn: [],
-    columnOrder: [],
     rowHeightInPx: defaults.rowHeightInPx,
   },
+  selectedCells: [],
+  selectedRows: [],
 }
 
 interface MoveItem<T = PrRow | PrColumn | PrColumnGroup> {
@@ -55,7 +56,7 @@ export class GridStore extends ComponentStore<GridState> {
       return width + widthInPx + 2;
     }, -2)
   })
-  readonly rowIndex$ = (rowId: string | number): Observable<number> => this.select(this.rows$, (rows) => rows.findIndex(row => row.id === rowId));
+  readonly selectedRows$ = this.select(state => state.selectedRows);
 
   readonly setGrid = this.updater((state, table: PrGrid) => ({
     ...state,
@@ -84,12 +85,12 @@ export class GridStore extends ComponentStore<GridState> {
       ...this.gridService.changeRowOrder(state.grid, moveRow.item, moveRow.previousIndex, moveRow.currentIndex)
     },
   }))
-  readonly selectRow = this.updater((state, rowId: string | number) => ({
+  readonly setSelectedRow = this.updater((state, rowData:{row: PrRow, index: number}) => ({
     ...state,
-    grid: {
-      ...state.grid,
-      selectedRowIds: [rowId]
-    }
+    selectedRows: [{
+      ...rowData.row,
+      index: rowData.index,
+    }]
   }))
 
   readonly setColumnWidthInPx = this.updater((state, columnResize: ColumnResize) => ({

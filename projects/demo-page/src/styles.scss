@@ -23,6 +23,7 @@ body {
   --pr-grid-cell-bg: #{variables.$pr-grid-cell-background-color-dark};
   --pr-grid-cell-color: #{variables.$pr-grid-cell-text-color-dark};
 
+  --pr-grid-max-width: #{variables.$pr-grid-header-group-border-radius};
   --pr-grid-group-radius: #{variables.$pr-grid-header-group-border-radius};
   --pr-grid-group-row-height: #{variables.$pr-grid-header-group-row-height};
   --pr-grid-group-font-weight: #{variables.$pr-grid-header-group-font-weight};

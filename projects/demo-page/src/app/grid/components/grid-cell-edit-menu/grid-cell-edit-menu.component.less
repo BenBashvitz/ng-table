@@ -19,8 +19,9 @@
     padding: 10px;
 
     .grid-cell-edit-menu-input {
-      height: 100%;
-      flex: 1;
+      height: 26px;
+      min-width: 0;
+      flex: 1 1 auto;
       outline: none;
       border: 1px solid #DAE1E8;
       border-radius: 4px;
@@ -35,17 +36,20 @@
     }
 
     .grid-cell-edit-menu-input-label {
-      height: 100%;
-      width: 33%;
-      min-width: 40px;
+      height: 26px;
+      flex: 0 1 auto;
+      width: fit-content;
+      max-width: 66%;
       padding: 0 6px;
-      max-width: 75%;
       color: #7B8297;
       border: 1px solid #DAE1E8;
       border-radius: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
   .grid-cell-edit-menu-buttons {

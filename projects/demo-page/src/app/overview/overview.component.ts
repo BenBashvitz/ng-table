@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 
 const snippets = {
-  importModule: `import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
+  importComponent: `import { GridComponent } from 'pr-grid';
 
 @NgModule({
   imports: [
     // ...
-    TableVirtualScrollModule
+    GridComponent
   ]
 })
-export class AppModule { }
+export class MyCustomTableModule { }
 `
 };
 

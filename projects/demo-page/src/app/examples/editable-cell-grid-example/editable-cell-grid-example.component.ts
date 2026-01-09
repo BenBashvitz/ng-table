@@ -9,11 +9,11 @@ const columns = ['id', 'name', 'type', 'status', 'more'] as const;
 type Columns = typeof columns[number];
 
 @Component({
-  selector: 'app-basic-grid-example',
-  templateUrl: './basic-grid-example.component.html',
-  styleUrls: ['./basic-grid-example.component.css']
+  selector: 'app-editable-cell-grid-example',
+  templateUrl: './editable-cell-grid-example.component.html',
+  styleUrls: ['./editable-cell-grid-example.component.css']
 })
-export class BasicGridExample {
+export class EditableCellGridExampleComponent {
   table: PrGrid<Columns> = {
     rows: DATA,
     columnToCellMapper: {
@@ -35,7 +35,10 @@ export class BasicGridExample {
       }),
       more: (row: PrRow) => ({
         discriminator: "Text",
-        cellText: `עוד מידע ${row.id}`,
+        cellText: `שדה עריך ${row.id}`,
+        onEdit: (value: string) => {
+          alert("called onEdit fn of this cell. the new value is: " + value);
+        }
       }),
     },
     columnGroups: [

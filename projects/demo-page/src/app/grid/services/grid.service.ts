@@ -1,5 +1,13 @@
 import {Injectable} from "@angular/core";
-import {columnDefaults, PrColumn, PrColumnGroup, PrRow, PrGrid, gridDefaults} from "../types/grid.interface";
+import {
+  columnDefaults,
+  PrColumn,
+  PrColumnGroup,
+  PrRow,
+  PrGrid,
+  gridDefaults,
+  PrGridMetadata
+} from "../types/grid.interface";
 import {moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Injectable({
@@ -10,7 +18,53 @@ export class GridService {
     return this.divideColumnGroups(this.setGridColumnDefaultValues(this.setGridDefaultValues(table)));
   }
 
-  divideColumnGroups(table: PrGrid): PrGrid {
+  changeColumnGroupOrder(table: PrGrid, columnGroup: PrColumnGroup, previousIndex: number, currentIndex: number) {
+    const actualPreviousIndex = table.columnGroups.indexOf(columnGroup);
+    const actualCurrentIndex = actualPreviousIndex + (currentIndex - previousIndex);
+    moveItemInArray(table.columnGroups, actualPreviousIndex, actualCurrentIndex);
+
+    return table;
+  }
+
+  changeColumnOrder(table: PrGrid, column: PrColumn, previousIndex: number, currentIndex: number) {
+    const columnGroup = table.columnGroups.find(({columns}) => columns.includes(column));
+
+    if (columnGroup) {
+      const actualPreviousIndex = columnGroup.columns.indexOf(column);
+      const actualCurrentIndex = actualPreviousIndex + (currentIndex - previousIndex);
+      moveItemInArray(columnGroup.columns, actualPreviousIndex, actualCurrentIndex);
+    }
+
+    return table;
+  }
+
+  changeRowOrder(table: PrGrid, row: PrRow, previousIndex: number, currentIndex: number) {
+    const actualPreviousIndex = table.rows.indexOf(row);
+    const actualCurrentIndex = actualPreviousIndex + (currentIndex - previousIndex);
+    moveItemInArray(table.rows, actualPreviousIndex, actualCurrentIndex);
+
+    return table;
+  }
+
+  getGridPreferences(grid: PrGrid) {
+    const gridMetadata: PrGridMetadata = {
+      columnGroups: [],
+      pinnedRowsIds: grid.pinnedRowsIds,
+      groupByColumnIds: grid.groupByColumnIds,
+      sortByColumn: grid.sortByColumn,
+      rowHeightInPx: grid.rowHeightInPx,
+    }
+    return
+  }
+
+  private setGridDefaultValues(table: PrGrid): PrGrid {
+    return {
+      ...gridDefaults,
+      ...table
+    }
+  }
+
+  private divideColumnGroups(table: PrGrid): PrGrid {
     let dividedColumnGroups: PrColumnGroup[] = []
 
     table.columnGroups.forEach(columnGroup => {
@@ -48,41 +102,6 @@ export class GridService {
     table.columnGroups = dividedColumnGroups;
 
     return table
-  }
-
-  changeColumnGroupOrder(table: PrGrid, columnGroup: PrColumnGroup, previousIndex: number, currentIndex: number) {
-    const actualPreviousIndex = table.columnGroups.indexOf(columnGroup);
-    const actualCurrentIndex = actualPreviousIndex + (currentIndex - previousIndex);
-    moveItemInArray(table.columnGroups, actualPreviousIndex, actualCurrentIndex);
-
-    return table;
-  }
-
-  changeColumnOrder(table: PrGrid, column: PrColumn, previousIndex: number, currentIndex: number) {
-    const columnGroup = table.columnGroups.find(({columns}) => columns.includes(column));
-
-    if (columnGroup) {
-      const actualPreviousIndex = columnGroup.columns.indexOf(column);
-      const actualCurrentIndex = actualPreviousIndex + (currentIndex - previousIndex);
-      moveItemInArray(columnGroup.columns, actualPreviousIndex, actualCurrentIndex);
-    }
-
-    return table;
-  }
-
-  changeRowOrder(table: PrGrid, row: PrRow, previousIndex: number, currentIndex: number) {
-    const actualPreviousIndex = table.rows.indexOf(row);
-    const actualCurrentIndex = actualPreviousIndex + (currentIndex - previousIndex);
-    moveItemInArray(table.rows, actualPreviousIndex, actualCurrentIndex);
-
-    return table;
-  }
-
-  private setGridDefaultValues(table: PrGrid): PrGrid {
-    return {
-      ...gridDefaults,
-      ...table
-    }
   }
 
   private setGridColumnDefaultValues(table: PrGrid): PrGrid {

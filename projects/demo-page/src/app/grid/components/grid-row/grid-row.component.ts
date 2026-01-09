@@ -22,14 +22,4 @@ export class GridRowComponent {
   @Input() columns: PrColumnWithMetadata[];
   @Input() columnToCellMapper: PrGrid['columnToCellMapper'];
   @Input() gridTemplateColumns: string
-
-  constructor(public tableStore: GridStore) {}
-
-  onClickRow() {
-    this.tableStore.selectRow(this.row.id)
-  }
-
-  onDoubleClickRow() {
-
-  }
 }

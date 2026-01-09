@@ -9,24 +9,24 @@
     class="grid-body"
     #body>
     <tvs-grid-column-group-row
-      class="row"
       [columnGroups]="table.columnGroups"
       [gridTemplateColumns]="gridTemplate$ | async"
     ></tvs-grid-column-group-row>
     <tvs-grid-header-row
-      class="row"
       [columns]="columns"
       [gridTemplateColumns]="gridTemplate$ | async"
     ></tvs-grid-header-row>
     <tvs-grid-row
-      *cdkVirtualFor="let row of table.rows; trackBy: trackByRow"
+      *cdkVirtualFor="let row of table.rows; let i = index; trackBy: trackByRow"
       cdkDrag
       [cdkDragData]="row"
-      class="row"
       [row]="row"
       [columns]="columns"
       [columnToCellMapper]="table.columnToCellMapper"
-      [gridTemplateColumns]="gridTemplate$ | async">
+      [gridTemplateColumns]="gridTemplate$ | async"
+      (click)="onClickRow(row, i)"
+      (dblclick)="onDoubleClickRow(row)"
+    >
       <ng-template cdkDragPreview>
         <tvs-grid-row
           [row]="row"
@@ -38,9 +38,9 @@
     </tvs-grid-row>
   </div>
   <div
-    *ngFor="let selectedRowId of table.selectedRowIds"
+    *ngFor="let selectedRow of tableStore.selectedRows$ | async"
     class="grid-row-selection"
     [style.height.px]="table.rowHeightInPx"
-    [style.top.px]="64 + (((this.tableStore.rowIndex$(selectedRowId) | async)) - virtualViewport.getRenderedRange().start) * (table.rowHeightInPx + 2)">
+    [style.top.px]="64 + (selectedRow.index - virtualViewport.getRenderedRange().start) * (table.rowHeightInPx + 2)">
   </div>
 </cdk-virtual-scroll-viewport>

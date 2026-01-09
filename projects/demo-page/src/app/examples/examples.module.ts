@@ -9,10 +9,12 @@ import {MatTableModule} from '@angular/material/table';
 import {GridComponent} from '../grid/components/grid/grid.component';
 import {BasicGridExample} from './basic-grid-example/basic-grid-example.component';
 import {BasicDarkGridExample} from "./basic-dark-grid-example/basic-dark-grid-example.component";
+import {EditableCellGridExampleComponent} from "./editable-cell-grid-example/editable-cell-grid-example.component";
 
 const examples = [
   BasicGridExample,
-  BasicDarkGridExample
+  BasicDarkGridExample,
+  EditableCellGridExampleComponent
 ];
 
 @NgModule({

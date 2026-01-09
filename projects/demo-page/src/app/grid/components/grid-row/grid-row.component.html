@@ -1,8 +1,6 @@
 <div
   class="grid-row"
-  [style.grid-template-columns]="gridTemplateColumns"
-  (click)="onClickRow()"
-  (dblclick)="onDoubleClickRow()">
+  [style.grid-template-columns]="gridTemplateColumns">
   <tvs-grid-cell
     *ngFor="let column of columns;"
     [class.sticky]="column.isSticky"

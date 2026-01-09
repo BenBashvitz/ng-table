@@ -30,7 +30,9 @@ export class GridCellComponent {
   protected readonly isNormalCell = isNormalCell;
 
   onDoubleClick(): void {
-    this.trigger.openMenu();
+    if(isNormalCell(this.cell) && this.cell.onEdit) {
+      this.trigger.openMenu();
+    }
   }
 
   onSave(value: string) {

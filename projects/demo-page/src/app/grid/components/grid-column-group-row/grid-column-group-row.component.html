@@ -15,6 +15,7 @@
     [tvsColumnResize]="columnGroup"
     class="grid-column-group-cell"
     [class.sticky]="columnGroup.isSticky"
+    [style.right]="columnGroup.isSticky ? (tableStore.columnRightInPx$(columnGroup.columns[0]) | async) : 'unset'"
     [style.grid-column]="'span ' + columnGroup.columns.length"
   >
     {{ columnGroup.title }}

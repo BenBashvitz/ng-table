@@ -9,11 +9,11 @@ const columns = ['id', 'name', 'type', 'status', 'more'] as const;
 type Columns = typeof columns[number];
 
 @Component({
-  selector: 'app-editable-cell-grid-example',
-  templateUrl: './editable-cell-grid-example.component.html',
-  styleUrls: ['./editable-cell-grid-example.component.css']
+  selector: 'app-sticky-column-grid-example',
+  templateUrl: './sticky-column-grid-example.component.html',
+  styleUrls: ['./sticky-column-grid-example.component.css']
 })
-export class EditableCellGridExample {
+export class StickyColumnGridExample {
   table: PrGrid<Columns> = {
     rows: DATA,
     columnToCellMapper: {
@@ -35,10 +35,7 @@ export class EditableCellGridExample {
       }),
       more: (row: PrRow) => ({
         discriminator: "Text",
-        cellText: `שדה עריך ${row.id}`,
-        onEdit: (value: string) => {
-          alert("called onEdit fn of this cell. the new value is: " + value);
-        }
+        cellText: `עוד מידע ${row.id}`,
       }),
     },
     columnGroups: [
@@ -48,14 +45,18 @@ export class EditableCellGridExample {
           {
             columnDef: 'id',
             title: 'מזהה ישות',
+            isSticky: true,
+            widthInPx: 150
           },
           {
             columnDef: 'name',
             title: 'שם',
+            widthInPx: 250
           },
           {
             columnDef: 'type',
             title: 'טיפוס',
+            widthInPx: 250
           },
         ],
         title: 'נתוני ישות'
@@ -66,10 +67,13 @@ export class EditableCellGridExample {
           {
             columnDef: 'status',
             title: 'סטטוס',
+            isSticky: true,
+            widthInPx: 250
           },
           {
             columnDef: 'more',
             title: 'עוד',
+            widthInPx: 350
           },
         ],
         title: 'סטטוסים'

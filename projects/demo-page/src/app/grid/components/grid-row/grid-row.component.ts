@@ -1,4 +1,4 @@
-import {Component, Input, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, SimpleChanges} from '@angular/core';
 import {PrColumnWithMetadata, PrRow, PrGrid} from "../../types/grid.interface";
 import {AsyncPipe, NgForOf} from "@angular/common";
 import {GridCellComponent} from "../grid-cell/grid-cell.component";
@@ -21,5 +21,7 @@ export class GridRowComponent {
   @Input() row: PrRow
   @Input() columns: PrColumnWithMetadata[];
   @Input() columnToCellMapper: PrGrid['columnToCellMapper'];
-  @Input() gridTemplateColumns: string
+  @Input() gridTemplateColumns: string;
+
+  constructor(public tableStore: GridStore) {}
 }

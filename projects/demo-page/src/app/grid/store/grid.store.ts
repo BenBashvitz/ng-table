@@ -42,7 +42,6 @@ export class GridStore extends ComponentStore<GridState> {
   }
 
   readonly grid$ = this.select(state => state.grid);
-  readonly rows$ = this.select(this.grid$, table => table.rows);
   readonly columns$ = this.select(this.grid$, table => table.columnGroups.reduce((tableColumns, {columns}) => {
     return [...tableColumns, ...columns]
   }, [] as PrColumnWithMetadata[]));
@@ -57,6 +56,11 @@ export class GridStore extends ComponentStore<GridState> {
     }, -2)
   })
   readonly selectedRows$ = this.select(state => state.selectedRows);
+  readonly columnRightInPx$ = (column: PrColumn) => this.select(this.columns$, columns => {
+    const stickyColumns = columns.filter(({isSticky}) => isSticky);
+    const columnIndex = stickyColumns.findIndex(({columnDef}) => column.columnDef === columnDef);
+    return columnIndex === 0 ? '0px' : `${columns.slice(0,columnIndex).reduce((width, {widthInPx}) => width + widthInPx, 0)}px`
+  })
 
   readonly setGrid = this.updater((state, table: PrGrid) => ({
     ...state,

@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {NgForOf} from '@angular/common';
+import {AsyncPipe, NgForOf} from '@angular/common';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {PrColumnGroup} from "../../types/grid.interface";
 import {GridStore} from "../../store/grid.store";
@@ -8,7 +8,7 @@ import {ColumnResizeDirective} from "../../directives/column-resize.directive";
 @Component({
   selector: 'tvs-grid-column-group-row',
   standalone: true,
-  imports: [CdkDrag, CdkDragPreview, CdkDropList, ColumnResizeDirective, NgForOf],
+  imports: [CdkDrag, CdkDragPreview, CdkDropList, ColumnResizeDirective, NgForOf, AsyncPipe],
   templateUrl: './grid-column-group-row.component.html',
   styleUrls: ['./grid-column-group-row.component.less']
 })

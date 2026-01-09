@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
-import {NgForOf} from "@angular/common";
+import {AsyncPipe, NgForOf} from "@angular/common";
 import {PrColumn, PrColumnWithMetadata} from "../../types/grid.interface";
 import {GridStore} from "../../store/grid.store";
 
@@ -15,7 +15,8 @@ import {GridStore} from "../../store/grid.store";
     CdkDrag,
     ColumnResizeDirective,
     CdkDragPreview,
-    NgForOf
+    NgForOf,
+    AsyncPipe
   ]
 })
 export class GridHeaderRowComponent {

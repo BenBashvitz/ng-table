@@ -59,7 +59,7 @@ export class GridStore extends ComponentStore<GridState> {
   readonly columnRightInPx$ = (column: PrColumn) => this.select(this.columns$, columns => {
     const stickyColumns = columns.filter(({isSticky}) => isSticky);
     const columnIndex = stickyColumns.findIndex(({columnDef}) => column.columnDef === columnDef);
-    return columnIndex === 0 ? '0px' : `${columns.slice(0,columnIndex).reduce((width, {widthInPx}) => width + widthInPx, 0)}px`
+    return columnIndex === 0 ? '0px' : `${columns.slice(0,columnIndex).reduce((width, {widthInPx}) => width + widthInPx + 2, 0)}px`
   })
 
   readonly setGrid = this.updater((state, table: PrGrid) => ({

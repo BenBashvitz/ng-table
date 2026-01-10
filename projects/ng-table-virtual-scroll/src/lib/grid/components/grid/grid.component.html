@@ -1,8 +1,8 @@
 <div class="grid">
-  <tvs-grid-rows
+  <pr-grid-rows
     [table]="gridStore.grid$ | async"
     [columns]="gridStore.columns$ | async"
     (clickRow)="clickRow.emit($event)"
     (dblclickRow)="dblclickRow.emit($event)"
-  ></tvs-grid-rows>
+  ></pr-grid-rows>
 </div>

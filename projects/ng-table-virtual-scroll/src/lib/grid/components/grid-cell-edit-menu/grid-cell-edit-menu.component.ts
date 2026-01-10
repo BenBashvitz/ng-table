@@ -3,7 +3,7 @@ import {NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 
 @Component({
-  selector: 'tvs-grid-cell-edit-menu',
+  selector: 'pr-grid-cell-edit-menu',
   templateUrl: './grid-cell-edit-menu.component.html',
   styleUrls: ['./grid-cell-edit-menu.component.less'],
   standalone: true,

@@ -7,7 +7,7 @@
       "projectType": "library",
       "root": "projects/ng-table-virtual-scroll",
       "sourceRoot": "projects/ng-table-virtual-scroll/src",
-      "prefix": "tvs",
+      "prefix": "pr",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",

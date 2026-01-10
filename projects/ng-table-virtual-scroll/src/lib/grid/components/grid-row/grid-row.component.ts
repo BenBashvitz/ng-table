@@ -6,7 +6,7 @@ import {GridCellPipe} from "../../pipes/table-cell.pipe";
 import {GridStore} from "../../store/grid.store";
 
 @Component({
-  selector: 'tvs-grid-row',
+  selector: 'pr-grid-row',
   templateUrl: './grid-row.component.html',
   styleUrls: ['./grid-row.component.less'],
   standalone: true,

@@ -7,7 +7,7 @@ import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {GridCellEditMenuComponent} from "../grid-cell-edit-menu/grid-cell-edit-menu.component";
 
 @Component({
-  selector: 'tvs-grid-cell',
+  selector: 'pr-grid-cell',
   templateUrl: './grid-cell.component.html',
   styleUrls: ['./grid-cell.component.less'],
   imports: [

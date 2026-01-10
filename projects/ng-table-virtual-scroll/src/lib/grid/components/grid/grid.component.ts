@@ -6,7 +6,7 @@ import {Observable} from "rxjs";
 import {GridRowsComponent} from "../grid-rows/grid-rows.component";
 
 @Component({
-  selector: 'tvs-grid',
+  selector: 'pr-grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
   standalone: true,

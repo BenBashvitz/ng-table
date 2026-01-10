@@ -5,7 +5,7 @@
     </div>
     <div [matMenuTriggerFor]="menu"></div>
     <mat-menu class="grid-cell-edit-menu" #menu>
-      <tvs-grid-cell-edit-menu [label]="columnTitle" (save)="onSave($event)" (cancel)="onCancel()"></tvs-grid-cell-edit-menu>
+      <pr-grid-cell-edit-menu [label]="columnTitle" (save)="onSave($event)" (cancel)="onCancel()"></pr-grid-cell-edit-menu>
     </mat-menu>
   </ng-container>
   <ng-container *ngIf="isCustomCell(cell)">

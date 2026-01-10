@@ -1,15 +1,16 @@
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
-  ElementRef, EventEmitter,
+  ElementRef,
+  EventEmitter,
   HostListener,
   Input,
   OnDestroy,
-  OnInit, Output,
+  OnInit,
+  Output,
   ViewChild
 } from '@angular/core';
-import {PrColumnWithMetadata, PrRow, PrGrid} from "../../types/grid.interface";
+import {PrColumnWithMetadata, PrGrid, PrRow} from "../../types/grid.interface";
 import {CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 import {MatTableModule} from "@angular/material/table";
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
@@ -17,12 +18,11 @@ import {GridRowComponent} from "../grid-row/grid-row.component";
 import {GridHeaderRowComponent} from "../grid-header-row/grid-header-row.component";
 import {GridStore} from "../../store/grid.store";
 import {AsyncPipe, NgForOf} from "@angular/common";
-import {combineLatest, Observable, Subject, tap} from "rxjs";
-import {takeUntil} from "rxjs/operators";
+import {Observable, Subject, tap} from "rxjs";
 import {GridColumnGroupRowComponent} from "../grid-column-group-row/grid-column-group-row.component";
 
 @Component({
-  selector: 'tvs-grid-rows',
+  selector: 'pr-grid-rows',
   templateUrl: './grid-rows.component.html',
   styleUrls: ['./grid-rows.component.less'],
   standalone: true,

@@ -6,7 +6,7 @@ import {PrColumn, PrColumnWithMetadata} from "../../types/grid.interface";
 import {GridStore} from "../../store/grid.store";
 
 @Component({
-  selector: 'tvs-grid-header-row',
+  selector: 'pr-grid-header-row',
   templateUrl: './grid-header-row.component.html',
   styleUrls: ['./grid-header-row.component.less'],
   standalone: true,

@@ -6,7 +6,7 @@ import {GridStore} from "../../store/grid.store";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
 
 @Component({
-  selector: 'tvs-grid-column-group-row',
+  selector: 'pr-grid-column-group-row',
   standalone: true,
   imports: [CdkDrag, CdkDragPreview, CdkDropList, ColumnResizeDirective, NgForOf, AsyncPipe],
   templateUrl: './grid-column-group-row.component.html',

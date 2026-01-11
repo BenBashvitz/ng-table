@@ -14,8 +14,12 @@
     (cdkDragEnded)="onDragEnd()"
     class="grid-header-cell"
     [class.sticky]="column.isSticky"
+    [style.max-width.px]="column.maxWidthInPx"
+    [style.min-width.px]="column.minWidthInPx"
     [style.right]="column.isSticky ? (tableStore.columnRightInPx$(column) | async) : 'unset'"
     [tvsColumnResize]="column"
+    [gridMaxWidthInPx]="gridMaxWidth$ | async"
+    [gridWidthInPx]="gridWidth$ | async"
   >
     {{ column.title }}
     <span class="resizer"></span>

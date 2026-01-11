@@ -2,7 +2,7 @@ import {Component, Input} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
 import {AsyncPipe, NgForOf} from "@angular/common";
-import {PrColumn, PrColumnWithMetadata} from "../../types/grid.interface";
+import {PrColumn, PrColumnWithMetadata} from "@parlament/grid";
 import {GridStore} from "../../store/grid.store";
 
 @Component({
@@ -23,10 +23,18 @@ export class GridHeaderRowComponent {
   @Input() columns: PrColumnWithMetadata[]
   @Input() gridTemplateColumns: string
 
-  constructor(public tableStore: GridStore) {}
+  gridMaxWidth$ = this.tableStore.maxWidth$;
+  gridWidth$ = this.tableStore.gridWidth$;
+
+  constructor(public tableStore: GridStore) {
+  }
 
   onDropColumn(event: CdkDragDrop<unknown, unknown, PrColumn>) {
-    this.tableStore.moveColumn({item: event.item.data, previousIndex: event.previousIndex, currentIndex: event.currentIndex});
+    this.tableStore.moveColumn({
+      item: event.item.data,
+      previousIndex: event.previousIndex,
+      currentIndex: event.currentIndex
+    });
   }
 
   onDragStart() {

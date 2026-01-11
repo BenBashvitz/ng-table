@@ -1,11 +1,11 @@
 import {Injectable} from "@angular/core";
-import {defaults, PrColumn, PrColumnGroup, PrColumnWithMetadata, PrRow, PrGrid, PrCell} from "../types/grid.interface";
+import {defaults, PrCell, PrColumn, PrColumnGroup, PrColumnWithMetadata, PrGrid, PrRow} from "@parlament/grid";
 import {ComponentStore} from "@ngrx/component-store";
-import {GridService} from "../services/grid.service";
+import {GridService} from "@parlament/grid";
 
 export interface GridState {
   grid: PrGrid,
-  selectedRows: (PrRow & {index: number})[],
+  selectedRows: (PrRow & { index: number })[],
   selectedCells: PrCell[],
 }
 
@@ -18,6 +18,7 @@ const initialState: GridState = {
     groupByColumnIds: [],
     sortByColumn: [],
     rowHeightInPx: defaults.rowHeightInPx,
+    maxWidthInPx: defaults.maxWidthInPx
   },
   selectedCells: [],
   selectedRows: [],
@@ -52,13 +53,15 @@ export class GridStore extends ComponentStore<GridState> {
   readonly gridWidth$ = this.select(this.columns$, columns => {
     return columns.reduce((width, {widthInPx}) => {
       return width + widthInPx + 2;
-    }, -2)
+    }, 13)
   })
+  readonly maxWidth$ = this.select(this.grid$, grid => grid.maxWidthInPx ?? defaults.maxWidthInPx);
   readonly selectedRows$ = this.select(state => state.selectedRows);
   readonly columnRightInPx$ = (column: PrColumn) => this.select(this.columns$, columns => {
     const stickyColumns = columns.filter(({isSticky}) => isSticky);
     const columnIndex = stickyColumns.findIndex(({columnDef}) => column.columnDef === columnDef);
-    return columnIndex === 0 ? '0px' : `${columns.slice(0,columnIndex).reduce((width, {widthInPx}) => width + widthInPx + 2, 0)}px`
+
+    return columnIndex === 0 ? '0px' : `${columns.slice(0, columnIndex).reduce((width, {widthInPx}) => width + widthInPx + 2, 0)}px`
   })
 
   readonly setGrid = this.updater((state, table: PrGrid) => ({
@@ -88,7 +91,7 @@ export class GridStore extends ComponentStore<GridState> {
       ...this.gridService.changeRowOrder(state.grid, moveRow.item, moveRow.previousIndex, moveRow.currentIndex)
     },
   }))
-  readonly setSelectedRow = this.updater((state, rowData:{row: PrRow, index: number}) => ({
+  readonly setSelectedRow = this.updater((state, rowData: { row: PrRow, index: number }) => ({
     ...state,
     selectedRows: [{
       ...rowData.row,

@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {PrGrid, PrRow} from "../../types/grid.interface";
 import {AsyncPipe} from "@angular/common";
 import {GridStore} from "../../store/grid.store";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {GridRowsComponent} from "../grid-rows/grid-rows.component";
+import {takeUntil} from "rxjs/operators";
 
 @Component({
   selector: 'pr-grid',
@@ -16,15 +17,24 @@ import {GridRowsComponent} from "../grid-rows/grid-rows.component";
   ],
   providers: [GridStore]
 })
-export class GridComponent implements OnInit {
+export class GridComponent implements OnInit, OnDestroy {
   @Input() grid: PrGrid;
   @Output() gridChange = new EventEmitter<PrGrid>();
   @Output() clickRow = new EventEmitter<PrRow>();
   @Output() dblclickRow = new EventEmitter<PrRow>();
 
+  destroy$ = new Subject<void>();
+
   constructor(public gridStore: GridStore) {}
 
   ngOnInit() {
     this.gridStore.setGrid(this.grid);
+    this.gridStore.grid$.pipe(takeUntil(this.destroy$)).subscribe(grid => {
+      this.gridChange.emit(grid);
+    });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
   }
 }

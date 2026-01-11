@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import {defaults, PrColumn, PrColumnGroup, PrColumnWithMetadata, PrRow, PrGrid, PrCell} from "../types/grid.interface";
 import {ComponentStore} from "@ngrx/component-store";
 import {GridService} from "../services/grid.service";
-import {Observable} from "rxjs";
 
 export interface GridState {
   grid: PrGrid,

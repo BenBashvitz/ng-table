@@ -19,8 +19,8 @@
       "dom"
     ],
     "paths": {
-      "ng-table-virtual-scroll": [
-        "projects/ng-table-virtual-scroll/src/public-api.ts"
+      "@parlament/grid": [
+        "projects/grid/src/public-api.ts"
       ]
     },
     "useDefineForClassFields": false

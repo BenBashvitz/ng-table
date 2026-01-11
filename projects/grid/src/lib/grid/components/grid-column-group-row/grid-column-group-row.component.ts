@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {AsyncPipe, NgForOf} from '@angular/common';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
-import {PrColumnGroup} from "../../types/grid.interface";
+import {PrColumnGroup, PrColumnWithMetadata} from "@parlament/grid";
 import {GridStore} from "../../store/grid.store";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
 
@@ -16,10 +16,22 @@ export class GridColumnGroupRowComponent {
   @Input() columnGroups: PrColumnGroup[]
   @Input() gridTemplateColumns: string
 
-  constructor(public tableStore: GridStore) {}
+  gridMaxWidth$ = this.tableStore.maxWidth$;
+  gridWidth$ = this.tableStore.gridWidth$;
+
+  constructor(public tableStore: GridStore) {
+  }
+
+  getColumnGroupMinMaxWidth(columns: PrColumnWithMetadata[], isMaxWidth = true): number {
+    return columns.reduce((sum, col) => sum + (isMaxWidth ? col.maxWidthInPx : col.minWidthInPx), 0)
+  }
 
   onDropColumnGroup(event: CdkDragDrop<unknown, unknown, PrColumnGroup>) {
-    this.tableStore.moveColumnGroup({item: event.item.data, previousIndex: event.previousIndex, currentIndex: event.currentIndex});
+    this.tableStore.moveColumnGroup({
+      item: event.item.data,
+      previousIndex: event.previousIndex,
+      currentIndex: event.currentIndex
+    });
   }
 
   onDragStart() {

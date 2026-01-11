@@ -16,7 +16,9 @@ export type PrColumnWithMetadata<AvailableColumns extends string = string> =
   PrColumn<AvailableColumns>
   & PrColumnMetadata;
 
-export type PrColumnGroup<AvailableColumns extends string = string> = PrColumnWithMetadata & {
+export type PrColumnGroup<AvailableColumns extends string = string> =
+  Omit<PrColumnWithMetadata, 'widthInPx' | 'maxWidthInPx' | 'minWidthInPx'>
+  & {
   columns: PrColumnWithMetadata<AvailableColumns>[];
 }
 

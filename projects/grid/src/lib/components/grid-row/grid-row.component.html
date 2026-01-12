@@ -4,9 +4,11 @@
   <pr-grid-cell
     *ngFor="let column of columns;"
     [class.sticky]="column.isSticky"
-    [style.right]="column.isSticky ? (tableStore.columnRightInPx$(column) | async) : 'unset'"
+    [class.selected]="selectedCells | isCellSelected:column.columnDef:row.id"
+    [style.right]="column.isSticky ? (grisStore.columnRightInPx$(column) | async) : 'unset'"
     [cell]="columnToCellMapper | gridCell:column:row"
     [columnDef]="column.columnDef"
-    [columnTitle]="column.title">
-  </pr-grid-cell>
+    [columnTitle]="column.title"
+    (click)="onClickCell(column.columnDef)"
+  ></pr-grid-cell>
 </div>

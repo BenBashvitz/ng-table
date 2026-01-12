@@ -28,6 +28,7 @@
       [columns]="columns"
       [columnToCellMapper]="table.columnToCellMapper"
       [gridTemplateColumns]="gridTemplate$ | async"
+      [selectedCells]="selectedCells"
       (click)="onClickRow(row, i)"
       (dblclick)="onDoubleClickRow(row)"
     >
@@ -37,14 +38,15 @@
           [columns]="[columns[0]]"
           [columnToCellMapper]="table.columnToCellMapper"
           [gridTemplateColumns]="gridTemplate$ | async"
+          [selectedCells]="[]"
         ></pr-grid-row>
       </ng-template>
     </pr-grid-row>
   </div>
-  <div
-    *ngFor="let selectedRow of tableStore.selectedRows$ | async"
-    class="grid-row-selection"
-    [style.height.px]="table.rowHeightInPx"
-    [style.top.px]="64 + (selectedRow.index - virtualViewport.getRenderedRange().start) * (table.rowHeightInPx + 2)">
-  </div>
+<!--  <div-->
+<!--    *ngFor="let selectedRow of gridStore.selectedRows$ | async"-->
+<!--    class="grid-row-selection"-->
+<!--    [style.height.px]="table.rowHeightInPx"-->
+<!--    [style.top.px]="64 + (selectedRow.index - virtualViewport.getRenderedRange().start) * (table.rowHeightInPx + 2)">-->
+<!--  </div>-->
 </cdk-virtual-scroll-viewport>

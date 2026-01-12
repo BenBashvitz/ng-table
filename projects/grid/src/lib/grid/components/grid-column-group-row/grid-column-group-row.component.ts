@@ -15,9 +15,8 @@ import {ColumnResizeDirective} from "../../directives/column-resize.directive";
 export class GridColumnGroupRowComponent {
   @Input() columnGroups: PrColumnGroup[]
   @Input() gridTemplateColumns: string
-
-  gridMaxWidth$ = this.tableStore.maxWidth$;
-  gridWidth$ = this.tableStore.gridWidth$;
+  @Input() gridMaxWidth: number;
+  @Input() gridWidth: number;
 
   constructor(public tableStore: GridStore) {
   }

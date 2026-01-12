@@ -18,8 +18,8 @@
     [style.min-width.px]="column.minWidthInPx"
     [style.right]="column.isSticky ? (tableStore.columnRightInPx$(column) | async) : 'unset'"
     [tvsColumnResize]="column"
-    [gridMaxWidthInPx]="gridMaxWidth$ | async"
-    [gridWidthInPx]="gridWidth$ | async"
+    [gridMaxWidthInPx]="gridMaxWidth"
+    [gridWidthInPx]="gridWidth"
   >
     {{ column.title }}
     <span class="resizer"></span>

@@ -22,9 +22,8 @@ import {GridStore} from "../../store/grid.store";
 export class GridHeaderRowComponent {
   @Input() columns: PrColumnWithMetadata[]
   @Input() gridTemplateColumns: string
-
-  gridMaxWidth$ = this.tableStore.maxWidth$;
-  gridWidth$ = this.tableStore.gridWidth$;
+  @Input() gridMaxWidth: number;
+  @Input() gridWidth: number;
 
   constructor(public tableStore: GridStore) {
   }

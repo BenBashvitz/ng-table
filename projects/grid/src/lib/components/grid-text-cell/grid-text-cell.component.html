@@ -1,0 +1,7 @@
+<div class="grid-cell-text" [ngClass]="columnDef" (dblclick)="onDoubleClick()">
+  {{ cell.cellText }}
+</div>
+<div [matMenuTriggerFor]="menu"></div>
+<mat-menu class="grid-text-cell-menu" #menu>
+  <pr-grid-text-cell-menu [label]="columnTitle" (save)="onSave($event)" (cancel)="onCancel()"></pr-grid-text-cell-menu>
+</mat-menu>

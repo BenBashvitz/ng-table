@@ -1,0 +1,50 @@
+.grid-text-cell-menu-buttons {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background-color: #F4F5F7;
+  border-top: 1px solid #DAE1E8;
+  padding: 10px;
+
+  .grid-text-cell-menu-button {
+    height: 28px;
+    border-radius: 4px;
+    padding: 0 6px;
+    border-width: 1px;
+    border-style: solid;
+    transition: filter 75ms;
+
+    &:hover {
+      filter: brightness(90%);
+    }
+
+    &:active {
+      filter: brightness(80%);
+    }
+
+    &.save {
+      border-color: var(--pr-grid-primary);
+      background-color: var(--pr-grid-primary);
+      color: #fff;
+      flex: 1;
+    }
+
+    &.cancel {
+      border-color: var(--pr-grid-primary);
+      background-color: #fff;
+      color: var(--pr-grid-primary);
+      flex: 1;
+    }
+
+    &.clear {
+      border-color: #8FA0B1;
+      background-color: #F4F5F7;
+      color: #8FA0B1;
+      flex: 0.5;
+    }
+  }
+}

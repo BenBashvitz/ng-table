@@ -3,21 +3,21 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ng-table-virtual-scroll": {
+    "grid": {
       "projectType": "library",
-      "root": "projects/ng-table-virtual-scroll",
-      "sourceRoot": "projects/ng-table-virtual-scroll/src",
+      "root": "projects/grid",
+      "sourceRoot": "projects/grid/src",
       "prefix": "pr",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "tsConfig": "projects/ng-table-virtual-scroll/tsconfig.lib.json",
-            "project": "projects/ng-table-virtual-scroll/ng-package.json"
+            "tsConfig": "projects/grid/tsconfig.lib.json",
+            "project": "projects/grid/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/ng-table-virtual-scroll/tsconfig.lib.prod.json"
+              "tsConfig": "projects/grid/tsconfig.lib.prod.json"
             }
           }
         },
@@ -29,8 +29,8 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "projects/ng-table-virtual-scroll/**/*.ts",
-              "projects/ng-table-virtual-scroll/**/*.html"
+              "projects/grid/**/*.ts",
+              "projects/grid/**/*.html"
             ]
           }
         }
@@ -82,7 +82,7 @@
                   "with": "projects/demo-page/src/environments/environment.prod.ts"
                 }
               ],
-              "baseHref": "/ng-table-virtual-scroll/",
+              "baseHref": "/grid/",
               "optimization": true,
               "outputHashing": "none",
               "sourceMap": false,

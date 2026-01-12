@@ -8,8 +8,11 @@ import {
   gridDefaults,
   PrGridMetadata,
   isFreeTextCell,
-  isOptionsCell, isComponentCell
-} from "../types/grid.interface";
+  isOptionsCell,
+  isComponentCell,
+  PrDisplayableRow,
+  PrGroupByRow, PrRowGroup
+} from '../types/grid.interface';
 import {moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Injectable({
@@ -59,28 +62,28 @@ export class GridService {
     return
   }
 
-  getGroupByArray(grid: PrGrid, groupByColumnIds: string[]): any[] {
+  getCurrentRows(grid: PrGrid, groupByColumnIds: string[]): PrDisplayableRow[] {
     if (!groupByColumnIds || groupByColumnIds.length === 0) {
       return grid.rows;
     }
 
-    const grouped = this.groupByRecursive(grid.rows, groupByColumnIds, grid);
-    return this.flattenGroupedData(grouped);
+    const groupedRows = this.recursiveGroupBy(grid.rows, groupByColumnIds, grid);
+    return this.flattenGroupedData(groupedRows, groupByColumnIds);
   }
 
-  private groupByRecursive(rows: PrRow[], groupByColumnIds: string[], grid: PrGrid): any {
+  private recursiveGroupBy(rows: PrRow[], groupByColumnIds: string[], grid: PrGrid): PrRowGroup[] | PrRow[] {
     if (groupByColumnIds.length === 0) {
       return rows;
     }
 
     const currentColumnId = groupByColumnIds[0];
     const remainingColumnIds = groupByColumnIds.slice(1);
-
-    const groups: Record<string, any> = {};
+    const groups: Record<string, PrRow[]> = {};
 
     rows.forEach(row => {
       const cell = grid.columnToCellMapper[currentColumnId](row);
       let key = '';
+
       if (isFreeTextCell(cell) || isOptionsCell(cell)) {
         key = cell.cellText;
       } else if (isComponentCell(cell)) {
@@ -90,50 +93,98 @@ export class GridService {
       if (!groups[key]) {
         groups[key] = [];
       }
+
       groups[key].push(row);
     });
 
-    const result: any[] = [];
+    const result: PrRowGroup[] = [];
+
     for (const key in groups) {
       result.push({
         groupName: key,
         groupColumnId: currentColumnId,
-        children: this.groupByRecursive(groups[key], remainingColumnIds, grid)
+        children: this.recursiveGroupBy(groups[key], remainingColumnIds, grid),
       });
     }
 
     return result;
   }
 
-  private flattenGroupedData(groupedData: any[]): any[] {
-    let result: any[] = [];
+  private flattenGroupedData(groupedData: PrRowGroup[] | PrRow[], groupByColumnsIds: string[]): PrDisplayableRow[] {
+    let result: PrDisplayableRow[] = [];
 
-    groupedData.forEach(group => {
-      if (group.groupName) {
+    groupedData.forEach((group: PrRowGroup | PrRow)  => {
+        if (this.isRowGroup(group)) {
         result.push({
           groupName: group.groupName,
-          id: group.groupColumnId,
+          id: `group_by_${group.groupColumnId}_${group.groupName}`,
           discriminator: 'groupByRow',
-          count: group.children.length > 0 && !group.children[0].groupName ? group.children.length : null
+          count: group.children.length > 0 && !this.isRowGroup(group.children[0]) ? group.children.length : null,
+          isOpen: true,
+          level: groupByColumnsIds.indexOf(group.groupColumnId)
         });
+
         if (Array.isArray(group.children)) {
-           // Check if children are leaf rows or subgroups
-           if (group.children.length > 0 && !group.children[0].groupName) {
-             // Children are rows
+           if (group.children.length > 0 && this.isRowArray(group.children)) {
              result = result.concat(group.children);
            } else {
-             // Children are subgroups
-             result = result.concat(this.flattenGroupedData(group.children));
+             result = result.concat(this.flattenGroupedData(group.children, groupByColumnsIds));
            }
         }
-      } else {
-        // Should not happen if structure is correct, but as fallback
-        result.push(group);
       }
     });
 
-    console.log(result);
     return result;
+  }
+
+  private isRowGroup(row: PrRowGroup | PrRow): row is (PrRowGroup) {
+    return row['groupName'] !== undefined;
+  }
+
+  private isRowArray(rows: PrRowGroup[] | PrRow[]): rows is (PrRow[]) {
+    return rows[0]['discriminator'] === 'row';
+  }
+
+  updateDisplayedRows(currentRows: PrDisplayableRow[]): PrDisplayableRow[] {
+    const newDisplayedRows: PrDisplayableRow[] = [];
+    let isSkipping = false;
+    let skippingLevel = -1;
+
+    for (const row of currentRows) {
+      const isGroup = this.isGroupByRow(row);
+
+      // If we are in "skipping" mode, check if the current row is a child
+      // or grandchild of the collapsed group.
+      if (isSkipping && isGroup && row.level > skippingLevel) {
+        continue; // Skip this row.
+      }
+
+      // If the current row is at the same level or higher, we can stop skipping.
+      if (isSkipping && isGroup && row.level <= skippingLevel) {
+        isSkipping = false;
+      }
+
+      // If we are skipping and this is a data row, it must be a child, so skip it.
+      if (isSkipping && !isGroup) {
+        continue;
+      }
+
+      // If we've reached this point, the row should be visible.
+      newDisplayedRows.push(row);
+
+      // If this row is a group that is now closed, start skipping subsequent rows.
+      if (isGroup && !row.isOpen) {
+        isSkipping = true;
+        skippingLevel = row.level;
+      }
+    }
+
+    return newDisplayedRows;
+  }
+
+
+  private isGroupByRow(row: PrDisplayableRow): row is (PrGroupByRow) {
+    return row.discriminator === "groupByRow";
   }
 
   private setGridDefaultValues(table: PrGrid): PrGrid {

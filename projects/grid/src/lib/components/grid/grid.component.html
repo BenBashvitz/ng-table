@@ -2,6 +2,7 @@
   <pr-grid-rows
     [table]="gridStore.grid$ | async"
     [columns]="gridStore.columns$ | async"
+    [currentRows]="currentRows$ | async"
     (clickRow)="clickRow.emit($event)"
     (dblclickRow)="dblclickRow.emit($event)"
   ></pr-grid-rows>

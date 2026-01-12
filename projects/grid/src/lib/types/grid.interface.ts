@@ -45,6 +45,12 @@ export type PrComponentCell<ComponentInputs extends Record<string, unknown> = Re
 
 export type PrCellType = PrFreeTextCell | PrOptionsCell | PrComponentCell;
 
+export type PrRowGroup = {
+  groupName: string;
+  groupColumnId: string;
+  children: PrRow[] | PrRowGroup[]
+}
+
 export type PrGroupByRow = {
   discriminator: 'groupByRow';
   id: string;
@@ -59,7 +65,7 @@ export type PrRow = {
   id: string | number;
 }
 
-export type PrMasterRow = PrGroupByRow | PrRow;
+export type PrDisplayableRow = PrGroupByRow | PrRow;
 
 export type PrGridMetadata<AvailableColumns extends string = string> = {
   columnGroups: PrColumnGroup<AvailableColumns>[]

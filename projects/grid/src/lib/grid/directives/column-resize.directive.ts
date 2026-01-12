@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import {fromEvent, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {columnDefaults, isColumnGroup, PrColumnWithMetadata} from "../types/grid.interface";
+import {columnDefaults, isColumnGroup, PrColumnWithMetadata} from "@parlament/grid";
 import {GridStore} from "../store/grid.store";
 
 @Directive({
@@ -23,6 +23,8 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
   @Input('tvsColumnResize') prColumn: PrColumnWithMetadata;
   @Input() elementToResize: HTMLElement | null = null;
   @Input() resizerElement: HTMLElement | null = null;
+  @Input() gridMaxWidthInPx: number;
+  @Input() gridWidthInPx: number;
   @Output() resize = new EventEmitter<MouseEvent>()
 
   private startX!: number;
@@ -94,6 +96,9 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
     if (!this.isResizing) return;
 
     const mousePositionDiff = (this.startX - event.pageX);
+    const isExpanding = mousePositionDiff > 0;
+
+    if (isExpanding && this.gridWidthInPx >= this.gridMaxWidthInPx) return;
 
     if (!isColumnGroup(this.prColumn)) {
       const newColumnWidth = this.startWidth + mousePositionDiff;
@@ -110,7 +115,10 @@ export class ColumnResizeDirective implements AfterViewInit, OnDestroy {
           (newColumnWidths[i] <= (this.prColumn.columns[i].maxWidthInPx ?? columnDefaults.maxWidthInPx)) &&
           (newColumnWidths[i] >= (this.prColumn.columns[i].minWidthInPx ?? columnDefaults.minWidthInPx))) {
           this.prColumn.columns[i].widthInPx = newColumnWidths[i];
-          this.tableStore.setColumnWidthInPx({columnDef: this.prColumn.columns[i].columnDef, newWidthInPx: newColumnWidths[i]});
+          this.tableStore.setColumnWidthInPx({
+            columnDef: this.prColumn.columns[i].columnDef,
+            newWidthInPx: newColumnWidths[i]
+          });
         }
       }
     }

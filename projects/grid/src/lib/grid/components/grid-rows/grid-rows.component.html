@@ -1,7 +1,7 @@
 <cdk-virtual-scroll-viewport
   [itemSize]="table.rowHeightInPx"
   class="grid-viewport"
-  [style.width.px]="tableWidthInPx$ | async"
+  [style.width.px]="gridWidthInPx$ | async"
 >
   <div
     cdkDropList
@@ -11,10 +11,14 @@
     <pr-grid-column-group-row
       [columnGroups]="table.columnGroups"
       [gridTemplateColumns]="gridTemplate$ | async"
+      [gridWidth]="gridWidthInPx$ | async"
+      [gridMaxWidth]="gridMaxWidthInPx$ | async"
     ></pr-grid-column-group-row>
     <pr-grid-header-row
       [columns]="columns"
       [gridTemplateColumns]="gridTemplate$ | async"
+      [gridWidth]="gridWidthInPx$ | async"
+      [gridMaxWidth]="gridMaxWidthInPx$ | async"
     ></pr-grid-header-row>
     <pr-grid-row
       *cdkVirtualFor="let row of table.rows; let i = index; trackBy: trackByRow"

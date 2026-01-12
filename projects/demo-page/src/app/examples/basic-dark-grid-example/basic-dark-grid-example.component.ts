@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {PrRow, PrGrid} from "../../../../../grid/src/lib/grid/types/grid.interface";
+import {PrGrid, PrRow} from "@parlament/grid";
 
 const DATA: PrRow[] = Array.from({length: 1000}, (v, i) => ({
   id: i + 1,
@@ -72,5 +72,6 @@ export class BasicDarkGridExample {
         title: 'סטטוסים'
       },
     ],
+    maxWidthInPx: 750
   }
 }

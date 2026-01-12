@@ -12,9 +12,13 @@ export type PrColumn<AvailableColumns extends string = string> = {
   title: string;
 }
 
-export type PrColumnWithMetadata<AvailableColumns extends string = string> = PrColumn<AvailableColumns> & PrColumnMetadata;
+export type PrColumnWithMetadata<AvailableColumns extends string = string> =
+  PrColumn<AvailableColumns>
+  & PrColumnMetadata;
 
-export type PrColumnGroup<AvailableColumns extends string = string> = PrColumnWithMetadata & {
+export type PrColumnGroup<AvailableColumns extends string = string> =
+  Omit<PrColumnWithMetadata, 'widthInPx' | 'maxWidthInPx' | 'minWidthInPx'>
+  & {
   columns: PrColumnWithMetadata<AvailableColumns>[];
 }
 
@@ -26,7 +30,7 @@ export type PrTextCell = {
   onEdit?: (text: string) => void;
 }
 
-export type PrCustomCell<ComponentInputs extends Record<string, unknown> = Record<string, unknown>> =  {
+export type PrCustomCell<ComponentInputs extends Record<string, unknown> = Record<string, unknown>> = {
   discriminator: 'Component';
   inputs: ComponentInputs
   component: ComponentType<unknown>;
@@ -43,6 +47,7 @@ export type PrGridMetadata<AvailableColumns extends string = string> = {
   groupByColumnIds?: AvailableColumns[]
   sortByColumn?: AvailableColumns[];
   rowHeightInPx?: number;
+  maxWidthInPx?: number;
 }
 
 export type PrGrid<AvailableColumns extends string = string> = PrGridMetadata<AvailableColumns> & {
@@ -78,6 +83,7 @@ export const gridDefaults: Omit<PrGridMetadata, 'columns' | 'columnGroups'> = {
   groupByColumnIds: [],
   sortByColumn: undefined,
   rowHeightInPx: 30,
+  maxWidthInPx: 1000
 }
 
 export const defaults: Omit<PrColumnWithMetadata & PrGridMetadata, 'columnDef' | 'title' | 'columns' | 'columnGroups'> = {

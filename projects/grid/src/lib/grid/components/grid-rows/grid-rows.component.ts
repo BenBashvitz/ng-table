@@ -10,7 +10,7 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import {PrColumnWithMetadata, PrGrid, PrRow} from "../../types/grid.interface";
+import {PrColumnWithMetadata, PrGrid, PrRow} from "@parlament/grid";
 import {CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 import {MatTableModule} from "@angular/material/table";
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
@@ -41,7 +41,7 @@ import {GridColumnGroupRowComponent} from "../grid-column-group-row/grid-column-
     GridColumnGroupRowComponent,
   ]
 })
-export class GridRowsComponent implements OnInit, OnDestroy{
+export class GridRowsComponent implements OnInit, OnDestroy {
   @Input() table: PrGrid;
   @Input() columns: PrColumnWithMetadata[];
   @Output() clickRow = new EventEmitter<PrRow>();
@@ -50,7 +50,8 @@ export class GridRowsComponent implements OnInit, OnDestroy{
   @ViewChild(CdkVirtualScrollViewport)
   virtualViewport: CdkVirtualScrollViewport;
 
-  tableWidthInPx$: Observable<number>;
+  gridWidthInPx$: Observable<number>;
+  gridMaxWidthInPx$ = this.tableStore.maxWidth$;
   gridTemplate$: Observable<string>;
 
 
@@ -64,11 +65,13 @@ export class GridRowsComponent implements OnInit, OnDestroy{
 
   destroyed$ = new Subject<void>();
 
-  constructor(public tableStore: GridStore , private cd: ChangeDetectorRef) {}
+  constructor(public tableStore: GridStore, private cd: ChangeDetectorRef) {
+  }
 
   ngOnInit() {
-    this.tableWidthInPx$ = this.tableStore.gridWidth$.pipe(tap(() => this.cd.detectChanges()));
+    this.gridWidthInPx$ = this.tableStore.gridWidth$.pipe(tap(() => this.cd.detectChanges()));
     this.gridTemplate$ = this.tableStore.gridTemplate$.pipe(tap(() => this.cd.detectChanges()));
+    this.gridMaxWidthInPx$ = this.tableStore.maxWidth$.pipe(tap(() => this.cd.detectChanges()));
   }
 
   ngOnDestroy() {

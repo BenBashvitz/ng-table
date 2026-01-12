@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {defaults, PrColumn, PrColumnGroup, PrColumnWithMetadata, PrRow, PrGrid, PrCellType} from "@parlament/grid";
 import {ComponentStore} from "@ngrx/component-store";
 import {GridService} from "@parlament/grid";
+import { map, withLatestFrom } from 'rxjs';
 
 export interface GridState {
   grid: PrGrid,
@@ -56,6 +57,8 @@ export class GridStore extends ComponentStore<GridState> {
     }, 13)
   })
   readonly maxWidth$ = this.select(this.grid$, grid => grid.maxWidthInPx ?? defaults.maxWidthInPx);
+  readonly groupByColumnIds$ = this.select(this.grid$, grid => grid.groupByColumnIds);
+  readonly rows$ = this.select(this.grid$, grid => grid.rows);
   readonly selectedRows$ = this.select(state => state.selectedRows);
   readonly columnRightInPx$ = (column: PrColumn) => this.select(this.columns$, columns => {
     const stickyColumns = columns.filter(({isSticky}) => isSticky);
@@ -63,7 +66,16 @@ export class GridStore extends ComponentStore<GridState> {
 
     return columnIndex === 0 ? '0px' : `${columns.slice(0, columnIndex).reduce((width, {widthInPx}) => width + widthInPx + 2, 0)}px`
   })
-
+  readonly groupedRows$ = this.select(
+    this.groupByColumnIds$,
+    this.rows$,
+    (groupByColumnIds, rows) => ({ groupByColumnIds, rows })
+  ).pipe(
+    withLatestFrom(this.grid$),
+    map(([{ groupByColumnIds }, grid]) => {
+      return this.gridService.getGroupByArray(grid, groupByColumnIds);
+    })
+  );
   readonly setGrid = this.updater((state, table: PrGrid) => ({
     ...state,
     grid: this.gridService.initializeGrid(table)

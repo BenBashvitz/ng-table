@@ -10,16 +10,22 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import {PrColumnWithMetadata, PrGrid, PrRow} from "@parlament/grid";
+import {
+  PrColumnWithMetadata,
+  PrGrid,
+  PrGroupByRow,
+  PrRow
+} from '@parlament/grid';
 import {CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 import {MatTableModule} from "@angular/material/table";
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {GridRowComponent} from "../grid-row/grid-row.component";
 import {GridHeaderRowComponent} from "../grid-header-row/grid-header-row.component";
 import {GridStore} from "../../store/grid.store";
-import {AsyncPipe, NgForOf} from "@angular/common";
+import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 import {Observable, Subject, tap} from "rxjs";
 import {GridColumnGroupRowComponent} from "../grid-column-group-row/grid-column-group-row.component";
+import { GridGroupByRowComponent } from '../grid-group-by-row/grid-group-by-row.component';
 
 @Component({
   selector: 'pr-grid-rows',
@@ -34,11 +40,13 @@ import {GridColumnGroupRowComponent} from "../grid-column-group-row/grid-column-
     CdkVirtualForOf,
     CdkFixedSizeVirtualScroll,
     GridRowComponent,
+    GridGroupByRowComponent,
     GridHeaderRowComponent,
     AsyncPipe,
     CdkDragPreview,
     NgForOf,
     GridColumnGroupRowComponent,
+    NgIf,
   ]
 })
 export class GridRowsComponent implements OnInit, OnDestroy {
@@ -53,6 +61,7 @@ export class GridRowsComponent implements OnInit, OnDestroy {
   gridWidthInPx$: Observable<number>;
   gridMaxWidthInPx$ = this.tableStore.maxWidth$;
   gridTemplate$: Observable<string>;
+  groupedRows$: Observable<(PrRow | PrGroupByRow)[]>
 
 
   @HostListener('document:click', ['$event'])
@@ -72,6 +81,7 @@ export class GridRowsComponent implements OnInit, OnDestroy {
     this.gridWidthInPx$ = this.tableStore.gridWidth$.pipe(tap(() => this.cd.detectChanges()));
     this.gridTemplate$ = this.tableStore.gridTemplate$.pipe(tap(() => this.cd.detectChanges()));
     this.gridMaxWidthInPx$ = this.tableStore.maxWidth$.pipe(tap(() => this.cd.detectChanges()));
+    this.groupedRows$ = this.tableStore.groupedRows$.pipe(tap(() => this.cd.detectChanges()));
   }
 
   ngOnDestroy() {

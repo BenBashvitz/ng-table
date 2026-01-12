@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {PrGrid, PrRow} from "../../types/grid.interface";
 import {AsyncPipe} from "@angular/common";
 import {GridStore} from "../../store/grid.store";
@@ -17,7 +17,7 @@ import {takeUntil} from "rxjs/operators";
   ],
   providers: [GridStore]
 })
-export class GridComponent implements OnInit, OnDestroy {
+export class GridComponent implements OnInit, OnDestroy, OnChanges {
   @Input() grid: PrGrid;
   @Output() gridChange = new EventEmitter<PrGrid>();
   @Output() clickRow = new EventEmitter<PrRow>();
@@ -32,6 +32,12 @@ export class GridComponent implements OnInit, OnDestroy {
     this.gridStore.grid$.pipe(takeUntil(this.destroy$)).subscribe(grid => {
       this.gridChange.emit(grid);
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['grid'] && changes['grid'].currentValue !== changes['grid'].previousValue) {
+      this.gridStore.setGrid(this.grid)
+    }
   }
 
   ngOnDestroy() {

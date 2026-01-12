@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {PrCellType, PrColumnWithMetadata, PrRow, PrGrid} from "../types/grid.interface";
+import { PrCellType, PrColumnWithMetadata, PrGrid, PrRow } from "@parlament/grid";
 
 @Pipe({
   name: 'gridCell',

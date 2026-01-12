@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {PrCellType, PrComponentCell} from "../types/grid.interface";
+import { PrCellType, PrComponentCell } from "@parlament/grid";
 
 @Pipe({
   name: 'toComponentCell',

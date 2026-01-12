@@ -1,12 +1,12 @@
 import {Injectable} from "@angular/core";
-import {defaults, PrColumn, PrColumnGroup, PrColumnWithMetadata, PrRow, PrGrid, PrCell} from "../types/grid.interface";
+import {defaults, PrColumn, PrColumnGroup, PrColumnWithMetadata, PrRow, PrGrid, PrCellType} from "../types/grid.interface";
 import {ComponentStore} from "@ngrx/component-store";
 import {GridService} from "../services/grid.service";
 
 export interface GridState {
   grid: PrGrid,
   selectedRows: (PrRow & {index: number})[],
-  selectedCells: PrCell[],
+  selectedCells: PrCellType[],
 }
 
 const initialState: GridState = {

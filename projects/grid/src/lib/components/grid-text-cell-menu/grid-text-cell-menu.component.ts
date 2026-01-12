@@ -1,18 +1,20 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
+import {GridCellMenuFooterComponent} from "../grid-cell-menu-footer/grid-cell-menu-footer.component";
 
 @Component({
-  selector: 'pr-grid-cell-edit-menu',
-  templateUrl: './grid-cell-edit-menu.component.html',
-  styleUrls: ['./grid-cell-edit-menu.component.less'],
+  selector: 'pr-grid-text-cell-menu',
+  templateUrl: './grid-text-cell-menu.component.html',
+  styleUrls: ['./grid-text-cell-menu.component.less'],
   standalone: true,
   imports: [
     NgIf,
-    FormsModule
+    FormsModule,
+    GridCellMenuFooterComponent
   ]
 })
-export class GridCellEditMenuComponent {
+export class GridTextCellMenuComponent {
   @Input() label: string;
   @Output() save = new EventEmitter<string>();
   @Output() cancel = new EventEmitter<void>();

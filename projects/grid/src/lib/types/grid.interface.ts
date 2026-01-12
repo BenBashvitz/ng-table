@@ -18,20 +18,28 @@ export type PrColumnGroup<AvailableColumns extends string = string> = PrColumnWi
   columns: PrColumnWithMetadata<AvailableColumns>[];
 }
 
-export type PrCell = PrTextCell | PrCustomCell;
-
-export type PrTextCell = {
-  discriminator: 'Text'
+export interface PrTextCell {
   cellText: string;
   onEdit?: (text: string) => void;
 }
 
-export type PrCustomCell<ComponentInputs extends Record<string, unknown> = Record<string, unknown>> =  {
+export interface PrFreeTextCell extends PrTextCell {
+  discriminator: 'Text'
+}
+
+export interface PrOptionsCell<Options extends string = string> extends PrTextCell {
+  discriminator: 'Options',
+  options: Options[];
+}
+
+export type PrComponentCell<ComponentInputs extends Record<string, unknown> = Record<string, unknown>> =  {
   discriminator: 'Component';
   inputs: ComponentInputs
   component: ComponentType<unknown>;
   value: () => any;
 }
+
+export type PrCellType = PrFreeTextCell | PrOptionsCell | PrComponentCell;
 
 export type PrRow = {
   id: string | number;
@@ -47,15 +55,19 @@ export type PrGridMetadata<AvailableColumns extends string = string> = {
 
 export type PrGrid<AvailableColumns extends string = string> = PrGridMetadata<AvailableColumns> & {
   rows: PrRow[];
-  columnToCellMapper: Record<AvailableColumns, (row: PrRow) => PrCell>;
+  columnToCellMapper: Record<AvailableColumns, (row: PrRow) => PrCellType>;
 }
 
-export function isCustomCell(cell: PrCell): cell is PrCustomCell<{}> {
-  return 'component' in cell;
+export function isComponentCell(cell: PrCellType): cell is PrComponentCell<{}> {
+  return cell.discriminator === "Component";
 }
 
-export function isNormalCell(cell: PrCell): cell is PrTextCell {
-  return !('component' in cell);
+export function isFreeTextCell(cell: PrCellType): cell is PrFreeTextCell {
+  return cell.discriminator === "Text";
+}
+
+export function isOptionsCell(cell: PrCellType): cell is PrFreeTextCell {
+  return cell.discriminator === "Options";
 }
 
 export function isColumnGroup(column: object): column is PrColumnGroup {

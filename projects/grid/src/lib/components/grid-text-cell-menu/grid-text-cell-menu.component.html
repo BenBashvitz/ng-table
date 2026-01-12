@@ -1,0 +1,9 @@
+<div class="grid-text-cell-menu" (click)="$event.stopPropagation()">
+  <div class="grid-text-cell-menu-input-wrapper">
+    <div *ngIf="label" class="grid-text-cell-menu-input-label">
+      {{ label }}
+    </div>
+    <input class="grid-text-cell-menu-input" [value]="value" (input)="onInput($event)"/>
+  </div>
+  <pr-grid-cell-menu-footer (save)="save.emit(value)" (cancel)="cancel.emit()" (clear)="onClear()"></pr-grid-cell-menu-footer>
+</div>

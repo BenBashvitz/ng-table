@@ -1,5 +1,5 @@
-import {ChangeDetectorRef, Component, Input, SimpleChanges} from '@angular/core';
-import {PrColumnWithMetadata, PrRow, PrGrid} from "../../types/grid.interface";
+import {Component, Input} from '@angular/core';
+import {PrColumnWithMetadata, PrGrid, PrRow} from "@parlament/grid";
 import {AsyncPipe, NgForOf} from "@angular/common";
 import {GridCellComponent} from "../grid-cell/grid-cell.component";
 import {GridCellPipe} from "../../pipes/table-cell.pipe";

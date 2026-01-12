@@ -19,8 +19,8 @@
     [class.sticky]="columnGroup.isSticky"
     [style.right]="columnGroup.isSticky ? (tableStore.columnRightInPx$(columnGroup.columns[0]) | async) : 'unset'"
     [style.grid-column]="'span ' + columnGroup.columns.length"
-    [style.max-width.px]="getColumnGroupMinMaxWidth(columnGroup.columns)"
-    [style.min-width.px]="getColumnGroupMinMaxWidth(columnGroup.columns, false)"
+    [style.max-width.px]="columnGroup.columns | sum: 'maxWidthInPx'"
+    [style.min-width.px]="columnGroup.columns | sum: 'minWidthInPx'"
   >
     {{ columnGroup.title }}
     <span class="resizer"></span>

@@ -25,11 +25,11 @@ export class GridHeaderRowComponent {
   @Input() gridMaxWidth: number;
   @Input() gridWidth: number;
 
-  constructor(public tableStore: GridStore) {
+  constructor(public gridStore: GridStore) {
   }
 
   onDropColumn(event: CdkDragDrop<unknown, unknown, PrColumn>) {
-    this.tableStore.moveColumn({
+    this.gridStore.moveColumn({
       item: event.item.data,
       previousIndex: event.previousIndex,
       currentIndex: event.currentIndex

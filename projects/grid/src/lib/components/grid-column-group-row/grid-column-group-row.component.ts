@@ -19,10 +19,10 @@ export class GridColumnGroupRowComponent {
   @Input() gridMaxWidth: number;
   @Input() gridWidth: number;
 
-  constructor(public tableStore: GridStore) {}
+  constructor(public gridStore: GridStore) {}
 
   onDropColumnGroup(event: CdkDragDrop<unknown, unknown, PrColumnGroup>) {
-    this.tableStore.moveColumnGroup({
+    this.gridStore.moveColumnGroup({
       item: event.item.data,
       previousIndex: event.previousIndex,
       currentIndex: event.currentIndex

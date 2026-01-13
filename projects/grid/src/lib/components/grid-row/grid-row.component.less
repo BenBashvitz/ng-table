@@ -6,9 +6,16 @@
   grid-auto-rows: var(--pr-grid-cell-row-height);
   background-color: var(--pr-grid-group-bg);
 
-  .sticky {
-    position: sticky;
-    right: 0;
-    z-index: 1;
+  pr-grid-cell {
+    &.sticky {
+      position: sticky;
+      right: 0;
+      z-index: 1;
+    }
+
+    &.selected {
+      border: 1px solid var(--pr-grid-primary);
+      background-color: var(--pr-grid-primary-opacity);
+    }
   }
 }

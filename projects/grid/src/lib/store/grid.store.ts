@@ -1,12 +1,21 @@
 import {Injectable} from "@angular/core";
-import {defaults, PrColumn, PrColumnGroup, PrColumnWithMetadata, PrRow, PrGrid, PrCellType} from "@parlament/grid";
+import {
+  defaults,
+  PrColumn,
+  PrColumnGroup,
+  PrColumnWithMetadata,
+  PrRow,
+  PrGrid,
+  PrCellType,
+  SelectedCellData
+} from "@parlament/grid";
 import {ComponentStore} from "@ngrx/component-store";
 import {GridService} from "@parlament/grid";
 
 export interface GridState {
   grid: PrGrid,
   selectedRows: (PrRow & { index: number })[],
-  selectedCells: PrCellType[],
+  selectedCells: SelectedCellData[],
 }
 
 const initialState: GridState = {
@@ -63,6 +72,7 @@ export class GridStore extends ComponentStore<GridState> {
 
     return columnIndex === 0 ? '0px' : `${columns.slice(0, columnIndex).reduce((width, {widthInPx}) => width + widthInPx + 2, 0)}px`
   })
+  readonly selectedCells$ = this.select(state => state.selectedCells);
 
   readonly setGrid = this.updater((state, table: PrGrid) => ({
     ...state,
@@ -97,6 +107,10 @@ export class GridStore extends ComponentStore<GridState> {
       ...rowData.row,
       index: rowData.index,
     }]
+  }));
+  readonly setSelectedCell = this.updater((state, cell: SelectedCellData) => ({
+    ...state,
+    selectedCells: [cell]
   }))
 
   readonly setColumnWidthInPx = this.updater((state, columnResize: ColumnResize) => ({

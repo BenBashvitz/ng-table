@@ -26,9 +26,9 @@ export class GridRowComponent {
   @Input() gridTemplateColumns: string;
   @Input() selectedCells: SelectedCellData[];
 
-  constructor(public grisStore: GridStore) {}
+  constructor(public gridStore: GridStore) {}
 
   onClickCell(columnDef: string) {
-    this.grisStore.setSelectedCell({columnDef , rowId: this.row.id})
+    this.gridStore.setSelectedCell({columnDef , rowId: this.row.id})
   }
 }

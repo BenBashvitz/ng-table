@@ -7,7 +7,7 @@ import {
   PrRow,
   PrGrid,
   PrCellType,
-  SelectedCellData
+  SelectedCellData, MoveItem, ColumnResize
 } from "@parlament/grid";
 import {ComponentStore} from "@ngrx/component-store";
 import {GridService} from "@parlament/grid";
@@ -31,17 +31,6 @@ const initialState: GridState = {
   },
   selectedCells: [],
   selectedRows: [],
-}
-
-interface MoveItem<T = PrRow | PrColumn | PrColumnGroup> {
-  item: T,
-  currentIndex: number,
-  previousIndex: number,
-}
-
-interface ColumnResize {
-  columnDef: string;
-  newWidthInPx: number;
 }
 
 @Injectable()
@@ -100,6 +89,14 @@ export class GridStore extends ComponentStore<GridState> {
     grid: {
       ...this.gridService.changeRowOrder(state.grid, moveRow.item, moveRow.previousIndex, moveRow.currentIndex)
     },
+  }));
+  readonly removeColumn = this.updater((state, column:PrColumnWithMetadata) => ({
+    ...state,
+    grid: this.gridService.removeColumn(state.grid, column),
+  }))
+  readonly removeColumnGroup = this.updater((state, columnGroup:PrColumnGroup) => ({
+    ...state,
+    grid: this.gridService.removeColumnGroup(state.grid, columnGroup),
   }))
   readonly setSelectedRow = this.updater((state, rowData: { row: PrRow, index: number }) => ({
     ...state,
@@ -112,18 +109,8 @@ export class GridStore extends ComponentStore<GridState> {
     ...state,
     selectedCells: [cell]
   }))
-
   readonly setColumnWidthInPx = this.updater((state, columnResize: ColumnResize) => ({
     ...state,
-    grid: {
-      ...state.grid,
-      columnGroups: state.grid.columnGroups.map(columnGroup => ({
-        ...columnGroup,
-        columns: columnGroup.columns.map(column => ({
-          ...column,
-          widthInPx: column.columnDef === columnResize.columnDef ? columnResize.newWidthInPx : column.widthInPx
-        }))
-      }))
-    }
+    grid: this.gridService.setColumnWidth(state.grid, columnResize),
   }))
 }

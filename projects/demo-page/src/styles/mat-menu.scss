@@ -40,3 +40,40 @@
     }
   }
 }
+
+.mat-mdc-menu-panel.grid-header-actions-menu {
+  border-radius: 10px;
+
+  .mat-mdc-menu-content {
+    padding: 0 !important;
+
+    .mat-mdc-option {
+      background-color: #ffffff;
+      height: 24px;
+      min-height: unset;
+      padding: 0 8px !important;
+      border-radius: 8px;
+      transition: filter 75ms ease-in-out;
+      justify-content: center;
+      align-items: center;
+
+      &.mat-mdc-item--selected {
+        background-color: #ffffff;
+      }
+
+      &:hover {
+        filter: brightness(95%);
+      }
+
+      &:active {
+        filter: brightness(90%);
+      }
+
+      .mdc-list-item__primary-text {
+        color: #7B8297;
+        font-weight: 400;
+        font-size: 14px;
+      }
+    }
+  }
+}

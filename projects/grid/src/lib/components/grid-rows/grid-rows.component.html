@@ -47,6 +47,8 @@
       <pr-grid-group-by-row
         *ngIf="row.discriminator === 'groupByRow'"
         [groupByRow]="row"
+        [gridTemplateColumns]="gridTemplate$ | async"
+        [columnsLength]="columns.length"
         (toggle)="handleToggle($event)"
       ></pr-grid-group-by-row>
     </div>

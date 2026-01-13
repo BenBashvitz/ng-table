@@ -1,10 +1,10 @@
-.container {
+.grid-row-container {
   display: grid;
   gap: 2px;
   grid-auto-rows: var(--pr-grid-group-row-height);
   align-items: center;
 
-  .group-by-row {
+  .grid-group-by-row {
     position: relative;
     background-color: var(--pr-grid-group-by-row-bg);
     border-radius: var(--pr-grid-group-by-row-radius);
@@ -17,20 +17,20 @@
     cursor: pointer;
     user-select: none;
 
-    .group-name {
+    .grid-group-name {
       color: var(--pr-grid-group-by-row-name-color);
       font-weight: var(--pr-grid-group-by-row-font-weight);
       font-size: var(--pr-grid-group-by-row-font-size);
     }
 
-    .row-count {
+    .grid-row-count {
       color: var(--pr-grid-group-by-row-count-color);
       font-weight: var(--pr-grid-group-by-row-font-weight);
       font-size: var(--pr-grid-group-by-row-font-size);
       padding: 0 5px 0;
     }
 
-    .dropdown-icon {
+    .grid-dropdown-icon {
       color: var(--pr-grid-group-by-row-dropdown-color);
       font-size: var(--pr-grid-group-by-row-font-size);
       transition: transform 0.3s ease;

@@ -12,6 +12,8 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class GridGroupByRowComponent {
   @Input() groupByRow: PrGroupByRow;
+  @Input() gridTemplateColumns: string
+  @Input() columnsLength: number;
   @Output() toggle = new EventEmitter<PrGroupByRow>();
 
   toggleOpen(): void {

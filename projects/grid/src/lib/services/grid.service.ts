@@ -6,7 +6,7 @@ import {
   PrRow,
   PrGrid,
   gridDefaults,
-  PrGridMetadata
+  PrGridMetadata, ColumnResize
 } from "../types/grid.interface";
 import {moveItemInArray} from "@angular/cdk/drag-drop";
 
@@ -46,15 +46,34 @@ export class GridService {
     return table;
   }
 
-  getGridPreferences(grid: PrGrid) {
-    const gridMetadata: PrGridMetadata = {
-      columnGroups: [],
-      pinnedRowsIds: grid.pinnedRowsIds,
-      groupByColumnIds: grid.groupByColumnIds,
-      sortByColumn: grid.sortByColumn,
-      rowHeightInPx: grid.rowHeightInPx,
+  setColumnWidth(grid: PrGrid, {columnDef, newWidthInPx}: ColumnResize) {
+    return {
+      ...grid,
+      columnGroups: grid.columnGroups.map(columnGroup => ({
+        ...columnGroup,
+        columns: columnGroup.columns.map(column => ({
+          ...column,
+          widthInPx: column.columnDef === columnDef ? newWidthInPx : column.widthInPx
+        }))
+      }))
     }
-    return
+  }
+
+  removeColumn(grid: PrGrid, column: PrColumn) {
+    return {
+      ...grid,
+      columnGroups: grid.columnGroups.map((group) => ({
+        ...group,
+        columns: group.columns.filter(({columnDef}) => column.columnDef !== columnDef),
+      }))
+    }
+  }
+
+  removeColumnGroup(grid: PrGrid, columnGroup: PrColumn) {
+    return {
+      ...grid,
+      columnGroups: grid.columnGroups.filter(({columnDef}) => columnGroup.columnDef !== columnDef)
+    }
   }
 
   private setGridDefaultValues(table: PrGrid): PrGrid {

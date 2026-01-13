@@ -1,22 +1,22 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from "@angular/core";
 import {
   defaults,
-  GridService,
-  PrCellType,
   PrColumn,
   PrColumnGroup,
   PrColumnWithMetadata,
+  PrRow,
   PrGrid,
   PrDisplayableRow,
-  PrRow
-} from '@parlament/grid';
-import { ComponentStore } from '@ngrx/component-store';
+  SelectedCellData
+} from "@parlament/grid";
+import {ComponentStore} from "@ngrx/component-store";
+import {GridService} from "@parlament/grid";
 import { map, withLatestFrom } from 'rxjs';
 
 export interface GridState {
   grid: PrGrid,
   selectedRows: (PrRow & { index: number })[],
-  selectedCells: PrCellType[],
+  selectedCells: SelectedCellData[],
   displayedRows: PrDisplayableRow[]
 }
 
@@ -88,6 +88,8 @@ export class GridStore extends ComponentStore<GridState> {
       return this.gridService.getCurrentRows(grid, groupByColumnIds);
     })
   );
+  readonly selectedCells$ = this.select(state => state.selectedCells);
+
   readonly setGrid = this.updater((state, table: PrGrid) => ({
     ...state,
     grid: this.gridService.initializeGrid(table)
@@ -121,6 +123,10 @@ export class GridStore extends ComponentStore<GridState> {
       ...rowData.row,
       index: rowData.index,
     }]
+  }));
+  readonly setSelectedCell = this.updater((state, cell: SelectedCellData) => ({
+    ...state,
+    selectedCells: [cell]
   }))
   readonly setDisplayedRows = this.updater((state, currentRows: PrDisplayableRow[]) => ({
     ...state,

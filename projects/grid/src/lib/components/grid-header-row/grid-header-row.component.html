@@ -16,7 +16,7 @@
     [class.sticky]="column.isSticky"
     [style.max-width.px]="column.maxWidthInPx"
     [style.min-width.px]="column.minWidthInPx"
-    [style.right]="column.isSticky ? (tableStore.columnRightInPx$(column) | async) : 'unset'"
+    [style.right]="column.isSticky ? (gridStore.columnRightInPx$(column) | async) : 'unset'"
     [tvsColumnResize]="column"
     [gridMaxWidthInPx]="gridMaxWidth"
     [gridWidthInPx]="gridWidth"

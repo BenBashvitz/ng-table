@@ -45,6 +45,11 @@ export type PrComponentCell<ComponentInputs extends Record<string, unknown> = Re
 
 export type PrCellType = PrFreeTextCell | PrOptionsCell | PrComponentCell;
 
+export type SelectedCellData = {
+  columnDef: string;
+  rowId: string | number;
+}
+
 export type PrRowGroup = {
   groupName: string;
   groupColumnId: string;

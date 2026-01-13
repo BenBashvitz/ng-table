@@ -17,7 +17,8 @@ import {
   PrGrid,
   PrGroupByRow,
   PrDisplayableRow,
-  PrRow
+  PrRow,
+  SelectedCellData
 } from '@parlament/grid';
 import {CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 import {MatTableModule} from "@angular/material/table";
@@ -25,7 +26,7 @@ import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/dr
 import {GridRowComponent} from "../grid-row/grid-row.component";
 import {GridHeaderRowComponent} from "../grid-header-row/grid-header-row.component";
 import {GridStore} from "../../store/grid.store";
-import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
+import {AsyncPipe, NgIf} from "@angular/common";
 import {Observable, Subject, tap} from "rxjs";
 import {GridColumnGroupRowComponent} from "../grid-column-group-row/grid-column-group-row.component";
 import { GridGroupByRowComponent } from '../grid-group-by-row/grid-group-by-row.component';
@@ -47,7 +48,6 @@ import { GridGroupByRowComponent } from '../grid-group-by-row/grid-group-by-row.
     GridHeaderRowComponent,
     AsyncPipe,
     CdkDragPreview,
-    NgForOf,
     GridColumnGroupRowComponent,
     NgIf,
   ]
@@ -56,6 +56,7 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
   @Input() table: PrGrid;
   @Input() currentRows: PrDisplayableRow[];
   @Input() columns: PrColumnWithMetadata[];
+  @Input() selectedCells: SelectedCellData[];
   @Output() clickRow = new EventEmitter<PrRow>();
   @Output() dblclickRow = new EventEmitter<PrRow>();
   @ViewChild('body') body: ElementRef<Element>
@@ -63,7 +64,7 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
   virtualViewport: CdkVirtualScrollViewport;
 
   gridWidthInPx$: Observable<number>;
-  gridMaxWidthInPx$ = this.tableStore.maxWidth$;
+  gridMaxWidthInPx$ = this.gridStore.maxWidth$;
   gridTemplate$: Observable<string>;
   displayedRows$: Observable<PrDisplayableRow[]>
 
@@ -77,19 +78,19 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
 
   destroyed$ = new Subject<void>();
 
-  constructor(public tableStore: GridStore, private cd: ChangeDetectorRef) {
+  constructor(public gridStore: GridStore, private cd: ChangeDetectorRef) {
   }
 
   ngOnInit() {
-    this.gridWidthInPx$ = this.tableStore.gridWidth$.pipe(tap(() => this.cd.detectChanges()));
-    this.gridTemplate$ = this.tableStore.gridTemplate$.pipe(tap(() => this.cd.detectChanges()));
-    this.gridMaxWidthInPx$ = this.tableStore.maxWidth$.pipe(tap(() => this.cd.detectChanges()));
-    this.displayedRows$ = this.tableStore.displayedRows$.pipe(tap(() => this.cd.detectChanges()));
+    this.gridWidthInPx$ = this.gridStore.gridWidth$.pipe(tap(() => this.cd.detectChanges()));
+    this.gridTemplate$ = this.gridStore.gridTemplate$.pipe(tap(() => this.cd.detectChanges()));
+    this.gridMaxWidthInPx$ = this.gridStore.maxWidth$.pipe(tap(() => this.cd.detectChanges()));
+    this.displayedRows$ = this.gridStore.displayedRows$.pipe(tap(() => this.cd.detectChanges()));
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['currentRows']?.currentValue?.length > 0 && changes['currentRows'].currentValue !== changes['currentRows'].previousValue) {
-      this.tableStore.setDisplayedRows(changes['currentRows'].currentValue);
+      this.gridStore.setDisplayedRows(changes['currentRows'].currentValue);
     }
   }
 
@@ -102,7 +103,7 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   onDropRow(event: CdkDragDrop<unknown, unknown, PrRow>) {
-    this.tableStore.moveRow({
+    this.gridStore.moveRow({
       item: event.item.data,
       previousIndex: event.previousIndex,
       currentIndex: event.currentIndex
@@ -110,7 +111,7 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   onClickRow(row: PrRow, index: number) {
-    this.tableStore.setSelectedRow({row, index});
+    this.gridStore.setSelectedRow({row, index});
     this.clickRow.emit(row)
   }
 
@@ -129,6 +130,6 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
 
   public handleToggle(toggledRow: PrGroupByRow): void {
     toggledRow.isOpen = !toggledRow.isOpen;
-    this.tableStore.setDisplayedRows(this.currentRows);
+    this.gridStore.setDisplayedRows(this.currentRows);
   }
 }

@@ -90,7 +90,6 @@ export class GridService {
     const grouped = this.recursiveGroupBy(grid.rows, groupByColumnIds, 0, grid);
     return this.flattenGroupedData(grouped, 0);
   }
-
   private recursiveGroupBy(
     rows: PrRow[],
     groupByColumnIds: string[],
@@ -106,22 +105,23 @@ export class GridService {
 
     for (const row of rows) {
       const cell = grid.columnToCellMapper[columnId](row);
-
       const key = isFreeTextCell(cell) || isOptionsCell(cell) ? cell.cellText : isComponentCell(cell) ? String(cell.value()) : '';
 
       const rowBucket = groups.get(key);
-      if (rowBucket) {
-        rowBucket.push(row);
-      } else {
-        groups.set(key, [row]);
-      }
+      rowBucket ? rowBucket.push(row) : groups.set(key, [row]);
     }
 
-    return Array.from(groups.entries(), ([groupName, groupRows]) => ({
-      groupName,
-      groupColumnId: columnId,
-      children: this.recursiveGroupBy(groupRows, groupByColumnIds, level + 1, grid)
-    }));
+    return Array.from(groups.entries(), ([groupName, groupRows]) => {
+      const children = this.recursiveGroupBy(groupRows, groupByColumnIds,level + 1, grid);
+
+      const leafCount = Array.isArray(children)
+        ? this.isRowArray(children)
+          ? children.length
+          : children.reduce((sum, g) => sum + g.leafCount, 0)
+        : 0;
+
+      return { groupName, groupColumnId: columnId, children, leafCount };
+    });
   }
 
   private flattenGroupedData(
@@ -135,20 +135,19 @@ export class GridService {
         continue;
       }
 
-      const children = item.children;
-      const isLeafGroup = Array.isArray(children) && children.length > 0 && this.isRowArray(children);
-
       result.push({
         groupName: item.groupName,
         id: `group_by_${item.groupColumnId}_${item.groupName}`,
         discriminator: 'groupByRow',
-        count: isLeafGroup ? children.length : null,
+        count: item.leafCount,
         isOpen: true,
         level
       });
 
+      const children = item.children;
+
       if (Array.isArray(children)) {
-        if (isLeafGroup) {
+        if (this.isRowArray(children)) {
           result.push(...children);
         } else {
           this.flattenGroupedData(children, level + 1, result);

@@ -64,7 +64,8 @@ export interface ColumnResize {
 export type PrRowGroup = {
   groupName: string;
   groupColumnId: string;
-  children: PrRow[] | PrRowGroup[]
+  children: PrRow[] | PrRowGroup[];
+  leafCount: number;
 }
 
 export type PrGroupByRow = {

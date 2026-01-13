@@ -127,7 +127,7 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
     return `translateY(-${offset}px)`;
   }
 
-  public handleToggle(toggledRow: PrGroupByRow): void {
+  public onToggleGroupByRow(toggledRow: PrGroupByRow): void {
     toggledRow.isOpen = !toggledRow.isOpen;
     this.gridStore.setDisplayedRows(this.allRows);
   }

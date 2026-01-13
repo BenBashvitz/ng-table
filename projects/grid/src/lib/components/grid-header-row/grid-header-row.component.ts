@@ -66,7 +66,7 @@ export class GridHeaderRowComponent {
     event.stopPropagation();
     event.preventDefault();
     this.onClickColumn(column);
-    this.menuTriggers.get(columnIndex).openMenu()
+    this.menuTriggers.get(columnIndex).openMenu();
   }
 
   onRemoveColumn(column: PrColumnWithMetadata) {

@@ -45,7 +45,7 @@ export class GridColumnGroupRowComponent {
   }
 
   onContextMenu(columnIndex: number) {
-    this.menuTriggers.get(columnIndex).openMenu()
+    this.menuTriggers.get(columnIndex).openMenu();
   }
 
   onRemoveColumnGroup(columnGroup: PrColumnGroup) {

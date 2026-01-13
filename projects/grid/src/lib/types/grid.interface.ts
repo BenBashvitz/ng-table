@@ -67,15 +67,16 @@ export type PrRowGroup = {
   groupColumnId: string;
   children: PrRow[] | PrRowGroup[];
   leafCount: number;
+  subtreeSize: number;
 }
 
 export type PrGroupByRow = {
   discriminator: 'groupByRow';
   id: string;
   groupName: string;
-  isOpen?: boolean;
-  level?: number;
-  count?: number;
+  isOpen: boolean;
+  leafCount: number;
+  subtreeSize: number;
 }
 
 export type PrRow = {

@@ -91,6 +91,7 @@ export class GridService {
     const grouped = this.recursiveGroupBy(grid.rows, groupByColumnIds, 0, grid);
     return this.flattenGroupedData(grouped, 0);
   }
+
   private recursiveGroupBy(
     rows: PrRow[],
     groupByColumnIds: string[],
@@ -115,13 +116,20 @@ export class GridService {
     return Array.from(groups.entries(), ([groupName, groupRows]) => {
       const children = this.recursiveGroupBy(groupRows, groupByColumnIds,level + 1, grid);
 
-      const leafCount = Array.isArray(children)
-        ? this.isRowArray(children)
-          ? children.length
-          : children.reduce((sum, g) => sum + g.leafCount, 0)
-        : 0;
+      let leafCount = 0;
+      let subtreeSize = 0;
 
-      return { groupName, groupColumnId: columnId, children, leafCount };
+      if (this.isRowArray(children)) {
+        leafCount = children.length;
+        subtreeSize = children.length;
+      } else {
+        for (const group of children) {
+          leafCount += group.leafCount;
+          subtreeSize += 1 + group.subtreeSize;
+        }
+      }
+
+      return { groupName, groupColumnId: columnId, children, leafCount, subtreeSize };
     });
   }
 
@@ -140,9 +148,9 @@ export class GridService {
         groupName: item.groupName,
         id: `group_by_${item.groupColumnId}_${item.groupName}`,
         discriminator: 'groupByRow',
-        count: item.leafCount,
+        leafCount: item.leafCount,
+        subtreeSize: item.subtreeSize,
         isOpen: true,
-        level
       });
 
       const children = item.children;
@@ -161,22 +169,13 @@ export class GridService {
 
   updateDisplayedRows(rows: PrDisplayableRow[]): PrDisplayableRow[] {
     const result: PrDisplayableRow[] = [];
-    let skipLevel: number | null = null;
 
-    for (const row of rows) {
-      const isGroup = this.isGroupByRow(row);
-
-      if (skipLevel !== null) {
-        if (!isGroup || row.level > skipLevel) {
-          continue;
-        }
-        skipLevel = null;
-      }
-
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
       result.push(row);
 
-      if (isGroup && !row.isOpen) {
-        skipLevel = row.level;
+      if (this.isGroupByRow(row) && !row.isOpen) {
+        i += row.subtreeSize;
       }
     }
 

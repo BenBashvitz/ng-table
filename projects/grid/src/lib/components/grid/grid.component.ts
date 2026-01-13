@@ -9,7 +9,7 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
-import {PrGrid, PrGroupByRow, PrDisplayableRow, PrRow} from '../../types/grid.interface';
+import {PrGrid, PrDisplayableRow, PrRow} from '../../types/grid.interface';
 import {AsyncPipe} from "@angular/common";
 import {GridStore} from "../../store/grid.store";
 import { Observable, Subject, tap } from 'rxjs';
@@ -47,8 +47,8 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['grid'] && changes['grid'].currentValue !== changes['grid'].previousValue) {
-      this.gridStore.setGrid(this.grid)
+    if (changes['grid']?.currentValue?.groupByColumnIds && changes['grid'].currentValue.groupByColumnIds !== changes['grid'].previousValue.groupByColumnIds) {
+      this.gridStore.setGroupByColumnIds(this.grid.groupByColumnIds);
     }
   }
 

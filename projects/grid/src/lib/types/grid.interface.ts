@@ -50,6 +50,17 @@ export type SelectedCellData = {
   rowId: string | number;
 }
 
+export interface MoveItem<T = PrRow | PrColumn | PrColumnGroup> {
+  item: T,
+  currentIndex: number,
+  previousIndex: number,
+}
+
+export interface ColumnResize {
+  columnDef: string;
+  newWidthInPx: number;
+}
+
 export type PrRowGroup = {
   groupName: string;
   groupColumnId: string;

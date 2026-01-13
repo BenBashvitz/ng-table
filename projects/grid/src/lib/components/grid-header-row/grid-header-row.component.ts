@@ -1,9 +1,11 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, QueryList, ViewChildren} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
 import {AsyncPipe, NgForOf} from "@angular/common";
 import {PrColumn, PrColumnWithMetadata} from "@parlament/grid";
 import {GridStore} from "../../store/grid.store";
+import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
+import {MatOptionModule} from "@angular/material/core";
 
 @Component({
   selector: 'pr-grid-header-row',
@@ -16,7 +18,9 @@ import {GridStore} from "../../store/grid.store";
     ColumnResizeDirective,
     CdkDragPreview,
     NgForOf,
-    AsyncPipe
+    AsyncPipe,
+    MatMenuModule,
+    MatOptionModule
   ]
 })
 export class GridHeaderRowComponent {
@@ -24,9 +28,9 @@ export class GridHeaderRowComponent {
   @Input() gridTemplateColumns: string
   @Input() gridMaxWidth: number;
   @Input() gridWidth: number;
+  @ViewChildren(MatMenuTrigger) menuTriggers: QueryList<MatMenuTrigger>;
 
-  constructor(public gridStore: GridStore) {
-  }
+  constructor(public gridStore: GridStore) {}
 
   onDropColumn(event: CdkDragDrop<unknown, unknown, PrColumn>) {
     this.gridStore.moveColumn({
@@ -46,5 +50,13 @@ export class GridHeaderRowComponent {
 
   trackByColumn(_: number, column: PrColumnWithMetadata) {
     return column.columnDef
+  }
+
+  onContextMenu(columnIndex: number) {
+    this.menuTriggers.get(columnIndex).openMenu()
+  }
+
+  onRemoveColumn(column: PrColumnWithMetadata) {
+    this.gridStore.removeColumn(column);
   }
 }

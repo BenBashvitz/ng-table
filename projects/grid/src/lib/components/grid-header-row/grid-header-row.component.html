@@ -5,7 +5,7 @@
   (cdkDropListDropped)="onDropColumn($event)"
   [style.grid-template-columns]="gridTemplateColumns">
   <div
-    *ngFor="let column of columns; trackBy: trackByColumn"
+    *ngFor="let column of columns; let i = index; trackBy: trackByColumn"
     cdkDrag
     cdkDragLockAxis="x"
     cdkDragPreviewContainer="parent"
@@ -20,9 +20,16 @@
     [tvsColumnResize]="column"
     [gridMaxWidthInPx]="gridMaxWidth"
     [gridWidthInPx]="gridWidth"
+    (contextmenu)="$event.stopPropagation(); $event.preventDefault(); onContextMenu(i)"
   >
     {{ column.title }}
     <span class="resizer"></span>
     <ng-template cdkDragPreview></ng-template>
+    <mat-menu class="grid-header-actions-menu" #headerActionsMenu>
+      <mat-option (click)="onRemoveColumn(column)">
+        הסרת עמודה
+      </mat-option>
+    </mat-menu>
+    <div [matMenuTriggerFor]="headerActionsMenu"></div>
   </div>
 </div>

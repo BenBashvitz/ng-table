@@ -6,13 +6,14 @@ import {
   PrRow,
   PrGrid,
   gridDefaults,
-  PrGridMetadata,
+  ColumnResize,
   isFreeTextCell,
   isOptionsCell,
   isComponentCell,
   PrDisplayableRow,
-  PrGroupByRow, PrRowGroup
-} from '../types/grid.interface';
+  PrGroupByRow,
+  PrRowGroup
+} from "../types/grid.interface";
 import {moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Injectable({
@@ -51,15 +52,34 @@ export class GridService {
     return table;
   }
 
-  getGridPreferences(grid: PrGrid) {
-    const gridMetadata: PrGridMetadata = {
-      columnGroups: [],
-      pinnedRowsIds: grid.pinnedRowsIds,
-      groupByColumnIds: grid.groupByColumnIds,
-      sortByColumn: grid.sortByColumn,
-      rowHeightInPx: grid.rowHeightInPx,
+  setColumnWidth(grid: PrGrid, {columnDef, newWidthInPx}: ColumnResize) {
+    return {
+      ...grid,
+      columnGroups: grid.columnGroups.map((columnGroup) => ({
+        ...columnGroup,
+        columns: columnGroup.columns.map((column) => ({
+          ...column,
+          widthInPx: column.columnDef === columnDef ? newWidthInPx : column.widthInPx
+        }))
+      }))
+    };
+  }
+
+  removeColumn(grid: PrGrid, column: PrColumn) {
+    return {
+      ...grid,
+      columnGroups: grid.columnGroups.map((group) => ({
+        ...group,
+        columns: group.columns.filter(({columnDef}) => column.columnDef !== columnDef),
+      }))
     }
-    return
+  }
+
+  removeColumnGroup(grid: PrGrid, columnGroup: PrColumn) {
+    return {
+      ...grid,
+      columnGroups: grid.columnGroups.filter(({columnDef}) => columnGroup.columnDef !== columnDef)
+    }
   }
 
   getCurrentRows(grid: PrGrid, groupByColumnIds: string[]): PrDisplayableRow[] {

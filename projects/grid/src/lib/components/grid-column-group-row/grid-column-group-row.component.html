@@ -5,7 +5,7 @@
   (cdkDropListDropped)="onDropColumnGroup($event)"
   [style.grid-template-columns]="gridTemplateColumns">
   <div
-    *ngFor="let columnGroup of columnGroups; trackBy: trackByColumn"
+    *ngFor="let columnGroup of columnGroups; let i = index; trackBy: trackByColumn"
     cdkDrag
     cdkDragLockAxis="x"
     cdkDragPreviewContainer="parent"
@@ -21,9 +21,16 @@
     [style.grid-column]="'span ' + columnGroup.columns.length"
     [style.max-width.px]="columnGroup.columns | sum: 'maxWidthInPx'"
     [style.min-width.px]="columnGroup.columns | sum: 'minWidthInPx'"
+    (contextmenu)="$event.stopPropagation(); $event.preventDefault(); onContextMenu(i)"
   >
     {{ columnGroup.title }}
     <span class="resizer"></span>
     <ng-template cdkDragPreview></ng-template>
+    <mat-menu class="grid-header-actions-menu" #headerActionsMenu>
+      <mat-option (click)="onRemoveColumnGroup(columnGroup)">
+        הסרת קבוצת עמודות
+      </mat-option>
+    </mat-menu>
+    <div [matMenuTriggerFor]="headerActionsMenu"></div>
   </div>
 </div>

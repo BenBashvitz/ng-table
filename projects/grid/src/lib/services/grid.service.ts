@@ -82,7 +82,7 @@ export class GridService {
     }
   }
 
-  getCurrentRows(grid: PrGrid, groupByColumnIds: string[]): PrDisplayableRow[] {
+  getAllRows(grid: PrGrid, groupByColumnIds: string[]): PrDisplayableRow[] {
     if (!groupByColumnIds?.length) {
       return grid.rows;
     }

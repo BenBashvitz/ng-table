@@ -69,14 +69,14 @@ export class GridStore extends ComponentStore<GridState> {
 
     return columnIndex === 0 ? '0px' : `${columns.slice(0, columnIndex).reduce((width, {widthInPx}) => width + widthInPx + 2, 0)}px`
   })
-  readonly currentRows$ = this.select(
+  readonly allRows$ = this.select(
     this.groupByColumnIds$,
     this.rows$,
     (groupByColumnIds, rows) => ({ groupByColumnIds, rows })
   ).pipe(
     withLatestFrom(this.grid$),
     map(([{ groupByColumnIds }, grid]) => {
-      return this.gridService.getCurrentRows(grid, groupByColumnIds);
+      return this.gridService.getAllRows(grid, groupByColumnIds);
     })
   );
   readonly selectedCells$ = this.select(state => state.selectedCells);
@@ -134,9 +134,9 @@ export class GridStore extends ComponentStore<GridState> {
     ...state,
     selectedCells: [cell]
   }))
-  readonly setDisplayedRows = this.updater((state, currentRows: PrDisplayableRow[]) => ({
+  readonly setDisplayedRows = this.updater((state, allRows: PrDisplayableRow[]) => ({
     ...state,
-    displayedRows: this.gridService.updateDisplayedRows(currentRows)
+    displayedRows: this.gridService.updateDisplayedRows(allRows)
   }))
   readonly setColumnWidthInPx = this.updater((state, columnResize: ColumnResize) => ({
     ...state,

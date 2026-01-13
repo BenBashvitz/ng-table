@@ -54,7 +54,7 @@ import { GridGroupByRowComponent } from '../grid-group-by-row/grid-group-by-row.
 })
 export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
   @Input() table: PrGrid;
-  @Input() currentRows: PrDisplayableRow[];
+  @Input() allRows: PrDisplayableRow[];
   @Input() columns: PrColumnWithMetadata[];
   @Input() selectedCells: SelectedCellData[];
   @Output() clickRow = new EventEmitter<PrRow>();
@@ -89,8 +89,8 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['currentRows']?.currentValue?.length > 0 && changes['currentRows'].currentValue !== changes['currentRows'].previousValue) {
-      this.gridStore.setDisplayedRows(changes['currentRows'].currentValue);
+    if (changes['allRows']?.currentValue?.length > 0 && changes['allRows'].currentValue !== changes['allRows'].previousValue) {
+      this.gridStore.setDisplayedRows(changes['allRows'].currentValue);
     }
   }
 
@@ -130,6 +130,6 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
 
   public handleToggle(toggledRow: PrGroupByRow): void {
     toggledRow.isOpen = !toggledRow.isOpen;
-    this.gridStore.setDisplayedRows(this.currentRows);
+    this.gridStore.setDisplayedRows(this.allRows);
   }
 }

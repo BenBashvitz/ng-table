@@ -34,7 +34,7 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   @Output() dblclickRow = new EventEmitter<PrRow>();
 
   destroy$ = new Subject<void>();
-  currentRows$: Observable<PrDisplayableRow[]>
+  allRows$: Observable<PrDisplayableRow[]>
 
   constructor(public gridStore: GridStore, private cd: ChangeDetectorRef) {}
 
@@ -43,7 +43,7 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
     this.gridStore.grid$.pipe(takeUntil(this.destroy$)).subscribe(grid => {
       this.gridChange.emit(grid);
     });
-    this.currentRows$ = this.gridStore.currentRows$.pipe(tap(() => this.cd.detectChanges()));
+    this.allRows$ = this.gridStore.allRows$.pipe(tap(() => this.cd.detectChanges()));
   }
 
   ngOnChanges(changes: SimpleChanges) {

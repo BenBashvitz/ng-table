@@ -65,7 +65,7 @@ export class GridStore extends ComponentStore<GridState> {
   readonly gridWidth$ = this.select(this.columns$, columns => {
     return columns.reduce((width, {widthInPx}) => {
       return width + widthInPx + 2;
-    }, 13)
+    }, 0)
   })
   readonly maxWidth$ = this.select(this.grid$, grid => grid.maxWidthInPx ?? defaults.maxWidthInPx);
   readonly groupByColumnIds$ = this.select(this.grid$, grid => grid.groupByColumnIds);

@@ -88,7 +88,7 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['currentRows'] && changes['currentRows']?.currentValue?.length > 0 && changes['currentRows'].currentValue !== changes['currentRows'].previousValue) {
+    if (changes['currentRows']?.currentValue?.length > 0 && changes['currentRows'].currentValue !== changes['currentRows'].previousValue) {
       this.tableStore.setDisplayedRows(changes['currentRows'].currentValue);
     }
   }

@@ -16,11 +16,12 @@
     [class.sticky]="column.isSticky"
     [style.max-width.px]="column.maxWidthInPx"
     [style.min-width.px]="column.minWidthInPx"
-    [style.right]="column.isSticky ? (gridStore.columnRightInPx$(column) | async) : 'unset'"
+    [style.right]="column.isSticky ? (gridStore.stickyColumnRight$(column) | async) : 'unset'"
     [tvsColumnResize]="column"
     [gridMaxWidthInPx]="gridMaxWidth"
     [gridWidthInPx]="gridWidth"
-    (contextmenu)="$event.stopPropagation(); $event.preventDefault(); onContextMenu(i)"
+    (click)="onClickColumn(column)"
+    (contextmenu)="onContextMenuColumn($event, column, i)"
   >
     {{ column.title }}
     <span class="resizer"></span>
@@ -28,6 +29,9 @@
     <mat-menu class="grid-header-actions-menu" #headerActionsMenu>
       <mat-option (click)="onRemoveColumn(column)">
         הסרת עמודה
+      </mat-option>
+      <mat-option (click)="onCopyColumn(column)">
+        העתקת עמודה
       </mat-option>
     </mat-menu>
     <div [matMenuTriggerFor]="headerActionsMenu"></div>

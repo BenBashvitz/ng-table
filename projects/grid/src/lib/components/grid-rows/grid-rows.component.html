@@ -37,16 +37,22 @@
           [row]="row"
           [columns]="[columns[0]]"
           [columnToCellMapper]="table.columnToCellMapper"
-          [gridTemplateColumns]="gridTemplate$ | async"
+          [gridTemplateColumns]="'' + columns[0].widthInPx + 'px'"
           [selectedCells]="[]"
         ></pr-grid-row>
       </ng-template>
     </pr-grid-row>
   </div>
-<!--  <div-->
-<!--    *ngFor="let selectedRow of gridStore.selectedRows$ | async"-->
-<!--    class="grid-row-selection"-->
-<!--    [style.height.px]="table.rowHeightInPx"-->
-<!--    [style.top.px]="64 + (selectedRow.index - virtualViewport.getRenderedRange().start) * (table.rowHeightInPx + 2)">-->
-<!--  </div>-->
+  <div
+    *ngFor="let selectedRow of gridStore.selectedRows$ | async"
+    class="grid-row-selection grid-selection"
+    [style.height.px]="table.rowHeightInPx"
+    [style.top.px]="64 + (selectedRow.index - virtualViewport.getRenderedRange().start) * (table.rowHeightInPx + 2)"
+  ></div>
+  <div
+    *ngFor="let selectedColumn of gridStore.selectedColumns$ | async"
+    class="grid-column-selection grid-selection"
+    [style.width.px]="selectedColumn.widthInPx"
+    [style.right]="gridStore.columnRight$(selectedColumn) | async"
+  ></div>
 </cdk-virtual-scroll-viewport>

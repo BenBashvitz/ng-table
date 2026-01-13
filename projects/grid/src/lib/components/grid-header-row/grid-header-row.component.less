@@ -3,12 +3,6 @@
   gap: 2px;
   grid-auto-rows: var(--pr-grid-column-row-height);
 
-  .sticky {
-    position: sticky !important;
-    right: 0;
-    z-index: 1;
-  }
-
   .grid-header-cell {
     cursor: grab;
     position: relative;
@@ -25,6 +19,17 @@
     align-items: center;
     justify-content: center;
     font-size: var(--pr-grid-column-font-size);
+
+    & .sticky {
+      position: sticky !important;
+      right: 0;
+      z-index: 1;
+    }
+
+    &.selected {
+      border: 1px solid var(--pr-grid-primary);
+      background-color: var(--pr-grid-primary-opacity);
+    }
 
     &:active {
       cursor: grabbing;

@@ -92,7 +92,6 @@ export class GridRowsComponent implements OnInit, OnDestroy {
   }
 
   onClickRow(row: PrRow, index: number) {
-    this.gridStore.setSelectedRow({row, index});
     this.clickRow.emit(row)
   }
 

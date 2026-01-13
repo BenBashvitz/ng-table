@@ -1,3 +1,18 @@
 pr-grid {
   --pr-grid-max-width: 650px;
 }
+
+.group-by-button{
+  width: 75px;
+  height: 20px;
+  background-color: #7B8297;
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 7px;
+  border: 2px solid darkslategrey;
+  font-size: 14px;
+  cursor: pointer;
+  color: azure;
+}

@@ -53,6 +53,11 @@ body {
     --pr-grid-column-color: #{variables.$pr-grid-header-column-text-color-light};
     --pr-grid-cell-bg: #{variables.$pr-grid-cell-background-color-light};
     --pr-grid-cell-color: #{variables.$pr-grid-cell-text-color-light};
+    --pr-grid-group-by-row-bg: #{variables.$pr-grid-group-by-row-background-color-light};
+    --pr-grid-group-by-row-border-color: #{variables.$pr-grid-group-by-row-border-color-light};
+    --pr-grid-group-by-row-name-color: #{variables.$pr-grid-group-by-row-name-color-light};
+    --pr-grid-group-by-row-count-color: #{variables.$pr-grid-group-by-row-count-color-light};
+    --pr-grid-group-by-row-dropdown-color: #{variables.$pr-grid-group-by-row-dropdown-color-light};
   }
 }
 

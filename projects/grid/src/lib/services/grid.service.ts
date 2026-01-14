@@ -6,7 +6,6 @@ import {
   PrRow,
   PrGrid,
   gridDefaults,
-  PrGridMetadata,
   isFreeTextCell,
   isOptionsCell,
   isComponentCell,
@@ -56,14 +55,14 @@ export class GridService {
   setColumnWidth(grid: PrGrid, {columnDef, newWidthInPx}: ColumnResize) {
     return {
       ...grid,
-      columnGroups: grid.columnGroups.map(columnGroup => ({
+      columnGroups: grid.columnGroups.map((columnGroup) => ({
         ...columnGroup,
-        columns: columnGroup.columns.map(column => ({
+        columns: columnGroup.columns.map((column) => ({
           ...column,
           widthInPx: column.columnDef === columnDef ? newWidthInPx : column.widthInPx
         }))
       }))
-    }
+    };
   }
 
   removeColumn(grid: PrGrid, column: PrColumn) {

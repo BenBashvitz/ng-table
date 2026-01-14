@@ -47,8 +47,8 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['grid'] && changes['grid'].currentValue !== changes['grid'].previousValue) {
-      this.gridStore.setGrid(this.grid)
+    if (changes['grid']?.currentValue?.groupByColumnIds && changes['grid'].currentValue.groupByColumnIds !== changes['grid'].previousValue.groupByColumnIds) {
+      this.gridStore.setGroupByColumnIds(this.grid.groupByColumnIds);
     }
   }
 

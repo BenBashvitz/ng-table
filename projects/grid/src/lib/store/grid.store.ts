@@ -94,6 +94,13 @@ export class GridStore extends ComponentStore<GridState> {
     ...state,
     grid: this.gridService.initializeGrid(table)
   }));
+  readonly setGroupByColumnIds = this.updater((state, groupByColumnIds: string[]) => ({
+    ...state,
+    grid: {
+      ...state.grid,
+      groupByColumnIds
+    }
+  }))
   readonly moveColumnGroup = this.updater((state, moveGroup: MoveItem<PrColumnGroup>) => ({
     ...state,
     grid: {

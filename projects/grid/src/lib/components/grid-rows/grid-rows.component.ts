@@ -17,8 +17,8 @@ import {
   PrGrid,
   PrGroupByRow,
   PrDisplayableRow,
-  PrRow
-, SelectedCellData} from '@parlament/grid';
+  PrRow,
+  SelectedCellData} from '@parlament/grid';
 import {CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 import {MatTableModule} from "@angular/material/table";
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
@@ -47,7 +47,6 @@ import { GridGroupByRowComponent } from '../grid-group-by-row/grid-group-by-row.
     GridHeaderRowComponent,
     AsyncPipe,
     CdkDragPreview,
-    NgForOf,
     GridColumnGroupRowComponent,
     NgIf,
     NgForOf,

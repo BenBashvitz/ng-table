@@ -16,7 +16,7 @@ import {
   SelectedCellData
 } from "@parlament/grid";
 import {ComponentStore} from "@ngrx/component-store";
-import {switchMap} from "rxjs";
+import {Observable, switchMap} from "rxjs";
 import {withLatestFrom, map} from 'rxjs/operators'
 
 export interface GridState {
@@ -161,8 +161,8 @@ export class GridStore extends ComponentStore<GridState> {
     ...state,
     grid: this.gridService.setColumnWidth(state.grid, columnResize),
   }));
-  readonly copyColumn = this.effect<PrColumnWithMetadata>(triggers$ => triggers$.pipe(
-    withLatestFrom(this.grid$),
+  readonly copyColumn = this.effect<PrColumnWithMetadata>((triggers$: Observable<PrColumn>) => triggers$.pipe(
+    withLatestFrom<PrColumn, [PrGrid]>(this.grid$),
     switchMap(([column, grid]) => {
       const text = [
         column.title,

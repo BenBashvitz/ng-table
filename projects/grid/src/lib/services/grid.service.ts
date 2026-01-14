@@ -6,7 +6,11 @@ import {
   PrRow,
   PrGrid,
   gridDefaults,
-  PrGridMetadata, ColumnResize
+  PrGridMetadata,
+  isFreeTextCell,
+  isOptionsCell,
+  isComponentCell,
+  ColumnResize,
 } from "../types/grid.interface";
 import {moveItemInArray} from "@angular/cdk/drag-drop";
 
@@ -74,6 +78,83 @@ export class GridService {
       ...grid,
       columnGroups: grid.columnGroups.filter(({columnDef}) => columnGroup.columnDef !== columnDef)
     }
+  }
+
+  getGroupByArray(grid: PrGrid, groupByColumnIds: string[]): any[] {
+    if (!groupByColumnIds || groupByColumnIds.length === 0) {
+      return grid.rows;
+    }
+
+    const grouped = this.groupByRecursive(grid.rows, groupByColumnIds, grid);
+    return this.flattenGroupedData(grouped);
+  }
+
+  private groupByRecursive(rows: PrRow[], groupByColumnIds: string[], grid: PrGrid): any {
+    if (groupByColumnIds.length === 0) {
+      return rows;
+    }
+
+    const currentColumnId = groupByColumnIds[0];
+    const remainingColumnIds = groupByColumnIds.slice(1);
+
+    const groups: Record<string, any> = {};
+
+    rows.forEach(row => {
+      const cell = grid.columnToCellMapper[currentColumnId](row);
+      let key = '';
+      if (isFreeTextCell(cell) || isOptionsCell(cell)) {
+        key = cell.cellText;
+      } else if (isComponentCell(cell)) {
+        key = String(cell.value());
+      }
+
+      if (!groups[key]) {
+        groups[key] = [];
+      }
+      groups[key].push(row);
+    });
+
+    const result: any[] = [];
+    for (const key in groups) {
+      result.push({
+        groupName: key,
+        groupColumnId: currentColumnId,
+        children: this.groupByRecursive(groups[key], remainingColumnIds, grid)
+      });
+    }
+
+    return result;
+  }
+
+  private flattenGroupedData(groupedData: any[]): any[] {
+    let result: any[] = [];
+
+    groupedData.forEach(group => {
+      if (group.groupName) {
+        result.push({
+          groupName: group.groupName,
+          id: group.groupColumnId,
+          discriminator: 'groupByRow',
+          count: group.children.length > 0 && !group.children[0].groupName ? group.children.length : null
+        });
+        if (Array.isArray(group.children)) {
+           // Check if children are leaf rows or subgroups
+           if (group.children.length > 0 && !group.children[0].groupName) {
+             // Children are rows
+             result = result.concat(group.children);
+           } else {
+             // Children are subgroups
+             result = result.concat(this.flattenGroupedData(group.children));
+           }
+        }
+      } else {
+        // Should not happen if structure is correct, but as fallback
+        result.push(group);
+      }
+    });
+
+    console.log(result);
+    return result;
   }
 
   private setGridDefaultValues(table: PrGrid): PrGrid {

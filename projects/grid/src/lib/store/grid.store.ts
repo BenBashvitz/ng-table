@@ -16,6 +16,7 @@ import {
 } from "@parlament/grid";
 import {ComponentStore} from "@ngrx/component-store";
 import {switchMap, withLatestFrom} from "rxjs";
+import { map, withLatestFrom } from 'rxjs';
 
 export interface GridState {
   grid: PrGrid,
@@ -61,6 +62,8 @@ export class GridStore extends ComponentStore<GridState> {
     }, 13)
   })
   readonly maxWidth$ = this.select(this.grid$, grid => grid.maxWidthInPx ?? defaults.maxWidthInPx);
+  readonly groupByColumnIds$ = this.select(this.grid$, grid => grid.groupByColumnIds);
+  readonly rows$ = this.select(this.grid$, grid => grid.rows);
   readonly selectedRows$ = this.select(state => state.selectedRows);
   readonly stickyColumnRight$ = (column: PrColumn) => this.select(this.columns$, columns => {
     const stickyColumns = columns.filter(({isSticky}) => isSticky);
@@ -76,6 +79,16 @@ export class GridStore extends ComponentStore<GridState> {
   readonly selectedCells$ = this.select(state => state.selectedCells);
   readonly selectedColumns$ = this.select(state => state.selectedColumns);
 
+  readonly groupedRows$ = this.select(
+    this.groupByColumnIds$,
+    this.rows$,
+    (groupByColumnIds, rows) => ({ groupByColumnIds, rows })
+  ).pipe(
+    withLatestFrom(this.grid$),
+    map(([{ groupByColumnIds }, grid]) => {
+      return this.gridService.getGroupByArray(grid, groupByColumnIds);
+    })
+  );
   readonly setGrid = this.updater((state, table: PrGrid) => ({
     ...state,
     grid: this.gridService.initializeGrid(table)

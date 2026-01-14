@@ -22,6 +22,10 @@ body {
   --pr-grid-column-color: #{variables.$pr-grid-header-column-text-color-dark};
   --pr-grid-cell-bg: #{variables.$pr-grid-cell-background-color-dark};
   --pr-grid-cell-color: #{variables.$pr-grid-cell-text-color-dark};
+  --pr-grid-group-by-row-bg: #{variables.$pr-grid-group-by-row-background-color-dark};
+  --pr-grid-group-by-row-border-color: #{variables.$pr-grid-group-by-row-border-color-dark};
+  --pr-grid-group-by-row-name-color: #{variables.$pr-grid-group-by-row-name-color-dark};
+  --pr-grid-group-by-row-count-color: #{variables.$pr-grid-group-by-row-count-color-dark};
 
   --pr-grid-max-width: #{variables.$pr-grid-header-group-border-radius};
   --pr-grid-group-radius: #{variables.$pr-grid-header-group-border-radius};
@@ -36,6 +40,9 @@ body {
   --pr-grid-cell-row-height: #{variables.$pr-grid-cell-row-height};
   --pr-grid-cell-font-weight: #{variables.$pr-grid-cell-font-weight};
   --pr-grid-cell-font-size: #{variables.$pr-grid-cell-font-size};
+  --pr-grid-group-by-row-radius: #{variables.$pr-grid-group-by-row-border-radius};
+  --pr-grid-group-by-row-font-weight: #{variables.$pr-grid-group-by-row-font-weight};
+  --pr-grid-group-by-row-font-size: #{variables.$pr-grid-group-by-row-font-size};
 
   .light {
     --pr-grid-bg: #{variables.$pr-grid-background-color-light};
@@ -52,7 +59,7 @@ body {
   margin: 0;
   padding: 0;
   background: helpers.mat-theme-color(background, background);
-  font-family: Roboto, "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-family: Assistant, "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
 * {
@@ -61,7 +68,7 @@ body {
 
 code {
   font-size: 90%;
-  font-family: 'Roboto Mono', monospace;
+  font-family: 'Assistant Mono', monospace;
 }
 
 h1, h2 {

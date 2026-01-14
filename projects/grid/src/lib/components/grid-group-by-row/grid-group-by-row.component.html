@@ -1,0 +1,9 @@
+<div class="container">
+  <div class="group-by-row" (click)="toggleOpen()">
+    <div class="group-name">{{ groupByRow.groupName }}</div>
+    <div *ngIf="groupByRow.count !== null" class="row-count">
+      ({{ groupByRow.count }})
+    </div>
+    <mat-icon class="dropdown-icon" [class.open]="groupByRow.isOpen">keyboard_arrow_down</mat-icon>
+  </div>
+</div>

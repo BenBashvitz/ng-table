@@ -7,7 +7,7 @@ import { GridStore } from '../../store/grid.store';
 import {IsCellSelectedPipe} from "../../pipes/is-cell-selected.pipe";
 
 @Component({
-  selector: '<pr-grid-row',
+  selector: 'pr-grid-row',
   templateUrl: './grid-row.component.html',
   styleUrls: ['./grid-row.component.less'],
   standalone: true,

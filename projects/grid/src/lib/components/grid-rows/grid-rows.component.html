@@ -65,7 +65,7 @@
   <div
     *ngFor="let selectedColumn of gridStore.selectedColumns$ | async"
     class="grid-column-selection grid-selection"
-    [style.width.px]="selectedColumn.widthInPx"
+    [style.width.px]="selectedColumn.widthInPx - 2"
     [style.right]="gridStore.columnRight$(selectedColumn) | async"
   ></div>
 </cdk-virtual-scroll-viewport>

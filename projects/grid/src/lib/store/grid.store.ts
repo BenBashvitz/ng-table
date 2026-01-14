@@ -16,7 +16,8 @@ import {
   SelectedCellData
 } from "@parlament/grid";
 import {ComponentStore} from "@ngrx/component-store";
-import {switchMap, withLatestFrom, map} from "rxjs";
+import {switchMap} from "rxjs";
+import {withLatestFrom, map} from 'rxjs/operators'
 
 export interface GridState {
   grid: PrGrid,
@@ -79,27 +80,16 @@ export class GridStore extends ComponentStore<GridState> {
 
     return columnIndex === 0 ? '0px' : `${columns.slice(0, columnIndex).reduce((width, {widthInPx}) => width + widthInPx + 2, 0)}px`
   })
-  readonly columnRight$ = (column: PrColumn) => this.select(this.columns$, columns => {
-    const columnIndex = columns.findIndex(({columnDef}) => column.columnDef === columnDef);
-
-    return columnIndex === 0 ? '0px' : `${columns.slice(0, columnIndex).reduce((width, {widthInPx}) => width + widthInPx + 2, 0)}px`
-  })
   readonly selectedCells$ = this.select(state => state.selectedCells);
   readonly selectedColumns$ = this.select(state => state.selectedColumns);
-
   readonly allRows$ = this.select(
     this.groupByColumnIds$,
     this.rows$,
-    (groupByColumnIds, rows) => ({ groupByColumnIds, rows })
+    (groupByColumnIds, rows) => ({groupByColumnIds, rows})
   ).pipe(
     withLatestFrom(this.grid$),
-    map(([{ groupByColumnIds }, grid]) => {
-      return this.gridService.getAllRows(grid, groupByColumnIds);
-    })
+    map(([{groupByColumnIds}, grid]) => this.gridService.getAllRows(grid, groupByColumnIds))
   );
-  readonly selectedCells$ = this.select(state => state.selectedCells);
-  readonly selectedColumns$ = this.select(state => state.selectedColumns);
-
   readonly setGrid = this.updater((state, table: PrGrid) => ({
     ...state,
     grid: this.gridService.initializeGrid(table)
@@ -127,11 +117,11 @@ export class GridStore extends ComponentStore<GridState> {
       ...this.gridService.changeRowOrder(state.grid, moveRow.item, moveRow.previousIndex, moveRow.currentIndex)
     },
   }));
-  readonly removeColumn = this.updater((state, column:PrColumnWithMetadata) => ({
+  readonly removeColumn = this.updater((state, column: PrColumnWithMetadata) => ({
     ...state,
     grid: this.gridService.removeColumn(state.grid, column),
   }))
-  readonly removeColumnGroup = this.updater((state, columnGroup:PrColumnGroup) => ({
+  readonly removeColumnGroup = this.updater((state, columnGroup: PrColumnGroup) => ({
     ...state,
     grid: this.gridService.removeColumnGroup(state.grid, columnGroup),
   }))
@@ -172,11 +162,11 @@ export class GridStore extends ComponentStore<GridState> {
         ...grid.rows.map(row => {
           const cell: PrCellType = grid.columnToCellMapper[column.columnDef](row);
 
-          if(isComponentCell(cell)) {
+          if (isComponentCell(cell)) {
             return cell.value();
           }
 
-          if(isTextCell(cell)) {
+          if (isTextCell(cell)) {
             return cell.cellText;
           }
 

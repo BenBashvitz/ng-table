@@ -79,8 +79,7 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
 
   destroyed$ = new Subject<void>();
 
-  constructor(public gridStore: GridStore, private cd: ChangeDetectorRef) {
-  }
+  constructor(public gridStore: GridStore, private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.gridWidthInPx$ = this.gridStore.gridWidth$.pipe(tap(() => this.cd.detectChanges()));
@@ -119,16 +118,7 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
     this.dblclickRow.emit(row)
   }
 
-  public get inverseOfTranslation(): string {
-    if (!this.virtualViewport) {
-      return '-0px';
-    }
-    const offset = this.virtualViewport.getOffsetToRenderedContentStart();
-
-    return `translateY(-${offset}px)`;
-  }
-
-  public onToggleGroupByRow(toggledRow: PrGroupByRow): void {
+  onToggleGroupByRow(toggledRow: PrGroupByRow): void {
     toggledRow.isOpen = !toggledRow.isOpen;
     this.gridStore.setDisplayedRows(this.allRows);
   }

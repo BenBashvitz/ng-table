@@ -1,8 +1,9 @@
 import {Component} from '@angular/core';
-import {PrRow, PrGrid} from "../../../../../grid/src/lib/types/grid.interface";
+import {PrRow, PrGrid} from "@parlament/grid";
 
 const DATA: PrRow[] = Array.from({length: 1000}, (v, i) => ({
   id: i + 1,
+  discriminator: 'row'
 }));
 
 const columns = ['id', 'name', 'type', 'status', 'more'] as const;
@@ -14,6 +15,8 @@ type Columns = typeof columns[number];
   styleUrls: ['./basic-grid-example.component.css']
 })
 export class BasicGridExample {
+  isGroupByEnabled = false;
+
   table: PrGrid<Columns> = {
     rows: DATA,
     columnToCellMapper: {
@@ -72,5 +75,15 @@ export class BasicGridExample {
         title: 'סטטוסים'
       },
     ],
+  }
+
+  enableGroupBy() {
+    if (!this.isGroupByEnabled) {
+      this.table = { ...this.table, groupByColumnIds: ['name', 'type'] };
+    } else {
+      this.table = { ...this.table, groupByColumnIds: [] };
+    }
+
+    this.isGroupByEnabled = !this.isGroupByEnabled;
   }
 }

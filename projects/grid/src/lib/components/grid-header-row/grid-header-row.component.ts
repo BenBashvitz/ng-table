@@ -1,4 +1,4 @@
-import {Component, Input, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, Input, QueryList, ViewChildren} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
 import {AsyncPipe, NgForOf} from "@angular/common";

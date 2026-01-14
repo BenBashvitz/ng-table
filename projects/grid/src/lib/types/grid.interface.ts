@@ -61,9 +61,29 @@ export interface ColumnResize {
   newWidthInPx: number;
 }
 
+export type PrRowGroup = {
+  groupName: string;
+  groupColumnId: string;
+  children: PrRow[] | PrRowGroup[];
+  leafCount: number;
+  subtreeSize: number;
+}
+
+export type PrGroupByRow = {
+  discriminator: 'groupByRow';
+  id: string;
+  groupName: string;
+  isOpen: boolean;
+  leafCount: number;
+  subtreeSize: number;
+}
+
 export type PrRow = {
+  discriminator: 'row';
   id: string | number;
 }
+
+export type PrDisplayableRow = PrGroupByRow | PrRow;
 
 export type PrGridMetadata<AvailableColumns extends string = string> = {
   columnGroups: PrColumnGroup<AvailableColumns>[]

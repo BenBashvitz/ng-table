@@ -5,21 +5,31 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {PrColumnWithMetadata, PrGrid, PrRow, SelectedCellData} from "@parlament/grid";
+import {
+  PrColumnWithMetadata,
+  PrGrid,
+  PrGroupByRow,
+  PrDisplayableRow,
+  PrRow,
+  SelectedCellData
+} from '@parlament/grid';
 import {CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 import {MatTableModule} from "@angular/material/table";
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {GridRowComponent} from "../grid-row/grid-row.component";
 import {GridHeaderRowComponent} from "../grid-header-row/grid-header-row.component";
 import {GridStore} from "../../store/grid.store";
-import {AsyncPipe, NgForOf} from "@angular/common";
+import {AsyncPipe, NgIf} from "@angular/common";
 import {Observable, Subject, tap} from "rxjs";
 import {GridColumnGroupRowComponent} from "../grid-column-group-row/grid-column-group-row.component";
+import { GridGroupByRowComponent } from '../grid-group-by-row/grid-group-by-row.component';
 
 @Component({
   selector: 'pr-grid-rows',
@@ -34,15 +44,17 @@ import {GridColumnGroupRowComponent} from "../grid-column-group-row/grid-column-
     CdkVirtualForOf,
     CdkFixedSizeVirtualScroll,
     GridRowComponent,
+    GridGroupByRowComponent,
     GridHeaderRowComponent,
     AsyncPipe,
     CdkDragPreview,
-    NgForOf,
     GridColumnGroupRowComponent,
+    NgIf,
   ]
 })
-export class GridRowsComponent implements OnInit, OnDestroy {
+export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
   @Input() table: PrGrid;
+  @Input() allRows: PrDisplayableRow[];
   @Input() columns: PrColumnWithMetadata[];
   @Input() selectedCells: SelectedCellData[];
   @Output() clickRow = new EventEmitter<PrRow>();
@@ -54,7 +66,7 @@ export class GridRowsComponent implements OnInit, OnDestroy {
   gridWidthInPx$: Observable<number>;
   gridMaxWidthInPx$ = this.gridStore.maxWidth$;
   gridTemplate$: Observable<string>;
-
+  displayedRows$: Observable<PrDisplayableRow[]>
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent): void {
@@ -73,6 +85,13 @@ export class GridRowsComponent implements OnInit, OnDestroy {
     this.gridWidthInPx$ = this.gridStore.gridWidth$.pipe(tap(() => this.cd.detectChanges()));
     this.gridTemplate$ = this.gridStore.gridTemplate$.pipe(tap(() => this.cd.detectChanges()));
     this.gridMaxWidthInPx$ = this.gridStore.maxWidth$.pipe(tap(() => this.cd.detectChanges()));
+    this.displayedRows$ = this.gridStore.displayedRows$.pipe(tap(() => this.cd.detectChanges()));
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['allRows']?.currentValue?.length > 0 && changes['allRows'].currentValue !== changes['allRows'].previousValue) {
+      this.gridStore.setDisplayedRows(changes['allRows'].currentValue);
+    }
   }
 
   ngOnDestroy() {
@@ -107,5 +126,10 @@ export class GridRowsComponent implements OnInit, OnDestroy {
     const offset = this.virtualViewport.getOffsetToRenderedContentStart();
 
     return `translateY(-${offset}px)`;
+  }
+
+  public onToggleGroupByRow(toggledRow: PrGroupByRow): void {
+    toggledRow.isOpen = !toggledRow.isOpen;
+    this.gridStore.setDisplayedRows(this.allRows);
   }
 }

@@ -1,12 +1,13 @@
-import {Component} from '@angular/core';
-import {PrGrid, PrRow} from "@parlament/grid";
+import { Component } from '@angular/core';
+import { PrGrid, PrRow } from '@parlament/grid';
 
-const DATA: PrRow[] = Array.from({length: 1000}, (v, i) => ({
+const DATA: PrRow[] = Array.from({ length: 1000 }, (v, i) => ({
   id: i + 1,
+  discriminator: 'row'
 }));
 
 const columns = ['id', 'name', 'type', 'status', 'more'] as const;
-type Columns = typeof columns[number];
+type Columns = (typeof columns)[number];
 
 @Component({
   selector: 'app-basic-dark-grid-example',
@@ -14,29 +15,31 @@ type Columns = typeof columns[number];
   styleUrls: ['./basic-dark-grid-example.component.css']
 })
 export class BasicDarkGridExample {
+  isGroupByEnabled = false;
+
   table: PrGrid<Columns> = {
     rows: DATA,
     columnToCellMapper: {
       id: (row: PrRow) => ({
-        discriminator: "Text",
-        cellText: `${+row.id}`,
+        discriminator: 'Text',
+        cellText: `${+row.id}`
       }),
       name: (row: PrRow) => ({
-        discriminator: "Text",
-        cellText: `שם ישות ${row.id}`,
+        discriminator: 'Text',
+        cellText: `שם ישות ${(Number(row.id) % 2 === 0) ? 1 : 2}`
       }),
       type: (row: PrRow) => ({
-        discriminator: "Text",
-        cellText: `טיפוס ${row.id}`,
+        discriminator: 'Text',
+        cellText: `טיפוס ${row.id}`
       }),
       status: (row: PrRow) => ({
-        discriminator: "Text",
-        cellText: `סטטוס ישות ${row.id}`,
+        discriminator: 'Text',
+        cellText: `סטטוס ישות ${row.id}`
       }),
       more: (row: PrRow) => ({
-        discriminator: "Text",
-        cellText: `עוד מידע ${row.id}`,
-      }),
+        discriminator: 'Text',
+        cellText: `עוד מידע ${row.id}`
+      })
     },
     columnGroups: [
       {
@@ -44,16 +47,16 @@ export class BasicDarkGridExample {
         columns: [
           {
             columnDef: 'id',
-            title: 'מזהה ישות',
+            title: 'מזהה ישות'
           },
           {
             columnDef: 'name',
-            title: 'שם',
+            title: 'שם'
           },
           {
             columnDef: 'type',
-            title: 'טיפוס',
-          },
+            title: 'טיפוס'
+          }
         ],
         title: 'נתוני ישות'
       },
@@ -62,16 +65,26 @@ export class BasicDarkGridExample {
         columns: [
           {
             columnDef: 'status',
-            title: 'סטטוס',
+            title: 'סטטוס'
           },
           {
             columnDef: 'more',
-            title: 'עוד',
-          },
+            title: 'עוד'
+          }
         ],
         title: 'סטטוסים'
-      },
+      }
     ],
     maxWidthInPx: 750
+  };
+
+  enableGroupBy() {
+    if (!this.isGroupByEnabled) {
+      this.table = { ...this.table, groupByColumnIds: ['name', 'type'] };
+    } else {
+      this.table = { ...this.table, groupByColumnIds: [] };
+    }
+
+    this.isGroupByEnabled = !this.isGroupByEnabled;
   }
 }

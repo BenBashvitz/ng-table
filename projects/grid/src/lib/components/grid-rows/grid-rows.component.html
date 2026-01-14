@@ -20,28 +20,38 @@
       [gridWidth]="gridWidthInPx$ | async"
       [gridMaxWidth]="gridMaxWidthInPx$ | async"
     ></pr-grid-header-row>
-    <pr-grid-row
-      *cdkVirtualFor="let row of table.rows; let i = index; trackBy: trackByRow"
-      cdkDrag
-      [cdkDragData]="row"
-      [row]="row"
-      [columns]="columns"
-      [columnToCellMapper]="table.columnToCellMapper"
-      [gridTemplateColumns]="gridTemplate$ | async"
-      [selectedCells]="selectedCells"
-      (click)="onClickRow(row, i)"
-      (dblclick)="onDoubleClickRow(row)"
-    >
-      <ng-template cdkDragPreview>
-        <pr-grid-row
-          [row]="row"
-          [columns]="[columns[0]]"
-          [columnToCellMapper]="table.columnToCellMapper"
-          [gridTemplateColumns]="gridTemplate$ | async"
-          [selectedCells]="[]"
-        ></pr-grid-row>
-      </ng-template>
-    </pr-grid-row>
+    <div *cdkVirtualFor="let row of displayedRows$ | async; let i = index; trackBy: trackByRow">
+      <pr-grid-row
+        *ngIf="row.discriminator === 'row'"
+        cdkDrag
+        [cdkDragData]="row"
+        [row]="row"
+        [columns]="columns"
+        [columnToCellMapper]="table.columnToCellMapper"
+        [gridTemplateColumns]="gridTemplate$ | async"
+        [selectedCells]="selectedCells"
+        (click)="onClickRow(row, i)"
+        (dblclick)="onDoubleClickRow(row)"
+      >
+        <ng-template cdkDragPreview>
+          <pr-grid-row
+            [row]="row"
+            [columns]="[columns[0]]"
+            [columnToCellMapper]="table.columnToCellMapper"
+            [gridTemplateColumns]="gridTemplate$ | async"
+            [selectedCells]="[]"
+          ></pr-grid-row>
+        </ng-template>
+      </pr-grid-row>
+
+      <pr-grid-group-by-row
+        *ngIf="row.discriminator === 'groupByRow'"
+        [groupByRow]="row"
+        [gridTemplateColumns]="gridTemplate$ | async"
+        [columnsLength]="columns.length"
+        (toggle)="onToggleGroupByRow($event)"
+      ></pr-grid-group-by-row>
+    </div>
   </div>
 <!--  <div-->
 <!--    *ngFor="let selectedRow of gridStore.selectedRows$ | async"-->

@@ -5,11 +5,9 @@ import {
   EventEmitter,
   HostListener,
   Input,
-  OnChanges,
   OnDestroy,
   OnInit,
   Output,
-  SimpleChanges,
   ViewChild
 } from '@angular/core';
 import {
@@ -52,7 +50,7 @@ import { GridGroupByRowComponent } from '../grid-group-by-row/grid-group-by-row.
     NgForOf,
   ]
 })
-export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
+export class GridRowsComponent implements OnInit, OnDestroy {
   @Input() table: PrGrid;
   @Input() allRows: PrDisplayableRow[];
   @Input() columns: PrColumnWithMetadata[];
@@ -87,12 +85,6 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
     this.displayedRows$ = this.gridStore.displayedRows$.pipe(tap(() => this.cd.detectChanges()));
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['allRows']?.currentValue?.length > 0 && changes['allRows'].currentValue !== changes['allRows'].previousValue) {
-      this.gridStore.setDisplayedRows(changes['allRows'].currentValue);
-    }
-  }
-
   ngOnDestroy() {
     this.destroyed$.next()
   }
@@ -117,8 +109,7 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
     this.dblclickRow.emit(row)
   }
 
-  onToggleGroupByRow(toggledRow: PrGroupByRow): void {
-    toggledRow.isOpen = !toggledRow.isOpen;
-    this.gridStore.setDisplayedRows(this.allRows);
+  public onToggleGroupByRow(toggledRow: PrGroupByRow): void {
+    this.gridStore.toggleGroupByRow({rowId: toggledRow.id, isOpen: !toggledRow.isOpen});
   }
 }

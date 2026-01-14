@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
-import {PrRow, PrGrid} from "../../../../../grid/src/lib/types/grid.interface";
+import {PrRow, PrGrid} from '@parlament/grid';
+import {GridStore} from '../../../../../grid/src/lib/store/grid.store';
 
 const DATA: PrRow[] = Array.from({length: 1000}, (v, i) => ({
   id: i + 1,
@@ -12,7 +13,8 @@ type Columns = typeof columns[number];
 @Component({
   selector: 'app-sticky-column-grid-example',
   templateUrl: './sticky-column-grid-example.component.html',
-  styleUrls: ['./sticky-column-grid-example.component.css']
+  styleUrls: ['./sticky-column-grid-example.component.css'],
+  providers: [GridStore]
 })
 export class StickyColumnGridExample {
   table: PrGrid<Columns> = {

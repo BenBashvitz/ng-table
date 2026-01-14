@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   ColumnResize,
   defaults,
@@ -10,21 +10,20 @@ import {
   PrColumn,
   PrColumnGroup,
   PrColumnWithMetadata,
-  PrGrid,
   PrDisplayableRow,
+  PrGrid,
   PrRow,
   SelectedCellData
-} from "@parlament/grid";
-import {ComponentStore} from "@ngrx/component-store";
-import {Observable, switchMap} from "rxjs";
-import {withLatestFrom, map} from 'rxjs/operators'
+} from '@parlament/grid';
+import { ComponentStore } from '@ngrx/component-store';
+import { Observable, switchMap, withLatestFrom } from 'rxjs';
 
 export interface GridState {
   grid: PrGrid,
   selectedRows: (PrRow & { index: number })[],
   selectedCells: SelectedCellData[],
+  allRows: PrDisplayableRow[],
   selectedColumns: PrColumnWithMetadata[],
-  displayedRows: PrDisplayableRow[]
 }
 
 const initialState: GridState = {
@@ -40,8 +39,8 @@ const initialState: GridState = {
   },
   selectedCells: [],
   selectedRows: [],
+  allRows: [],
   selectedColumns: [],
-  displayedRows: []
 }
 
 @Injectable()
@@ -65,9 +64,7 @@ export class GridStore extends ComponentStore<GridState> {
     }, 0)
   })
   readonly maxWidth$ = this.select(this.grid$, grid => grid.maxWidthInPx ?? defaults.maxWidthInPx);
-  readonly groupByColumnIds$ = this.select(this.grid$, grid => grid.groupByColumnIds);
-  readonly rows$ = this.select(this.grid$, grid => grid.rows);
-  readonly displayedRows$ = this.select(state => state.displayedRows);
+  readonly allRows$ = this.select(state => state.allRows);
   readonly selectedRows$ = this.select(state => state.selectedRows);
   readonly stickyColumnRight$ = (column: PrColumn) => this.select(this.columns$, columns => {
     const stickyColumns = columns.filter(({isSticky}) => isSticky);
@@ -75,6 +72,10 @@ export class GridStore extends ComponentStore<GridState> {
 
     return columnIndex === 0 ? '0px' : `${columns.slice(0, columnIndex).reduce((width, {widthInPx}) => width + widthInPx + 2, 0)}px`
   })
+  readonly displayedRows$ = this.select(
+    this.allRows$,
+    allRows => this.gridService.getDisplayedRows(allRows)
+  )
   readonly columnRight$ = (column: PrColumn) => this.select(this.columns$, columns => {
     const columnIndex = columns.findIndex(({columnDef}) => column.columnDef === columnDef);
 
@@ -82,14 +83,6 @@ export class GridStore extends ComponentStore<GridState> {
   })
   readonly selectedCells$ = this.select(state => state.selectedCells);
   readonly selectedColumns$ = this.select(state => state.selectedColumns);
-  readonly allRows$ = this.select(
-    this.groupByColumnIds$,
-    this.rows$,
-    (groupByColumnIds, rows) => ({groupByColumnIds, rows})
-  ).pipe(
-    withLatestFrom(this.grid$),
-    map(([{groupByColumnIds}, grid]) => this.gridService.getAllRows(grid, groupByColumnIds))
-  );
   readonly setGrid = this.updater((state, table: PrGrid) => ({
     ...state,
     grid: this.gridService.initializeGrid(table)
@@ -153,14 +146,28 @@ export class GridStore extends ComponentStore<GridState> {
     selectedRows: [],
     selectedCells: [],
   }))
-  readonly setDisplayedRows = this.updater((state, allRows: PrDisplayableRow[]) => ({
+  readonly setAllRows = this.updater((state, grid: PrGrid) => ({
     ...state,
-    displayedRows: this.gridService.updateDisplayedRows(allRows)
+    allRows: this.gridService.getAllRows(grid)
   }))
   readonly setColumnWidthInPx = this.updater((state, columnResize: ColumnResize) => ({
     ...state,
     grid: this.gridService.setColumnWidth(state.grid, columnResize),
+  }))
+  readonly collapseExpandAllGroups = this.updater((state, isExpand: boolean) => ({
+    ...state,
+    allRows: this.gridService.collapseExpandAllGroups(state.allRows, isExpand)
   }));
+  readonly toggleGroupByRow = this.updater(
+    (state, { rowId, isOpen }: { rowId: string; isOpen: boolean }) => ({
+      ...state,
+      allRows: state.allRows.map(row =>
+        row.id === rowId
+          ? { ...row, isOpen }
+          : row
+      )
+    })
+  );
   readonly copyColumn = this.effect<PrColumnWithMetadata>((triggers$: Observable<PrColumn>) => triggers$.pipe(
     withLatestFrom<PrColumn, [PrGrid]>(this.grid$),
     switchMap(([column, grid]) => {

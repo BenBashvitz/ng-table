@@ -82,12 +82,12 @@ export class GridService {
     }
   }
 
-  getAllRows(grid: PrGrid, groupByColumnIds: string[]): PrDisplayableRow[] {
-    if (!groupByColumnIds?.length) {
+  getAllRows(grid: PrGrid): PrDisplayableRow[] {
+    if (!grid.groupByColumnIds?.length) {
       return grid.rows;
     }
 
-    const grouped = this.recursiveGroupBy(grid.rows, groupByColumnIds, 0, grid);
+    const grouped = this.recursiveGroupBy(grid.rows, grid.groupByColumnIds, 0, grid);
     return this.flattenGroupedData(grouped, 0);
   }
 
@@ -166,7 +166,7 @@ export class GridService {
     return result;
   }
 
-  updateDisplayedRows(rows: PrDisplayableRow[]): PrDisplayableRow[] {
+  getDisplayedRows(rows: PrDisplayableRow[]): PrDisplayableRow[] {
     const result: PrDisplayableRow[] = [];
 
     for (let i = 0; i < rows.length; i++) {
@@ -191,6 +191,22 @@ export class GridService {
 
   private isGroupByRow(row: PrDisplayableRow): row is PrGroupByRow {
     return row.discriminator === 'groupByRow';
+  }
+
+  collapseExpandAllGroups(rows: PrDisplayableRow[], isExpand: boolean): PrDisplayableRow[] {
+    if (!this.isGroupByRow(rows[0])) return rows;
+
+    const result: PrDisplayableRow[] = [];
+
+    for (const row of rows) {
+      if (this.isGroupByRow(row)) {
+        result.push({ ...row, isOpen: isExpand });
+      } else {
+        result.push(row);
+      }
+    }
+
+    return result;
   }
 
   private setGridDefaultValues(table: PrGrid): PrGrid {

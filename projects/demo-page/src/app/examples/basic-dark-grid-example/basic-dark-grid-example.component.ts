@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { PrGrid, PrRow } from '@parlament/grid';
+import { GridService, PrGrid, PrRow } from '@parlament/grid';
+import {GridStore} from '../../../../../grid/src/lib/store/grid.store';
 
 const DATA: PrRow[] = Array.from({ length: 1000 }, (v, i) => ({
   id: i + 1,
@@ -12,10 +13,13 @@ type Columns = (typeof columns)[number];
 @Component({
   selector: 'app-basic-dark-grid-example',
   templateUrl: './basic-dark-grid-example.component.html',
-  styleUrls: ['./basic-dark-grid-example.component.css']
+  styleUrls: ['./basic-dark-grid-example.component.css'],
+  providers: [GridStore]
 })
 export class BasicDarkGridExample {
   isGroupByEnabled = false;
+
+  constructor(public gridStore: GridStore) {}
 
   table: PrGrid<Columns> = {
     rows: DATA,
@@ -86,5 +90,13 @@ export class BasicDarkGridExample {
     }
 
     this.isGroupByEnabled = !this.isGroupByEnabled;
+  }
+
+  collapseGroupBy() {
+    this.gridStore.collapseExpandAllGroups(false);
+  }
+
+  expandGroupBy() {
+    this.gridStore.collapseExpandAllGroups(true);
   }
 }

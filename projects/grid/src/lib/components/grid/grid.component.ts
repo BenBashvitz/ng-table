@@ -25,7 +25,6 @@ import {takeUntil} from "rxjs/operators";
     AsyncPipe,
     GridRowsComponent,
   ],
-  providers: [GridStore]
 })
 export class GridComponent implements OnInit, OnDestroy, OnChanges {
   @Input() grid: PrGrid;
@@ -47,8 +46,15 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['grid']?.currentValue?.groupByColumnIds && changes['grid'].currentValue.groupByColumnIds !== changes['grid'].previousValue.groupByColumnIds) {
+    const newGrid = changes['grid']?.currentValue;
+    const previousGrid = changes['grid']?.previousValue;
+
+    if (newGrid?.groupByColumnIds !== previousGrid?.groupByColumnIds) {
       this.gridStore.setGroupByColumnIds(this.grid.groupByColumnIds);
+    }
+
+    if (newGrid?.rows && newGrid.rows !== previousGrid?.rows || newGrid?.groupByColumnIds !== previousGrid?.groupByColumnIds) {
+      this.gridStore.setAllRows(this.grid);
     }
   }
 

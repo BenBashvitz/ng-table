@@ -4,6 +4,6 @@
     <div *ngIf="groupByRow.count !== null" class="row-count">
       ({{ groupByRow.count }})
     </div>
-    <mat-icon class="dropdown-icon" [class.open]="groupByRow.isOpen">keyboard_arrow_down</mat-icon>
+    <mat-icon class="dropdown-icon" [class.closed]="!groupByRow.isOpen">keyboard_arrow_up</mat-icon>
   </div>
 </div>

@@ -10,7 +10,7 @@
     background-color: var(--pr-grid-group-by-row-bg);
     border-radius: var(--pr-grid-group-by-row-radius);
     border: 1.11px solid var(--pr-grid-group-by-row-border-color);
-    height: 20px;
+    height: 100%;
     width: 100%;
     display: flex;
     align-items: center;
@@ -32,16 +32,16 @@
     }
 
     .dropdown-icon {
-      color: #BDC7D1;
+      color: var(--pr-grid-group-by-row-dropdown-color);
+      font-size: var(--pr-grid-group-by-row-font-size);
       transition: transform 0.3s ease;
-      font-size: 16px;
       width: 16px;
       height: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
 
-      &.open {
+      &.closed {
         transform: rotate(180deg);
       }
     }

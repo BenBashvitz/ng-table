@@ -1,9 +1,9 @@
-import { Component, Input } from '@angular/core';
-import {PrColumnGroup, PrColumnWithMetadata, PrGrid, PrRow, SelectedCellData} from '@parlament/grid';
+import {Component, Input} from '@angular/core';
+import {PrColumnGroup, PrGrid, PrRow, SelectedCellData} from '@parlament/grid';
 import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
-import { GridCellComponent } from '../grid-cell/grid-cell.component';
-import { GridCellPipe } from '../../pipes/table-cell.pipe';
-import { GridStore } from '../../store/grid.store';
+import {GridCellComponent} from '../grid-cell/grid-cell.component';
+import {GridCellPipe} from '../../pipes/table-cell.pipe';
+import {GridStore} from '../../store/grid.store';
 import {IsCellSelectedPipe} from "../../pipes/is-cell-selected.pipe";
 import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-column-group-spacer.component";
 
@@ -18,7 +18,6 @@ import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-c
 })
 export class GridRowComponent {
   @Input() row: PrRow;
-  @Input() columns: PrColumnWithMetadata[];
   @Input() columnGroups: PrColumnGroup[];
   @Input() columnToCellMapper: PrGrid['columnToCellMapper'];
   @Input() gridTemplateColumns: string;

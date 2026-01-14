@@ -66,7 +66,6 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
   gridWidthInPx$: Observable<number>;
   gridMaxWidthInPx$ = this.gridStore.maxWidth$;
   gridTemplate$: Observable<string>;
-  gridTemplateNew$: Observable<string>;
   displayedRows$: Observable<PrDisplayableRow[]>
 
   @HostListener('document:click', ['$event'])

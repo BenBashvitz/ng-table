@@ -6,9 +6,6 @@ import {PrColumn, PrColumnGroup, PrColumnWithMetadata} from "@parlament/grid";
 import {GridStore} from "../../store/grid.store";
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {MatOptionModule} from "@angular/material/core";
-import {GridCellComponent} from "../grid-cell/grid-cell.component";
-import {IsCellSelectedPipe} from "../../pipes/is-cell-selected.pipe";
-import {IsColumnSelectedPipe} from "../../pipes/is-column-selected.pipe";
 import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-column-group-spacer.component";
 
 @Component({
@@ -25,15 +22,11 @@ import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-c
     AsyncPipe,
     MatMenuModule,
     MatOptionModule,
-    GridCellComponent,
-    IsCellSelectedPipe,
-    IsColumnSelectedPipe,
     GridColumnGroupSpacerComponent,
     NgIf
   ]
 })
 export class GridHeaderRowComponent {
-  @Input() columns: PrColumnWithMetadata[]
   @Input() columnGroups: PrColumnGroup[];
   @Input() gridTemplateColumns: string
   @Input() gridMaxWidth: number;

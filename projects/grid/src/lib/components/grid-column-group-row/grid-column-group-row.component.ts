@@ -30,7 +30,6 @@ import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-c
   styleUrls: ['./grid-column-group-row.component.less']
 })
 export class GridColumnGroupRowComponent {
-  @Input() rowsCount: number;
   @Input() columnGroups: PrColumnGroup[];
   @Input() gridTemplateColumns: string;
   @Input() gridMaxWidth: number;

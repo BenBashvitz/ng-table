@@ -5,16 +5,12 @@
 >
   <div cdkDropList (cdkDropListDropped)="onDropRow($event)" class="grid-body" #body>
     <pr-grid-column-group-row
-      class="row"
-      [rowsCount]="table.rows.length"
       [columnGroups]="table.columnGroups"
       [gridTemplateColumns]="gridTemplate$ | async"
       [gridWidth]="gridWidthInPx$ | async"
       [gridMaxWidth]="gridMaxWidthInPx$ | async"
     ></pr-grid-column-group-row>
     <pr-grid-header-row
-      class="row"
-      [columns]="columns"
       [columnGroups]="table.columnGroups"
       [gridTemplateColumns]="gridTemplate$ | async"
       [gridWidth]="gridWidthInPx$ | async"
@@ -25,9 +21,7 @@
         *ngIf="row.discriminator === 'row'"
         cdkDrag
         [cdkDragData]="row"
-        class="row"
         [row]="row"
-        [columns]="columns"
         [columnGroups]="table.columnGroups"
         [columnToCellMapper]="table.columnToCellMapper"
         [gridTemplateColumns]="gridTemplate$ | async"
@@ -37,7 +31,6 @@
         <ng-template cdkDragPreview>
           <pr-grid-row
             [row]="row"
-            [columns]="[columns[0]]"
             [columnGroups]="[table.columnGroups[0]]"
             [columnToCellMapper]="table.columnToCellMapper"
             [gridTemplateColumns]="'' + columns[0].widthInPx + 'px'"

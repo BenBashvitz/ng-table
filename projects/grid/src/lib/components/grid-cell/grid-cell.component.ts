@@ -30,4 +30,5 @@ export class GridCellComponent {
   @Input() cell: PrCellType;
   @Input() columnDef: string;
   @Input() columnTitle: string;
+  @Input() selected: boolean;
 }

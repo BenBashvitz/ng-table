@@ -1,14 +1,15 @@
 import {Component, Input, QueryList, ViewChildren} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
-import {AsyncPipe, NgForOf} from "@angular/common";
-import {PrColumn, PrColumnWithMetadata} from "@parlament/grid";
+import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
+import {PrColumn, PrColumnGroup, PrColumnWithMetadata} from "@parlament/grid";
 import {GridStore} from "../../store/grid.store";
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {MatOptionModule} from "@angular/material/core";
 import {GridCellComponent} from "../grid-cell/grid-cell.component";
 import {IsCellSelectedPipe} from "../../pipes/is-cell-selected.pipe";
 import {IsColumnSelectedPipe} from "../../pipes/is-column-selected.pipe";
+import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-column-group-spacer.component";
 
 @Component({
   selector: 'pr-grid-header-row',
@@ -26,11 +27,14 @@ import {IsColumnSelectedPipe} from "../../pipes/is-column-selected.pipe";
     MatOptionModule,
     GridCellComponent,
     IsCellSelectedPipe,
-    IsColumnSelectedPipe
+    IsColumnSelectedPipe,
+    GridColumnGroupSpacerComponent,
+    NgIf
   ]
 })
 export class GridHeaderRowComponent {
   @Input() columns: PrColumnWithMetadata[]
+  @Input() columnGroups: PrColumnGroup[];
   @Input() gridTemplateColumns: string
   @Input() gridMaxWidth: number;
   @Input() gridWidth: number;

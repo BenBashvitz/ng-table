@@ -1,14 +1,20 @@
 <div
   class="grid-row"
   [style.grid-template-columns]="gridTemplateColumns">
-  <pr-grid-cell
-    *ngFor="let column of columns;"
-    [class.sticky]="column.isSticky"
-    [class.selected]="selectedCells | isCellSelected:column.columnDef:row.id"
-    [style.right]="column.isSticky ? (gridStore.stickyColumnRight$(column) | async) : 'unset'"
-    [cell]="columnToCellMapper | gridCell:column:row"
-    [columnDef]="column.columnDef"
-    [columnTitle]="column.title"
-    (click)="onClickCell(column.columnDef)"
-  ></pr-grid-cell>
+  <ng-container *ngFor="let columnGroup of columnGroups; let groupIndex = index;">
+    <ng-container *ngFor="let column of columnGroup.columns; let i = index">
+      <pr-grid-cell
+        [class.sticky]="column.isSticky"
+        [selected]="selectedCells | isCellSelected:column.columnDef:row.id"
+        [class.first-in-group]="i === 0"
+        [class.last-in-group]="i === columnGroup.columns.length - 1"
+        [style.right]="column.isSticky ? (gridStore.stickyColumnRight$(column) | async) : 'unset'"
+        [cell]="columnToCellMapper | gridCell:column:row"
+        [columnDef]="column.columnDef"
+        [columnTitle]="column.title"
+        (click)="onClickCell(column.columnDef)"
+      ></pr-grid-cell>
+    </ng-container>
+    <pr-grid-column-group-spacer *ngIf="groupIndex !== columnGroups.length - 1"></pr-grid-column-group-spacer>
+  </ng-container>
 </div>

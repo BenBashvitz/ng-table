@@ -1,24 +1,22 @@
 .grid-header-row {
   display: grid;
-  gap: 2px;
   grid-auto-rows: var(--pr-grid-column-row-height);
 
-  .grid-header-cell {
+  .grid-header-cell-wrapper {
     cursor: grab;
     position: relative;
-    color: var(--pr-grid-column-color);
-    background-color: var(--pr-grid-column-bg);
-    border-radius: var(--pr-grid-column-radius);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
     height: 100%;
     width: 100%;
-    user-select: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--pr-grid-column-font-size);
+    background-color: var(--pr-grid-group-bg);
+    padding: 1px;
+
+    &.first-in-group {
+      padding-right: 2px;
+    }
+
+    &.last-in-group {
+      padding-left: 2px;
+    }
 
     & .sticky {
       position: sticky !important;
@@ -33,6 +31,22 @@
 
     &:active {
       cursor: grabbing;
+    }
+
+    .grid-header-cell {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      height: 100%;
+      width: 100%;
+      user-select: none;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--pr-grid-column-color);
+      background-color: var(--pr-grid-column-bg);
+      border-radius: var(--pr-grid-column-radius);
+      font-size: var(--pr-grid-column-font-size);
     }
 
     .resizer {

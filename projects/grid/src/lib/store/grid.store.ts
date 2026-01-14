@@ -59,9 +59,25 @@ export class GridStore extends ComponentStore<GridState> {
       return `${col.widthInPx ?? defaults.widthInPx}px`
     }).join(' ');
   });
-  readonly gridWidth$ = this.select(this.columns$, columns => {
+  readonly columnsWithSpace$ = this.select(this.grid$, table => table.columnGroups.reduce((tableColumns, {columns}, index) => {
+    const emptyColumn: PrColumnWithMetadata = { columnDef: 'empty', title: '', widthInPx: 6};
+
+    if(index === table.columnGroups.length - 1) {
+      tableColumns = [...tableColumns, ...columns];
+    } else {
+      tableColumns = [...tableColumns, ...columns, emptyColumn];
+    }
+
+    return tableColumns
+  }, [] as PrColumnWithMetadata[]))
+  readonly gridTemplateNew$ = this.select(this.columnsWithSpace$, columns => {
+    return columns.map(col => {
+      return `${col.widthInPx ?? defaults.widthInPx}px`
+    }).join(' ');
+  });
+  readonly gridWidth$ = this.select(this.columnsWithSpace$, columns => {
     return columns.reduce((width, {widthInPx}) => {
-      return width + widthInPx + 2;
+      return width + widthInPx;
     }, 0)
   })
   readonly maxWidth$ = this.select(this.grid$, grid => grid.maxWidthInPx ?? defaults.maxWidthInPx);

@@ -1,5 +1,5 @@
 import { Component, Input , QueryList, ViewChildren} from '@angular/core';
-import { AsyncPipe, NgForOf } from '@angular/common';
+import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
 import {
   CdkDrag,
   CdkDragDrop,
@@ -12,6 +12,7 @@ import { ColumnResizeDirective } from '../../directives/column-resize.directive'
 import { SumPipe } from '../../pipes/sum.pipe';
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {MatOptionModule} from "@angular/material/core";
+import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-column-group-spacer.component";
 
 @Component({
   selector: 'pr-grid-column-group-row',
@@ -24,11 +25,12 @@ import {MatOptionModule} from "@angular/material/core";
     NgForOf,
     AsyncPipe,
     SumPipe
-  , MatMenuModule, MatOptionModule],
+    , MatMenuModule, MatOptionModule, GridColumnGroupSpacerComponent, NgIf],
   templateUrl: './grid-column-group-row.component.html',
   styleUrls: ['./grid-column-group-row.component.less']
 })
 export class GridColumnGroupRowComponent {
+  @Input() rowsCount: number;
   @Input() columnGroups: PrColumnGroup[];
   @Input() gridTemplateColumns: string;
   @Input() gridMaxWidth: number;

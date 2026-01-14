@@ -66,6 +66,7 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
   gridWidthInPx$: Observable<number>;
   gridMaxWidthInPx$ = this.gridStore.maxWidth$;
   gridTemplate$: Observable<string>;
+  gridTemplateNew$: Observable<string>;
   displayedRows$: Observable<PrDisplayableRow[]>
 
   @HostListener('document:click', ['$event'])
@@ -82,7 +83,8 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     this.gridWidthInPx$ = this.gridStore.gridWidth$.pipe(tap(() => this.cd.detectChanges()));
-    this.gridTemplate$ = this.gridStore.gridTemplate$.pipe(tap(() => this.cd.detectChanges()));
+    this.gridTemplate$ = this.gridStore.gridTemplateNew$.pipe(tap(() => this.cd.detectChanges()));
+    this.gridTemplateNew$ = this.gridStore.gridTemplateNew$.pipe(tap(() => this.cd.detectChanges()));
     this.gridMaxWidthInPx$ = this.gridStore.maxWidth$.pipe(tap(() => this.cd.detectChanges()));
     this.displayedRows$ = this.gridStore.displayedRows$.pipe(tap(() => this.cd.detectChanges()));
   }

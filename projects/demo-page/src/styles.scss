@@ -27,6 +27,7 @@ body {
   --pr-grid-group-by-row-name-color: #{variables.$pr-grid-group-by-row-name-color-dark};
   --pr-grid-group-by-row-count-color: #{variables.$pr-grid-group-by-row-count-color-dark};
   --pr-grid-group-by-row-dropdown-color: #{variables.$pr-grid-group-by-row-dropdown-color-dark};
+  --pr-grid-lowest-group-bg: #{variables.$pr-grid-lowest-group-bg-dark};
 
   --pr-grid-max-width: #{variables.$pr-grid-header-group-border-radius};
   --pr-grid-group-radius: #{variables.$pr-grid-header-group-border-radius};
@@ -58,6 +59,7 @@ body {
     --pr-grid-group-by-row-name-color: #{variables.$pr-grid-group-by-row-name-color-light};
     --pr-grid-group-by-row-count-color: #{variables.$pr-grid-group-by-row-count-color-light};
     --pr-grid-group-by-row-dropdown-color: #{variables.$pr-grid-group-by-row-dropdown-color-light};
+    --pr-grid-lowest-group-bg: #{variables.$pr-grid-lowest-group-bg-light};
   }
 }
 

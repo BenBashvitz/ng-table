@@ -74,6 +74,7 @@ export type PrGroupByRow = {
   discriminator: 'groupByRow';
   id: string;
   groupName: string;
+  columnDef: string;
   isOpen: boolean;
   leafCount: number;
   subtreeSize: number;

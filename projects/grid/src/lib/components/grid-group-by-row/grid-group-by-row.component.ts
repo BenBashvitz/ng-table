@@ -14,6 +14,7 @@ export class GridGroupByRowComponent {
   @Input() groupByRow: PrGroupByRow;
   @Input() gridTemplateColumns: string
   @Input() columnsLength: number;
+  @Input() groupLevel: number;
   @Output() toggle = new EventEmitter<PrGroupByRow>();
 
   toggleOpen(): void {

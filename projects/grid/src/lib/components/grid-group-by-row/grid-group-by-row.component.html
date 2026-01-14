@@ -1,4 +1,4 @@
-<div class="grid-row-container" [style.grid-template-columns]="gridTemplateColumns" (click)="toggleOpen()">
+<div class="grid-row-container" [style.grid-template-columns]="gridTemplateColumns" [style.--group-level]="groupLevel" (click)="toggleOpen()">
   <div class="grid-group-by-row" [style.grid-column]="'span ' + columnsLength">
     <div class="grid-group-name">{{ groupByRow.groupName }}</div>
     <div *ngIf="groupByRow.leafCount !== null" class="grid-row-count">({{ groupByRow.leafCount }})</div>

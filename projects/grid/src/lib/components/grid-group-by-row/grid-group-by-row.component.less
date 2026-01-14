@@ -6,7 +6,7 @@
 
   .grid-group-by-row {
     position: relative;
-    background-color: var(--pr-grid-group-by-row-bg);
+    background-color: color-mix(in srgb, var(--pr-grid-group-by-row-bg), var(--pr-grid-lowest-group-bg) calc(var(--group-level) * 20%));
     border-radius: var(--pr-grid-group-by-row-radius);
     border: 1.11px solid var(--pr-grid-group-by-row-border-color);
     height: 100%;

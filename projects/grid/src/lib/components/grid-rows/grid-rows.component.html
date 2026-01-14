@@ -45,6 +45,7 @@
         [groupByRow]="row"
         [gridTemplateColumns]="gridTemplate$ | async"
         [columnsLength]="columns.length"
+        [groupLevel]="table.groupByColumnIds.indexOf(row.columnDef)"
         (toggle)="onToggleGroupByRow($event)"
       ></pr-grid-group-by-row>
     </div>

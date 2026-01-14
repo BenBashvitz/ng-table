@@ -146,6 +146,7 @@ export class GridService {
       result.push({
         groupName: item.groupName,
         id: `group_by_${item.groupColumnId}_${item.groupName}`,
+        columnDef: item.groupColumnId,
         discriminator: 'groupByRow',
         leafCount: item.leafCount,
         subtreeSize: item.subtreeSize,

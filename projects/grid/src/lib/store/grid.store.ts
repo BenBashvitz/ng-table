@@ -10,8 +10,8 @@ import {
   PrColumn,
   PrColumnGroup,
   PrColumnWithMetadata,
-  PrDisplayableRow,
   PrGrid,
+  PrDisplayableRow,
   PrRow,
   SelectedCellData
 } from "@parlament/grid";
@@ -79,6 +79,11 @@ export class GridStore extends ComponentStore<GridState> {
 
     return columnIndex === 0 ? '0px' : `${columns.slice(0, columnIndex).reduce((width, {widthInPx}) => width + widthInPx + 2, 0)}px`
   })
+  readonly columnRight$ = (column: PrColumn) => this.select(this.columns$, columns => {
+    const columnIndex = columns.findIndex(({columnDef}) => column.columnDef === columnDef);
+
+    return columnIndex === 0 ? '0px' : `${columns.slice(0, columnIndex).reduce((width, {widthInPx}) => width + widthInPx + 2, 0)}px`
+  })
   readonly selectedCells$ = this.select(state => state.selectedCells);
   readonly selectedColumns$ = this.select(state => state.selectedColumns);
 
@@ -92,6 +97,9 @@ export class GridStore extends ComponentStore<GridState> {
       return this.gridService.getAllRows(grid, groupByColumnIds);
     })
   );
+  readonly selectedCells$ = this.select(state => state.selectedCells);
+  readonly selectedColumns$ = this.select(state => state.selectedColumns);
+
   readonly setGrid = this.updater((state, table: PrGrid) => ({
     ...state,
     grid: this.gridService.initializeGrid(table)

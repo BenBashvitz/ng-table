@@ -50,6 +50,7 @@ import { GridGroupByRowComponent } from '../grid-group-by-row/grid-group-by-row.
     NgForOf,
     GridColumnGroupRowComponent,
     NgIf,
+    NgForOf,
   ]
 })
 export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {

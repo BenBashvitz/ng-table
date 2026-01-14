@@ -10,9 +10,11 @@ import {
   isOptionsCell,
   isComponentCell,
   PrDisplayableRow,
-  PrGroupByRow,
   PrRowGroup,
-  ColumnResize
+  ColumnResize,
+  isGroupByRow,
+  isRowArray,
+  isRowGroup
 } from '../types/grid.interface';
 import {moveItemInArray} from "@angular/cdk/drag-drop";
 
@@ -118,7 +120,7 @@ export class GridService {
       let leafCount = 0;
       let subtreeSize = 0;
 
-      if (this.isRowArray(children)) {
+      if (isRowArray(children)) {
         leafCount = children.length;
         subtreeSize = children.length;
       } else {
@@ -138,7 +140,7 @@ export class GridService {
     result: PrDisplayableRow[] = []
   ): PrDisplayableRow[] {
     for (const item of groupedData) {
-      if (!this.isRowGroup(item)) {
+      if (!isRowGroup(item)) {
         result.push(item);
         continue;
       }
@@ -156,7 +158,7 @@ export class GridService {
       const children = item.children;
 
       if (Array.isArray(children)) {
-        if (this.isRowArray(children)) {
+        if (isRowArray(children)) {
           result.push(...children);
         } else {
           this.flattenGroupedData(children, level + 1, result);
@@ -174,7 +176,7 @@ export class GridService {
       const row = rows[i];
       result.push(row);
 
-      if (this.isGroupByRow(row) && !row.isOpen) {
+      if (isGroupByRow(row) && !row.isOpen) {
         i += row.subtreeSize;
       }
     }
@@ -182,25 +184,13 @@ export class GridService {
     return result;
   }
 
-  private isRowGroup(row: PrRowGroup | PrRow): row is PrRowGroup {
-    return (row as PrRowGroup).groupName !== undefined;
-  }
-
-  private isRowArray(rows: PrRowGroup[] | PrRow[]): rows is PrRow[] {
-    return rows[0]['discriminator'] === 'row';
-  }
-
-  private isGroupByRow(row: PrDisplayableRow): row is PrGroupByRow {
-    return row.discriminator === 'groupByRow';
-  }
-
   collapseExpandAllGroups(rows: PrDisplayableRow[], isExpand: boolean): PrDisplayableRow[] {
-    if (!this.isGroupByRow(rows[0])) return rows;
+    if (!isGroupByRow(rows[0])) return rows;
 
     const result: PrDisplayableRow[] = [];
 
     for (const row of rows) {
-      if (this.isGroupByRow(row)) {
+      if (isGroupByRow(row)) {
         result.push({ ...row, isOpen: isExpand });
       } else {
         result.push(row);

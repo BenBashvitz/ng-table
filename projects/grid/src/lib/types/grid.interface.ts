@@ -125,6 +125,18 @@ export function isColumn(column: object): column is PrColumn {
   return 'columnDef' in column && 'title' in column;
 }
 
+export function isRowGroup(row: PrRowGroup | PrRow): row is PrRowGroup {
+  return (row as PrRowGroup).groupName !== undefined;
+}
+
+export function isRowArray(rows: PrRowGroup[] | PrRow[]): rows is PrRow[] {
+  return rows[0]['discriminator'] === 'row';
+}
+
+export function isGroupByRow(row: PrDisplayableRow): row is PrGroupByRow {
+  return row.discriminator === 'groupByRow';
+}
+
 export const columnDefaults: Omit<Required<PrColumnWithMetadata>, 'columnDef' | 'title'> = {
   widthInPx: 100,
   minWidthInPx: 70,

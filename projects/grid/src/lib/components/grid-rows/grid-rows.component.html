@@ -26,7 +26,7 @@
         [columns]="columns"
         [columnToCellMapper]="table.columnToCellMapper"
         [gridTemplateColumns]="gridTemplate$ | async"
-        [selectedCells]="selectedCells"(click)="onClickRow(row, i)"
+        [selectedCells]="selectedCells" (click)="onClickRow(row, i)"
         (dblclick)="onDoubleClickRow(row)"
       >
         <ng-template cdkDragPreview>

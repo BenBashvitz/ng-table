@@ -83,8 +83,7 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     this.gridWidthInPx$ = this.gridStore.gridWidth$.pipe(tap(() => this.cd.detectChanges()));
-    this.gridTemplate$ = this.gridStore.gridTemplateNew$.pipe(tap(() => this.cd.detectChanges()));
-    this.gridTemplateNew$ = this.gridStore.gridTemplateNew$.pipe(tap(() => this.cd.detectChanges()));
+    this.gridTemplate$ = this.gridStore.gridTemplate$.pipe(tap(() => this.cd.detectChanges()));
     this.gridMaxWidthInPx$ = this.gridStore.maxWidth$.pipe(tap(() => this.cd.detectChanges()));
     this.displayedRows$ = this.gridStore.displayedRows$.pipe(tap(() => this.cd.detectChanges()));
   }

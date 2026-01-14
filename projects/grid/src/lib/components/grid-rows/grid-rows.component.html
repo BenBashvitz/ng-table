@@ -3,12 +3,7 @@
   class="grid-viewport"
   [style.width.px]="gridWidthInPx$ | async"
 >
-  <div
-    cdkDropList
-    (cdkDropListDropped)="onDropRow($event)"
-    class="grid-body"
-    #body
-  >
+  <div cdkDropList (cdkDropListDropped)="onDropRow($event)" class="grid-body" #body>
     <pr-grid-column-group-row
       [columnGroups]="table.columnGroups"
       [gridTemplateColumns]="gridTemplate$ | async"
@@ -21,13 +16,7 @@
       [gridWidth]="gridWidthInPx$ | async"
       [gridMaxWidth]="gridMaxWidthInPx$ | async"
     ></pr-grid-header-row>
-    <div
-      *cdkVirtualFor="
-        let row of table.groupByColumnIds.length > 0 ? (groupedRows$ | async) : table.rows;
-        let i = index;
-        trackBy: trackByRow
-      "
-    >
+    <div *cdkVirtualFor="let row of displayedRows$ | async; let i = index; trackBy: trackByRow">
       <pr-grid-row
         *ngIf="row.discriminator === 'row'"
         cdkDrag
@@ -51,7 +40,9 @@
       </pr-grid-row>
 
       <pr-grid-group-by-row
-        *ngIf="row.discriminator === 'groupByRow'" [groupByRow]="row"
+        *ngIf="row.discriminator === 'groupByRow'"
+        [groupByRow]="row"
+        (toggle)="handleToggle($event)"
       ></pr-grid-group-by-row>
     </div>
   </div>

@@ -1,8 +1,18 @@
-import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
-import {PrGrid, PrRow} from "../../types/grid.interface";
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
+import {PrGrid, PrGroupByRow, PrDisplayableRow, PrRow} from '../../types/grid.interface';
 import {AsyncPipe} from "@angular/common";
 import {GridStore} from "../../store/grid.store";
-import {Observable, Subject} from "rxjs";
+import { Observable, Subject, tap } from 'rxjs';
 import {GridRowsComponent} from "../grid-rows/grid-rows.component";
 import {takeUntil} from "rxjs/operators";
 
@@ -24,14 +34,16 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   @Output() dblclickRow = new EventEmitter<PrRow>();
 
   destroy$ = new Subject<void>();
+  currentRows$: Observable<PrDisplayableRow[]>
 
-  constructor(public gridStore: GridStore) {}
+  constructor(public gridStore: GridStore, private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.gridStore.setGrid(this.grid);
     this.gridStore.grid$.pipe(takeUntil(this.destroy$)).subscribe(grid => {
       this.gridChange.emit(grid);
     });
+    this.currentRows$ = this.gridStore.currentRows$.pipe(tap(() => this.cd.detectChanges()));
   }
 
   ngOnChanges(changes: SimpleChanges) {

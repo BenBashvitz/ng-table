@@ -10,19 +10,20 @@ import {
   PrColumn,
   PrColumnGroup,
   PrColumnWithMetadata,
+  PrDisplayableRow,
   PrGrid,
   PrRow,
   SelectedCellData
 } from "@parlament/grid";
 import {ComponentStore} from "@ngrx/component-store";
-import {switchMap, withLatestFrom} from "rxjs";
-import { map, withLatestFrom } from 'rxjs';
+import {switchMap, withLatestFrom, map} from "rxjs";
 
 export interface GridState {
   grid: PrGrid,
   selectedRows: (PrRow & { index: number })[],
   selectedCells: SelectedCellData[],
   selectedColumns: PrColumnWithMetadata[],
+  displayedRows: PrDisplayableRow[]
 }
 
 const initialState: GridState = {
@@ -39,6 +40,7 @@ const initialState: GridState = {
   selectedCells: [],
   selectedRows: [],
   selectedColumns: [],
+  displayedRows: []
 }
 
 @Injectable()
@@ -64,6 +66,7 @@ export class GridStore extends ComponentStore<GridState> {
   readonly maxWidth$ = this.select(this.grid$, grid => grid.maxWidthInPx ?? defaults.maxWidthInPx);
   readonly groupByColumnIds$ = this.select(this.grid$, grid => grid.groupByColumnIds);
   readonly rows$ = this.select(this.grid$, grid => grid.rows);
+  readonly displayedRows$ = this.select(state => state.displayedRows);
   readonly selectedRows$ = this.select(state => state.selectedRows);
   readonly stickyColumnRight$ = (column: PrColumn) => this.select(this.columns$, columns => {
     const stickyColumns = columns.filter(({isSticky}) => isSticky);
@@ -79,14 +82,14 @@ export class GridStore extends ComponentStore<GridState> {
   readonly selectedCells$ = this.select(state => state.selectedCells);
   readonly selectedColumns$ = this.select(state => state.selectedColumns);
 
-  readonly groupedRows$ = this.select(
+  readonly currentRows$ = this.select(
     this.groupByColumnIds$,
     this.rows$,
     (groupByColumnIds, rows) => ({ groupByColumnIds, rows })
   ).pipe(
     withLatestFrom(this.grid$),
     map(([{ groupByColumnIds }, grid]) => {
-      return this.gridService.getGroupByArray(grid, groupByColumnIds);
+      return this.gridService.getCurrentRows(grid, groupByColumnIds);
     })
   );
   readonly setGrid = this.updater((state, table: PrGrid) => ({
@@ -144,6 +147,10 @@ export class GridStore extends ComponentStore<GridState> {
     selectedColumns: [column],
     selectedRows: [],
     selectedCells: [],
+  }))
+  readonly setDisplayedRows = this.updater((state, currentRows: PrDisplayableRow[]) => ({
+    ...state,
+    displayedRows: this.gridService.updateDisplayedRows(currentRows)
   }))
   readonly setColumnWidthInPx = this.updater((state, columnResize: ColumnResize) => ({
     ...state,

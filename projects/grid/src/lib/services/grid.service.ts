@@ -6,14 +6,14 @@ import {
   PrRow,
   PrGrid,
   gridDefaults,
-  ColumnResize,
   isFreeTextCell,
   isOptionsCell,
   isComponentCell,
   PrDisplayableRow,
   PrGroupByRow,
-  PrRowGroup
-} from "../types/grid.interface";
+  PrRowGroup,
+  ColumnResize
+} from '../types/grid.interface';
 import {moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Injectable({

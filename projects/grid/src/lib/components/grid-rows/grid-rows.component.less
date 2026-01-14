@@ -13,17 +13,23 @@
       overflow: auto;
     }
 
-    .grid-row-selection {
+    .grid-selection {
       position: absolute;
-      top: 0;
-      bottom: 0;
       border: 1px solid var(--pr-grid-primary);
       background-color: var(--pr-grid-primary-opacity);
       border-radius: var(--pr-grid-cell-radius);
-      width: 100%;
-      max-width: var(--pr-grid-max-width);
       z-index: 1000;
       pointer-events: none;
+    }
+
+    .grid-row-selection {
+      width: 100%;
+      max-width: var(--pr-grid-max-width);
+    }
+
+    .grid-column-selection {
+      height: 100%;
+      top: 30px;
     }
   }
 

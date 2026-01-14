@@ -18,15 +18,14 @@ import {
   PrGroupByRow,
   PrDisplayableRow,
   PrRow,
-  SelectedCellData
-} from '@parlament/grid';
+  SelectedCellData} from '@parlament/grid';
 import {CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 import {MatTableModule} from "@angular/material/table";
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {GridRowComponent} from "../grid-row/grid-row.component";
 import {GridHeaderRowComponent} from "../grid-header-row/grid-header-row.component";
 import {GridStore} from "../../store/grid.store";
-import {AsyncPipe, NgIf} from "@angular/common";
+import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 import {Observable, Subject, tap} from "rxjs";
 import {GridColumnGroupRowComponent} from "../grid-column-group-row/grid-column-group-row.component";
 import { GridGroupByRowComponent } from '../grid-group-by-row/grid-group-by-row.component';
@@ -50,6 +49,7 @@ import { GridGroupByRowComponent } from '../grid-group-by-row/grid-group-by-row.
     CdkDragPreview,
     GridColumnGroupRowComponent,
     NgIf,
+    NgForOf,
   ]
 })
 export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
@@ -78,8 +78,7 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
 
   destroyed$ = new Subject<void>();
 
-  constructor(public gridStore: GridStore, private cd: ChangeDetectorRef) {
-  }
+  constructor(public gridStore: GridStore, private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.gridWidthInPx$ = this.gridStore.gridWidth$.pipe(tap(() => this.cd.detectChanges()));
@@ -111,7 +110,6 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   onClickRow(row: PrRow, index: number) {
-    this.gridStore.setSelectedRow({row, index});
     this.clickRow.emit(row)
   }
 
@@ -119,16 +117,7 @@ export class GridRowsComponent implements OnInit, OnDestroy, OnChanges {
     this.dblclickRow.emit(row)
   }
 
-  public get inverseOfTranslation(): string {
-    if (!this.virtualViewport) {
-      return '-0px';
-    }
-    const offset = this.virtualViewport.getOffsetToRenderedContentStart();
-
-    return `translateY(-${offset}px)`;
-  }
-
-  public onToggleGroupByRow(toggledRow: PrGroupByRow): void {
+  onToggleGroupByRow(toggledRow: PrGroupByRow): void {
     toggledRow.isOpen = !toggledRow.isOpen;
     this.gridStore.setDisplayedRows(this.allRows);
   }

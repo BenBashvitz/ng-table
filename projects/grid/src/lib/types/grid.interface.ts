@@ -25,6 +25,7 @@ export type PrColumnGroup<AvailableColumns extends string = string> =
 export interface PrTextCell {
   cellText: string;
   onEdit?: (text: string) => void;
+  discriminator: string;
 }
 
 export interface PrFreeTextCell extends PrTextCell {
@@ -43,7 +44,7 @@ export type PrComponentCell<ComponentInputs extends Record<string, unknown> = Re
   value: () => any;
 }
 
-export type PrCellType = PrFreeTextCell | PrOptionsCell | PrComponentCell;
+export type PrCellType = PrTextCell | PrFreeTextCell | PrOptionsCell | PrComponentCell;
 
 export type SelectedCellData = {
   columnDef: string;
@@ -101,6 +102,10 @@ export type PrGrid<AvailableColumns extends string = string> = PrGridMetadata<Av
 
 export function isComponentCell(cell: PrCellType): cell is PrComponentCell<{}> {
   return cell.discriminator === "Component";
+}
+
+export function isTextCell(cell: PrCellType): cell is PrTextCell {
+  return 'cellText' in cell;
 }
 
 export function isFreeTextCell(cell: PrCellType): cell is PrFreeTextCell {

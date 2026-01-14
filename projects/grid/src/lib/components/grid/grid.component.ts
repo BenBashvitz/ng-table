@@ -9,7 +9,7 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
-import {PrGrid, PrDisplayableRow, PrRow} from '../../types/grid.interface';
+import {PrGrid, PrGroupByRow, PrDisplayableRow, PrRow} from '../../types/grid.interface';
 import {AsyncPipe} from "@angular/common";
 import {GridStore} from "../../store/grid.store";
 import { Observable, Subject, tap } from 'rxjs';

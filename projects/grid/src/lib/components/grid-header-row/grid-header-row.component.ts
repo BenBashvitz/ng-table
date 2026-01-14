@@ -6,6 +6,9 @@ import {PrColumn, PrColumnWithMetadata} from "@parlament/grid";
 import {GridStore} from "../../store/grid.store";
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {MatOptionModule} from "@angular/material/core";
+import {GridCellComponent} from "../grid-cell/grid-cell.component";
+import {IsCellSelectedPipe} from "../../pipes/is-cell-selected.pipe";
+import {IsColumnSelectedPipe} from "../../pipes/is-column-selected.pipe";
 
 @Component({
   selector: 'pr-grid-header-row',
@@ -20,7 +23,10 @@ import {MatOptionModule} from "@angular/material/core";
     NgForOf,
     AsyncPipe,
     MatMenuModule,
-    MatOptionModule
+    MatOptionModule,
+    GridCellComponent,
+    IsCellSelectedPipe,
+    IsColumnSelectedPipe
   ]
 })
 export class GridHeaderRowComponent {
@@ -52,11 +58,22 @@ export class GridHeaderRowComponent {
     return column.columnDef
   }
 
-  onContextMenu(columnIndex: number) {
-    this.menuTriggers.get(columnIndex).openMenu()
+  onClickColumn(column: PrColumnWithMetadata) {
+    this.gridStore.setSelectedColumn(column);
+  }
+
+  onContextMenuColumn(event: Event, column: PrColumn, columnIndex: number) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.onClickColumn(column);
+    this.menuTriggers.get(columnIndex).openMenu();
   }
 
   onRemoveColumn(column: PrColumnWithMetadata) {
     this.gridStore.removeColumn(column);
+  }
+
+  onCopyColumn(column: PrColumnWithMetadata) {
+    this.gridStore.copyColumn(column);
   }
 }

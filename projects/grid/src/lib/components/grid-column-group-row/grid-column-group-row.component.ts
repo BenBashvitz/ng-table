@@ -6,7 +6,7 @@ import {
   CdkDragPreview,
   CdkDropList
 } from '@angular/cdk/drag-drop';
-import { PrColumnGroup } from '@parlament/grid';
+import { PrColumnGroup , PrColumnWithMetadata} from '@parlament/grid';
 import { GridStore } from '../../store/grid.store';
 import { ColumnResizeDirective } from '../../directives/column-resize.directive';
 import { SumPipe } from '../../pipes/sum.pipe';
@@ -16,7 +16,15 @@ import {MatOptionModule} from "@angular/material/core";
 @Component({
   selector: 'pr-grid-column-group-row',
   standalone: true,
-  imports: [CdkDrag, CdkDragPreview, CdkDropList, ColumnResizeDirective, NgForOf, AsyncPipe, SumPipe, MatMenuModule, MatOptionModule],
+  imports: [
+    CdkDrag,
+    CdkDragPreview,
+    CdkDropList,
+    ColumnResizeDirective,
+    NgForOf,
+    AsyncPipe,
+    SumPipe
+  , MatMenuModule, MatOptionModule],
   templateUrl: './grid-column-group-row.component.html',
   styleUrls: ['./grid-column-group-row.component.less']
 })
@@ -50,7 +58,7 @@ export class GridColumnGroupRowComponent {
   }
 
   onContextMenu(columnIndex: number) {
-    this.menuTriggers.get(columnIndex).openMenu()
+    this.menuTriggers.get(columnIndex).openMenu();
   }
 
   onRemoveColumnGroup(columnGroup: PrColumnGroup) {

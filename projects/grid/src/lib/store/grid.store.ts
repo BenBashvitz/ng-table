@@ -54,14 +54,25 @@ export class GridStore extends ComponentStore<GridState> {
   readonly columns$ = this.select(this.grid$, table => table.columnGroups.reduce((tableColumns, {columns}) => {
     return [...tableColumns, ...columns]
   }, [] as PrColumnWithMetadata[]));
-  readonly gridTemplate$ = this.select(this.columns$, columns => {
+  readonly columnsWithSpace$ = this.select(this.grid$, table => table.columnGroups.reduce((tableColumns, {columns}, index) => {
+    const emptyColumn: PrColumnWithMetadata = { columnDef: 'empty', title: '', widthInPx: 6};
+
+    if(index === table.columnGroups.length - 1) {
+      tableColumns = [...tableColumns, ...columns];
+    } else {
+      tableColumns = [...tableColumns, ...columns, emptyColumn];
+    }
+
+    return tableColumns
+  }, [] as PrColumnWithMetadata[]))
+  readonly gridTemplate$ = this.select(this.columnsWithSpace$, columns => {
     return columns.map(col => {
       return `${col.widthInPx ?? defaults.widthInPx}px`
     }).join(' ');
   });
-  readonly gridWidth$ = this.select(this.columns$, columns => {
+  readonly gridWidth$ = this.select(this.columnsWithSpace$, columns => {
     return columns.reduce((width, {widthInPx}) => {
-      return width + widthInPx + 2;
+      return width + widthInPx;
     }, 0)
   })
   readonly maxWidth$ = this.select(this.grid$, grid => grid.maxWidthInPx ?? defaults.maxWidthInPx);
@@ -75,11 +86,11 @@ export class GridStore extends ComponentStore<GridState> {
 
     return columnIndex === 0 ? '0px' : `${columns.slice(0, columnIndex).reduce((width, {widthInPx}) => width + widthInPx + 2, 0)}px`
   })
-  readonly columnRight$ = (column: PrColumn) => this.select(this.columns$, columns => {
+  readonly columnRight$ = (column: PrColumn) => this.select(this.columnsWithSpace$, columns => {
     const columnIndex = columns.findIndex(({columnDef}) => column.columnDef === columnDef);
 
-    return columnIndex === 0 ? '0px' : `${columns.slice(0, columnIndex).reduce((width, {widthInPx}) => width + widthInPx + 2, 0)}px`
-  })
+    return columnIndex === 0 ? '2px' : `${columns.slice(0, columnIndex).reduce((width, {widthInPx}) => width + widthInPx, 1)}px`
+  });
   readonly selectedCells$ = this.select(state => state.selectedCells);
   readonly selectedColumns$ = this.select(state => state.selectedColumns);
   readonly allRows$ = this.select(
@@ -100,13 +111,13 @@ export class GridStore extends ComponentStore<GridState> {
       ...state.grid,
       groupByColumnIds
     }
-  }))
+  }));
   readonly moveColumnGroup = this.updater((state, moveGroup: MoveItem<PrColumnGroup>) => ({
     ...state,
     grid: {
       ...this.gridService.changeColumnGroupOrder(state.grid, moveGroup.item, moveGroup.previousIndex, moveGroup.currentIndex)
     },
-  }))
+  }));
   readonly moveColumn = this.updater((state, moveColumn: MoveItem<PrColumn>) => {
     const newTable = this.gridService.changeColumnOrder(state.grid, moveColumn.item, moveColumn.previousIndex, moveColumn.currentIndex)
 
@@ -117,7 +128,7 @@ export class GridStore extends ComponentStore<GridState> {
         rows: [...newTable.rows],
       },
     }
-  })
+  });
   readonly moveRow = this.updater((state, moveRow: MoveItem<PrRow>) => ({
     ...state,
     grid: {
@@ -127,11 +138,11 @@ export class GridStore extends ComponentStore<GridState> {
   readonly removeColumn = this.updater((state, column: PrColumnWithMetadata) => ({
     ...state,
     grid: this.gridService.removeColumn(state.grid, column),
-  }))
+  }));
   readonly removeColumnGroup = this.updater((state, columnGroup: PrColumnGroup) => ({
     ...state,
     grid: this.gridService.removeColumnGroup(state.grid, columnGroup),
-  }))
+  }));
   readonly setSelectedRow = this.updater((state, rowData: { row: PrRow, index: number }) => ({
     ...state,
     selectedRows: [{
@@ -146,7 +157,7 @@ export class GridStore extends ComponentStore<GridState> {
     selectedCells: [cell],
     selectedRows: [],
     selectedColumns: [],
-  }))
+  }));
   readonly setSelectedColumn = this.updater((state, column: PrColumn) => ({
     ...state,
     selectedColumns: [column],
@@ -156,7 +167,7 @@ export class GridStore extends ComponentStore<GridState> {
   readonly setDisplayedRows = this.updater((state, allRows: PrDisplayableRow[]) => ({
     ...state,
     displayedRows: this.gridService.updateDisplayedRows(allRows)
-  }))
+  }));
   readonly setColumnWidthInPx = this.updater((state, columnResize: ColumnResize) => ({
     ...state,
     grid: this.gridService.setColumnWidth(state.grid, columnResize),

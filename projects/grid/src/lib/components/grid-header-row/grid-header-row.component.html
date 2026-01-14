@@ -4,36 +4,44 @@
   cdkDropListOrientation="horizontal"
   (cdkDropListDropped)="onDropColumn($event)"
   [style.grid-template-columns]="gridTemplateColumns">
-  <div
-    *ngFor="let column of columns; let i = index; trackBy: trackByColumn"
-    cdkDrag
-    cdkDragLockAxis="x"
-    cdkDragPreviewContainer="parent"
-    [cdkDragData]="column"
-    (cdkDragStarted)="onDragStart()"
-    (cdkDragEnded)="onDragEnd()"
-    class="grid-header-cell"
-    [class.sticky]="column.isSticky"
-    [style.max-width.px]="column.maxWidthInPx"
-    [style.min-width.px]="column.minWidthInPx"
-    [style.right]="column.isSticky ? (gridStore.stickyColumnRight$(column) | async) : 'unset'"
-    [tvsColumnResize]="column"
-    [gridMaxWidthInPx]="gridMaxWidth"
-    [gridWidthInPx]="gridWidth"
-    (click)="onClickColumn(column)"
-    (contextmenu)="onContextMenuColumn($event, column, i)"
-  >
-    {{ column.title }}
-    <span class="resizer"></span>
-    <ng-template cdkDragPreview></ng-template>
-    <mat-menu class="grid-header-actions-menu" #headerActionsMenu>
-      <mat-option (click)="onRemoveColumn(column)">
-        הסרת עמודה
-      </mat-option>
-      <mat-option (click)="onCopyColumn(column)">
-        העתקת עמודה
-      </mat-option>
-    </mat-menu>
-    <div [matMenuTriggerFor]="headerActionsMenu"></div>
-  </div>
+  <ng-container *ngFor="let columnGroup of columnGroups; let groupIndex = index;">
+    <ng-container *ngFor="let column of columnGroup.columns; let i = index; trackBy: trackByColumn">
+      <div
+        cdkDrag
+        cdkDragLockAxis="x"
+        cdkDragPreviewContainer="parent"
+        [cdkDragData]="column"
+        (cdkDragStarted)="onDragStart()"
+        (cdkDragEnded)="onDragEnd()"
+        class="grid-header-cell-wrapper"
+        [class.sticky]="column.isSticky"
+        [class.first-in-group]="i === 0"
+        [class.last-in-group]="i === columnGroup.columns.length - 1"
+        [style.max-width.px]="column.maxWidthInPx"
+        [style.min-width.px]="column.minWidthInPx"
+        [style.right]="column.isSticky ? (gridStore.stickyColumnRight$(column) | async) : 'unset'"
+        [tvsColumnResize]="column"
+        [gridMaxWidthInPx]="gridMaxWidth"
+        [gridWidthInPx]="gridWidth"
+        (click)="onClickColumn(column)"
+        (contextmenu)="onContextMenuColumn($event, column, i)"
+      >
+        <div class="grid-header-cell">
+          {{ column.title }}
+        </div>
+        <span class="resizer"></span>
+        <ng-template cdkDragPreview></ng-template>
+        <mat-menu class="grid-header-actions-menu" #headerActionsMenu>
+          <mat-option (click)="onRemoveColumn(column)">
+            הסרת עמודה
+          </mat-option>
+          <mat-option (click)="onCopyColumn(column)">
+            העתקת עמודה
+          </mat-option>
+        </mat-menu>
+        <div [matMenuTriggerFor]="headerActionsMenu"></div>
+      </div>
+    </ng-container>
+    <pr-grid-column-group-spacer *ngIf="groupIndex !== columnGroups.length - 1"></pr-grid-column-group-spacer>
+  </ng-container>
 </div>

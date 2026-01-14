@@ -4,33 +4,35 @@
   cdkDropListOrientation="horizontal"
   (cdkDropListDropped)="onDropColumnGroup($event)"
   [style.grid-template-columns]="gridTemplateColumns">
-  <div
-    *ngFor="let columnGroup of columnGroups; let i = index; trackBy: trackByColumn"
-    cdkDrag
-    cdkDragLockAxis="x"
-    cdkDragPreviewContainer="parent"
-    [cdkDragData]="columnGroup"
-    (cdkDragStarted)="onDragStart()"
-    (cdkDragEnded)="onDragEnd()"
-    [tvsColumnResize]="columnGroup"
-    [gridMaxWidthInPx]="gridMaxWidth"
-    [gridWidthInPx]="gridWidth"
-    class="grid-column-group-cell"
-    [class.sticky]="columnGroup.isSticky"
-    [style.right]="columnGroup.isSticky ? (gridStore.stickyColumnRight$(columnGroup.columns[0]) | async) : 'unset'"
-    [style.grid-column]="'span ' + columnGroup.columns.length"
-    [style.max-width.px]="columnGroup.columns | sum: 'maxWidthInPx'"
-    [style.min-width.px]="columnGroup.columns | sum: 'minWidthInPx'"
-    (contextmenu)="$event.stopPropagation(); $event.preventDefault(); onContextMenu(i)"
-  >
-    {{ columnGroup.title }}
-    <span class="resizer"></span>
-    <ng-template cdkDragPreview></ng-template>
-    <mat-menu class="grid-header-actions-menu" #headerActionsMenu>
-      <mat-option (click)="onRemoveColumnGroup(columnGroup)">
-        הסרת קבוצת עמודות
-      </mat-option>
-    </mat-menu>
-    <div [matMenuTriggerFor]="headerActionsMenu"></div>
-  </div>
+  <ng-container *ngFor="let columnGroup of columnGroups; let i = index; trackBy: trackByColumn">
+    <div
+      cdkDrag
+      cdkDragLockAxis="x"
+      cdkDragPreviewContainer="parent"
+      [cdkDragData]="columnGroup"
+      (cdkDragStarted)="onDragStart()"
+      (cdkDragEnded)="onDragEnd()"
+      [tvsColumnResize]="columnGroup"
+      [gridMaxWidthInPx]="gridMaxWidth"
+      [gridWidthInPx]="gridWidth"
+      class="grid-column-group-cell"
+      [class.sticky]="columnGroup.isSticky"
+      [style.right]="columnGroup.isSticky ? (gridStore.stickyColumnRight$(columnGroup.columns[0]) | async) : 'unset'"
+      [style.grid-column]="'span ' + columnGroup.columns.length"
+      [style.max-width.px]="columnGroup.columns | sum: 'maxWidthInPx'"
+      [style.min-width.px]="columnGroup.columns | sum: 'minWidthInPx'"
+      (contextmenu)="$event.stopPropagation(); $event.preventDefault(); onContextMenu(i)"
+    >
+      {{ columnGroup.title }}
+      <span class="resizer"></span>
+      <ng-template cdkDragPreview></ng-template>
+      <mat-menu class="grid-header-actions-menu" #headerActionsMenu>
+        <mat-option (click)="onRemoveColumnGroup(columnGroup)">
+          הסרת קבוצת עמודות
+        </mat-option>
+      </mat-menu>
+      <div [matMenuTriggerFor]="headerActionsMenu"></div>
+    </div>
+    <pr-grid-column-group-spacer *ngIf="i !== columnGroups.length - 1"></pr-grid-column-group-spacer>
+  </ng-container>
 </div>

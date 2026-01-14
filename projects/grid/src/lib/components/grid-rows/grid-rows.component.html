@@ -12,6 +12,7 @@
     ></pr-grid-column-group-row>
     <pr-grid-header-row
       [columns]="columns"
+      [groupByColumnIds]="table.groupByColumnIds"
       [gridTemplateColumns]="gridTemplate$ | async"
       [gridWidth]="gridWidthInPx$ | async"
       [gridMaxWidth]="gridMaxWidthInPx$ | async"

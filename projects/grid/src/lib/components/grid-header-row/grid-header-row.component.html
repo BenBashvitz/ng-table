@@ -33,6 +33,9 @@
       <mat-option (click)="onCopyColumn(column)">
         העתקת עמודה
       </mat-option>
+      <mat-option (click)="onGroupByAction(column.columnDef)">
+        {{(groupByColumnIds.includes(column.columnDef) ? 'הסר קיבוץ' : 'קבץ לפי עמודה')}}
+      </mat-option>
     </mat-menu>
     <div [matMenuTriggerFor]="headerActionsMenu"></div>
   </div>

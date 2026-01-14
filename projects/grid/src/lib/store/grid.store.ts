@@ -94,6 +94,27 @@ export class GridStore extends ComponentStore<GridState> {
       groupByColumnIds
     }
   }))
+  readonly setRows = this.updater((state, rows: PrRow[]) => ({
+    ...state,
+    grid: {
+      ...state.grid,
+      rows
+    }
+  }))
+  readonly addGroupByColumnId = this.updater((state, columnDef: string) => ({
+    ...state,
+    grid: {
+      ...state.grid,
+      groupByColumnIds: [...state.grid.groupByColumnIds, columnDef]
+    }
+  }))
+  readonly removeGroupByColumnId = this.updater((state, columnDef: string) => ({
+    ...state,
+    grid: {
+      ...state.grid,
+      groupByColumnIds: state.grid.groupByColumnIds.filter(column => column !== columnDef)
+    }
+  }))
   readonly moveColumnGroup = this.updater((state, moveGroup: MoveItem<PrColumnGroup>) => ({
     ...state,
     grid: {
@@ -146,9 +167,9 @@ export class GridStore extends ComponentStore<GridState> {
     selectedRows: [],
     selectedCells: [],
   }))
-  readonly setAllRows = this.updater((state, grid: PrGrid) => ({
-    ...state,
-    allRows: this.gridService.getAllRows(grid)
+  readonly updateAllRows = this.updater((state) => ({
+  ...state,
+  allRows: this.gridService.getAllRows(state.grid)
   }))
   readonly setColumnWidthInPx = this.updater((state, columnResize: ColumnResize) => ({
     ...state,

@@ -50,11 +50,13 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
     const previousGrid = changes['grid']?.previousValue;
 
     if (newGrid?.groupByColumnIds !== previousGrid?.groupByColumnIds) {
-      this.gridStore.setGroupByColumnIds(this.grid.groupByColumnIds);
+      this.gridStore.setGroupByColumnIds(newGrid.groupByColumnIds);
+      this.gridStore.updateAllRows();
     }
 
-    if (newGrid?.rows && newGrid.rows !== previousGrid?.rows || newGrid?.groupByColumnIds !== previousGrid?.groupByColumnIds) {
-      this.gridStore.setAllRows(this.grid);
+    if (newGrid?.rows && newGrid.rows !== previousGrid?.rows) {
+      this.gridStore.setRows(newGrid.rows);
+      this.gridStore.updateAllRows();
     }
   }
 

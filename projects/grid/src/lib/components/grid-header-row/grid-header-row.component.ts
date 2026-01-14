@@ -1,7 +1,7 @@
 import {Component, Input, QueryList, ViewChildren} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
-import {AsyncPipe, NgForOf} from "@angular/common";
+import {AsyncPipe, NgForOf, NgIf } from "@angular/common";
 import {PrColumn, PrColumnWithMetadata} from "@parlament/grid";
 import {GridStore} from "../../store/grid.store";
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
@@ -24,16 +24,14 @@ import {IsColumnSelectedPipe} from "../../pipes/is-column-selected.pipe";
     AsyncPipe,
     MatMenuModule,
     MatOptionModule,
-    GridCellComponent,
-    IsCellSelectedPipe,
-    IsColumnSelectedPipe
   ]
 })
 export class GridHeaderRowComponent {
-  @Input() columns: PrColumnWithMetadata[]
-  @Input() gridTemplateColumns: string
+  @Input() columns: PrColumnWithMetadata[];
+  @Input() gridTemplateColumns: string;
   @Input() gridMaxWidth: number;
   @Input() gridWidth: number;
+  @Input() groupByColumnIds: string[];
   @ViewChildren(MatMenuTrigger) menuTriggers: QueryList<MatMenuTrigger>;
 
   constructor(public gridStore: GridStore) {}
@@ -55,7 +53,7 @@ export class GridHeaderRowComponent {
   }
 
   trackByColumn(_: number, column: PrColumnWithMetadata) {
-    return column.columnDef
+    return column.columnDef;
   }
 
   onClickColumn(column: PrColumnWithMetadata) {
@@ -75,5 +73,15 @@ export class GridHeaderRowComponent {
 
   onCopyColumn(column: PrColumnWithMetadata) {
     this.gridStore.copyColumn(column);
+  }
+
+  onGroupByAction(columnDef: string) {
+    if (this.groupByColumnIds.includes(columnDef)) {
+      this.gridStore.removeGroupByColumnId(columnDef);
+    } else {
+      this.gridStore.addGroupByColumnId(columnDef);
+    }
+
+    this.gridStore.updateAllRows();
   }
 }

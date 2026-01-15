@@ -59,11 +59,12 @@ export class GridHeaderRowComponent {
     this.gridStore.setSelectedColumn(column);
   }
 
-  onContextMenuColumn(event: Event, column: PrColumn, columnIndex: number) {
+  onContextMenuColumn(event: Event, column: PrColumn, groupIndex: number, columnIndex: number) {
     event.stopPropagation();
     event.preventDefault();
     this.onClickColumn(column);
-    this.menuTriggers.get(columnIndex).openMenu();
+
+    this.menuTriggers.get(this.getColumnIndex(groupIndex, columnIndex)).openMenu();
   }
 
   onRemoveColumn(column: PrColumnWithMetadata) {
@@ -72,5 +73,17 @@ export class GridHeaderRowComponent {
 
   onCopyColumn(column: PrColumnWithMetadata) {
     this.gridStore.copyColumn(column);
+  }
+
+  getColumnIndex(groupIndex: number, columnInGroupIndex: number) {
+    return this.columnGroups.reduce((columnIndex, _, i) => {
+      if(i < groupIndex) {
+        return columnIndex + this.columnGroups[i].columns.length
+      } else if(i > groupIndex) {
+        return columnIndex;
+      } else {
+        return columnIndex + columnInGroupIndex;
+      }
+    }, 0)
   }
 }

@@ -24,7 +24,7 @@
         [gridMaxWidthInPx]="gridMaxWidth"
         [gridWidthInPx]="gridWidth"
         (click)="onClickColumn(column)"
-        (contextmenu)="onContextMenuColumn($event, column, i)"
+        (contextmenu)="onContextMenuColumn($event, column, groupIndex, i)"
       >
         <div class="grid-header-cell">
           {{ column.title }}

@@ -1,14 +1,12 @@
 import {Component, Input, QueryList, ViewChildren} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
-import {AsyncPipe, NgForOf, NgIf } from "@angular/common";
-import {PrColumn, PrColumnWithMetadata} from "@parlament/grid";
+import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
+import {PrColumn, PrColumnGroup, PrColumnWithMetadata} from "@parlament/grid";
 import {GridStore} from "../../store/grid.store";
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {MatOptionModule} from "@angular/material/core";
-import {GridCellComponent} from "../grid-cell/grid-cell.component";
-import {IsCellSelectedPipe} from "../../pipes/is-cell-selected.pipe";
-import {IsColumnSelectedPipe} from "../../pipes/is-column-selected.pipe";
+import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-column-group-spacer.component";
 
 @Component({
   selector: 'pr-grid-header-row',
@@ -24,11 +22,13 @@ import {IsColumnSelectedPipe} from "../../pipes/is-column-selected.pipe";
     AsyncPipe,
     MatMenuModule,
     MatOptionModule,
+    GridColumnGroupSpacerComponent,
+    NgIf
   ]
 })
 export class GridHeaderRowComponent {
-  @Input() columns: PrColumnWithMetadata[];
-  @Input() gridTemplateColumns: string;
+  @Input() columnGroups: PrColumnGroup[];
+  @Input() gridTemplateColumns: string
   @Input() gridMaxWidth: number;
   @Input() gridWidth: number;
   @Input() groupByColumnIds: string[];
@@ -60,11 +60,12 @@ export class GridHeaderRowComponent {
     this.gridStore.setSelectedColumn(column);
   }
 
-  onContextMenuColumn(event: Event, column: PrColumn, columnIndex: number) {
+  onContextMenuColumn(event: Event, column: PrColumn, groupIndex: number, columnIndex: number) {
     event.stopPropagation();
     event.preventDefault();
     this.onClickColumn(column);
-    this.menuTriggers.get(columnIndex).openMenu();
+
+    this.menuTriggers.get(this.getColumnIndex(groupIndex, columnIndex)).openMenu();
   }
 
   onRemoveColumn(column: PrColumnWithMetadata) {
@@ -73,6 +74,18 @@ export class GridHeaderRowComponent {
 
   onCopyColumn(column: PrColumnWithMetadata) {
     this.gridStore.copyColumn(column);
+  }
+
+  getColumnIndex(groupIndex: number, columnInGroupIndex: number) {
+    return this.columnGroups.reduce((columnIndex, _, i) => {
+      if(i < groupIndex) {
+        return columnIndex + this.columnGroups[i].columns.length
+      } else if(i > groupIndex) {
+        return columnIndex;
+      } else {
+        return columnIndex + columnInGroupIndex;
+      }
+    }, 0)
   }
 
   onGroupByAction(columnDef: string) {

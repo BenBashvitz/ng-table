@@ -1,12 +1,23 @@
 :host {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   height: 100%;
   width: 100%;
-  user-select: none;
+  background-color: var(--pr-grid-group-bg);
+  padding: 2px;
 
-  color: var(--pr-grid-cell-color);
-  background-color: var(--pr-grid-cell-bg);
-  border-radius: var(--pr-grid-cell-radius);
+  .grid-cell-wrapper {
+    color: var(--pr-grid-cell-color);
+    background-color: var(--pr-grid-cell-bg);
+    border-radius: var(--pr-grid-cell-radius);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    height: 100%;
+    width: 100%;
+    user-select: none;
+
+    &.selected {
+      border: 1px solid var(--pr-grid-primary);
+      background-color: var(--pr-grid-primary-opacity);
+    }
+  }
 }

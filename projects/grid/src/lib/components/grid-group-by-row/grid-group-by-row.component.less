@@ -6,42 +6,48 @@
 
   .grid-group-by-row {
     position: relative;
-    background-color: color-mix(in srgb, var(--pr-grid-group-by-row-bg), var(--pr-grid-lowest-group-bg) calc(var(--group-level) * 20%));
-    border-radius: var(--pr-grid-group-by-row-radius);
-    border: 1.11px solid var(--pr-grid-group-by-row-border-color);
-    height: 100%;
+    background-color: var(--pr-grid-group-bg);
     width: 100%;
-    display: flex;
-    align-items: center;
-    padding: 0 8px 0;
-    cursor: pointer;
-    user-select: none;
+    padding: 2px;
 
-    .grid-group-name {
-      color: var(--pr-grid-group-by-row-name-color);
-      font-weight: var(--pr-grid-group-by-row-font-weight);
-      font-size: var(--pr-grid-group-by-row-font-size);
-    }
-
-    .grid-row-count {
-      color: var(--pr-grid-group-by-row-count-color);
-      font-weight: var(--pr-grid-group-by-row-font-weight);
-      font-size: var(--pr-grid-group-by-row-font-size);
-      padding: 0 5px 0;
-    }
-
-    .grid-dropdown-icon {
-      color: var(--pr-grid-group-by-row-dropdown-color);
-      font-size: var(--pr-grid-group-by-row-font-size);
-      transition: transform 0.3s ease;
-      width: 16px;
-      height: 16px;
+    .grid-group-by-row-data {
+      height: 100%;
+      width: 100%;
       display: flex;
       align-items: center;
-      justify-content: center;
+      padding: 0 8px 0;
+      cursor: pointer;
+      user-select: none;
+      background-color: var(--pr-grid-group-by-row-bg);
+      border: 1.11px solid var(--pr-grid-group-by-row-border-color);
+      border-radius: var(--pr-grid-group-by-row-radius);
 
-      &.closed {
-        transform: rotate(180deg);
+      .grid-group-name {
+        color: var(--pr-grid-group-by-row-name-color);
+        font-weight: var(--pr-grid-group-by-row-font-weight);
+        font-size: var(--pr-grid-group-by-row-font-size);
+      }
+
+      .grid-row-count {
+        color: var(--pr-grid-group-by-row-count-color);
+        font-weight: var(--pr-grid-group-by-row-font-weight);
+        font-size: var(--pr-grid-group-by-row-font-size);
+        padding: 0 5px 0;
+      }
+
+      .grid-dropdown-icon {
+        color: var(--pr-grid-group-by-row-dropdown-color);
+        font-size: var(--pr-grid-group-by-row-font-size);
+        transition: transform 0.3s ease;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &.closed {
+          transform: rotate(180deg);
+        }
       }
     }
   }

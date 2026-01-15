@@ -1,22 +1,24 @@
-<ng-container *ngIf="cell">
-  <ng-container [ngSwitch]="cell.discriminator">
-    <pr-grid-text-cell
-      *ngSwitchCase="'Text'"
-      [cell]="cell | toFreeTextCell"
-      [columnDef]="columnDef"
-      [columnTitle]="columnTitle"
-    ></pr-grid-text-cell>
-    <ng-container *ngSwitchCase="'Component'">
-      <ng-container *ngComponentOutlet="(cell | toComponentCell).component;"></ng-container>
+<div class="grid-cell-wrapper" [class.selected]="selected">
+  <ng-container *ngIf="cell">
+    <ng-container [ngSwitch]="cell.discriminator">
+      <pr-grid-text-cell
+        *ngSwitchCase="'Text'"
+        [cell]="cell | toFreeTextCell"
+        [columnDef]="columnDef"
+        [columnTitle]="columnTitle"
+      ></pr-grid-text-cell>
+      <ng-container *ngSwitchCase="'Component'">
+        <ng-container *ngComponentOutlet="(cell | toComponentCell).component;"></ng-container>
+      </ng-container>
+      <pr-grid-options-cell
+        *ngSwitchCase="'Options'"
+        [cell]="cell | toOptionsCell"
+        [columnDef]="columnDef"
+        [columnTitle]="columnTitle"
+      ></pr-grid-options-cell>
     </ng-container>
-    <pr-grid-options-cell
-      *ngSwitchCase="'Options'"
-      [cell]="cell | toOptionsCell"
-      [columnDef]="columnDef"
-      [columnTitle]="columnTitle"
-    ></pr-grid-options-cell>
   </ng-container>
-</ng-container>
-<ng-container *ngIf="!cell">
-  row does not have a cell for this column
-</ng-container>
+  <ng-container *ngIf="!cell">
+    row does not have a cell for this column
+  </ng-container>
+</div>

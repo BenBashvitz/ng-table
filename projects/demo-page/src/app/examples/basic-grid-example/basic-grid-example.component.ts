@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
-import {PrRow, PrGrid} from "@parlament/grid";
-import {GridStore} from '../../../../../grid/src/lib/store/grid.store';
+import {PrRow, PrGrid, GridStore} from "@parlament/grid";
 
 const DATA: PrRow[] = Array.from({length: 1000}, (v, i) => ({
   id: i + 1,

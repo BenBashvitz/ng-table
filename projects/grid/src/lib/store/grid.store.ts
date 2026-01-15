@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {
   ColumnResize,
   defaults,
-  GridService,
   isComponentCell,
   isTextCell,
   MoveItem,
@@ -14,9 +13,10 @@ import {
   PrGrid,
   PrRow,
   SelectedCellData
-} from '@parlament/grid';
+} from '../types/grid.interface';
 import { ComponentStore } from '@ngrx/component-store';
 import { Observable, switchMap, withLatestFrom } from 'rxjs';
+import { GridService } from "../services/grid.service";
 
 export interface GridState {
   grid: PrGrid,

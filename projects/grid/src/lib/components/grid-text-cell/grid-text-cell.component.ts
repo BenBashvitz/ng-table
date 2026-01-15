@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {GridTextCellMenuComponent} from "../grid-text-cell-menu/grid-text-cell-menu.component";
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {ToFreeTextCellPipe} from "../../pipes/to-text-cell.pipe";
-import {isFreeTextCell, PrFreeTextCell} from "@parlament/grid";
+import {isFreeTextCell, PrFreeTextCell } from '../../types/grid.interface';
 
 @Component({
   selector: 'pr-grid-text-cell',

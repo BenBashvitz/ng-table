@@ -7,6 +7,7 @@
   .grid-group-by-row {
     position: relative;
     background-color: var(--pr-grid-group-bg);
+    height: 100%;
     width: 100%;
     padding: 2px;
 
@@ -18,7 +19,7 @@
       padding: 0 8px 0;
       cursor: pointer;
       user-select: none;
-      background-color: var(--pr-grid-group-by-row-bg);
+      background-color: color-mix(in srgb, var(--pr-grid-group-by-row-bg), var(--pr-grid-lowest-group-bg) calc(var(--group-level) * 20%));
       border: 1.11px solid var(--pr-grid-group-by-row-border-color);
       border-radius: var(--pr-grid-group-by-row-radius);
 

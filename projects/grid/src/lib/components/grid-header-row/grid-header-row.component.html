@@ -41,6 +41,9 @@
           <mat-option (click)="onGroupByAction(column.columnDef)">
             {{groupByColumnIds | toggleLabel : column.columnDef : 'קבץ לפי עמודה' : 'הסר קיבוץ'}}
           </mat-option>
+          <mat-option (click)="onSortAction(column.columnDef)">
+            {{(sortByColumnIds | toggleLabel : column.columnDef :  'סדר לפי' : 'הסר סידור')}}
+          </mat-option>
         </mat-menu>
         <div [matMenuTriggerFor]="headerActionsMenu"></div>
       </div>

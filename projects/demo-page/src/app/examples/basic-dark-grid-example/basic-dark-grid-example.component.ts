@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { GridStore, PrGrid, PrRow } from '@parlament/grid';
+import { Component, OnInit } from '@angular/core';
+import { GridStore, PrGrid, PrRow, PrSortDirection } from '@parlament/grid';
+import { Observable } from "rxjs";
 
-const DATA: PrRow[] = Array.from({ length: 1000 }, (v, i) => ({
+const DATA: PrRow[] = Array.from({ length: 1000 }, (_, i) => ({
   id: i + 1,
   discriminator: 'row'
 }));
@@ -9,40 +10,76 @@ const DATA: PrRow[] = Array.from({ length: 1000 }, (v, i) => ({
 const columns = ['id', 'name', 'type', 'status', 'more'] as const;
 type Columns = (typeof columns)[number];
 
+const asNum = (id: string | number) => Number(id);
+
+const hash32 = (x: string | number): number => {
+  const s = String(x);
+  let h = 2166136261; // FNV-1a
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+};
+
+const statuses = ['חדש', 'בטיפול', 'מושהה', 'סגור'] as const; // 4
+const types = ['A', 'B', 'C'] as const;
+
 @Component({
   selector: 'app-basic-dark-grid-example',
   templateUrl: './basic-dark-grid-example.component.html',
   styleUrls: ['./basic-dark-grid-example.component.css'],
   providers: [GridStore]
 })
-export class BasicDarkGridExample {
+export class BasicDarkGridExample implements OnInit {
   isGroupByEnabled = false;
+  sortDirection$: Observable<PrSortDirection>;
 
   constructor(public gridStore: GridStore) {}
+
+  ngOnInit() {
+    this.sortDirection$ = this.gridStore.sortDirection$;
+  }
 
   table: PrGrid<Columns> = {
     rows: DATA,
     columnToCellMapper: {
-      id: (row: PrRow) => ({
-        discriminator: 'Text',
-        cellText: `${+row.id}`
-      }),
-      name: (row: PrRow) => ({
-        discriminator: 'Text',
-        cellText: `שם ישות ${(Number(row.id) % 2 === 0) ? 1 : 2}`
-      }),
-      type: (row: PrRow) => ({
-        discriminator: 'Text',
-        cellText: `טיפוס ${row.id}`
-      }),
-      status: (row: PrRow) => ({
-        discriminator: 'Text',
-        cellText: `סטטוס ישות ${row.id}`
-      }),
-      more: (row: PrRow) => ({
-        discriminator: 'Text',
-        cellText: `עוד מידע ${row.id}`
-      })
+      id: (row: PrRow) => {
+        const n = asNum(row.id);
+        return { discriminator: 'Text', cellText: String(n) };
+      },
+
+      name: (row: PrRow) => {
+        const h = hash32(row.id);
+        const bucket = (h & 1) === 0 ? 1 : 2;
+        return { discriminator: 'Text', cellText: `שם ישות ${bucket}` };
+      },
+
+      type: (row: PrRow) => {
+        const h = hash32(row.id) ^ 0xD4;
+        const t = types[h % types.length];
+        return { discriminator: 'Text', cellText: `טיפוס ${t}` };
+      },
+
+      status: (row: PrRow) => {
+        const h = hash32(row.id) ^ 0xC3;
+        const s = statuses[h % statuses.length];
+        return { discriminator: 'Text', cellText: `סטטוס ${s}` };
+      },
+
+      more: (row: PrRow) => {
+        const h = hash32(row.id);
+        const isEmpty = h % 11 === 0; // ~9%
+        if (isEmpty) return { discriminator: 'Text', cellText: '' };
+
+        const bucket = ['אדום', 'ירוק', 'כחול', 'צהוב', 'סגול'][h % 5];
+        const numLike = ((h >>> 8) % 25) + 1;
+
+        return {
+          discriminator: 'Text',
+          cellText: `עוד ${bucket} ${numLike}`
+        };
+      }
     },
     columnGroups: [
       {
@@ -97,5 +134,14 @@ export class BasicDarkGridExample {
 
   expandGroupBy() {
     this.gridStore.collapseExpandAllGroups(true);
+  }
+
+  toggleSortDirection() {
+    this.gridStore.toggleSortByDirection();
+    this.gridStore.sortRows();
+  }
+
+  resetSortBy() {
+    this.gridStore.resetSortBy();
   }
 }

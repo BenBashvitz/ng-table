@@ -11,6 +11,7 @@ import {BasicDarkGridExample} from "./basic-dark-grid-example/basic-dark-grid-ex
 import {EditableCellGridExample} from "./editable-cell-grid-example/editable-cell-grid-example.component";
 import {StickyColumnGridExample} from "./sticky-column-grid-example/sticky-column-grid-example.component";
 import { GridComponent } from '@parlament/grid';
+import { MatIconModule } from '@angular/material/icon';
 
 const examples = [
   BasicGridExample,
@@ -30,7 +31,8 @@ const examples = [
     MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,
-    GridComponent
+    GridComponent,
+    MatIconModule,
   ],
   exports: [...examples]
 })

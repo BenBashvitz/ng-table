@@ -3,16 +3,31 @@ pr-grid {
 }
 
 .example-button {
-  width: 75px;
+  width: fit-content;
+  padding: 10px;
   height: 20px;
-  background-color: #7B8297;
+  background-color: #7b8297;
   margin: 10px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   border-radius: 7px;
   border: 2px solid darkslategrey;
   font-size: 14px;
   cursor: pointer;
   color: azure;
+}
+
+.sort-direction {
+  color: azure;
+  transition: transform 0.3s ease;
+  width: 25px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: initial;
+
+  &.desc {
+    transform: rotate(180deg);
+  }
 }

@@ -12,7 +12,8 @@ import {
   PrDisplayableRow,
   PrGrid,
   PrRow,
-  SelectedCellData
+  SelectedCellData,
+  PrSortDirection
 } from '../types/grid.interface';
 import { ComponentStore } from '@ngrx/component-store';
 import { Observable, switchMap, withLatestFrom } from 'rxjs';
@@ -24,6 +25,7 @@ export interface GridState {
   selectedCells: SelectedCellData[],
   allRows: PrDisplayableRow[],
   selectedColumns: PrColumnWithMetadata[],
+  sortByDirection: PrSortDirection
 }
 
 const initialState: GridState = {
@@ -33,7 +35,7 @@ const initialState: GridState = {
     columnToCellMapper: {},
     pinnedRowsIds: [],
     groupByColumnIds: [],
-    sortByColumn: [],
+    sortByColumnIds: [],
     rowHeightInPx: defaults.rowHeightInPx,
     maxWidthInPx: defaults.maxWidthInPx
   },
@@ -41,6 +43,7 @@ const initialState: GridState = {
   selectedRows: [],
   allRows: [],
   selectedColumns: [],
+  sortByDirection: 'asc'
 }
 
 @Injectable()
@@ -74,6 +77,7 @@ export class GridStore extends ComponentStore<GridState> {
       return width + widthInPx;
     }, 0)
   })
+  readonly sortDirection$ = this.select(state => state.sortByDirection);
   readonly maxWidth$ = this.select(this.grid$, grid => grid.maxWidthInPx ?? defaults.maxWidthInPx);
   readonly allRows$ = this.select(state => state.allRows);
   readonly selectedRows$ = this.select(state => state.selectedRows);
@@ -105,6 +109,24 @@ export class GridStore extends ComponentStore<GridState> {
       groupByColumnIds
     }
   }));
+  readonly addSortByColumnId = this.updater((state, columnDef: string) => ({
+    ...state,
+    grid: {
+      ...state.grid,
+      sortByColumnIds: [...state.grid.sortByColumnIds, columnDef]
+    }
+  }));
+  readonly removeSortByColumnId = this.updater((state, columnDef: string) => ({
+    ...state,
+    grid: {
+      ...state.grid,
+      sortByColumnIds: state.grid.sortByColumnIds.filter(column => column !== columnDef)
+    }
+  }));
+  readonly toggleSortByDirection = this.updater((state) => ({
+    ...state,
+    sortByDirection: state.sortByDirection === 'asc' ? 'desc' : 'asc'
+  }))
   readonly setRows = this.updater((state, rows: PrRow[]) => ({
     ...state,
     grid: {
@@ -125,7 +147,7 @@ export class GridStore extends ComponentStore<GridState> {
       ...state.grid,
       groupByColumnIds: state.grid.groupByColumnIds.filter(column => column !== columnDef)
     }
-  }))
+  }));
   readonly moveColumnGroup = this.updater((state, moveGroup: MoveItem<PrColumnGroup>) => ({
     ...state,
     grid: {
@@ -180,7 +202,7 @@ export class GridStore extends ComponentStore<GridState> {
   }))
   readonly updateAllRows = this.updater((state) => ({
   ...state,
-  allRows: this.gridService.getAllRows(state.grid)
+  allRows: this.gridService.getAllRows(state.grid, state.sortByDirection)
   }))
   readonly setColumnWidthInPx = this.updater((state, columnResize: ColumnResize) => ({
     ...state,
@@ -200,6 +222,18 @@ export class GridStore extends ComponentStore<GridState> {
       )
     })
   );
+  readonly sortRows = this.updater((state) => ({
+    ...state,
+    allRows: this.gridService.sortRows(state.allRows, state.grid.sortByColumnIds, state.sortByDirection, state.grid.columnToCellMapper)
+  }))
+  readonly resetSortBy = this.updater((state) => ({
+    ...state,
+    grid: {
+      ...state.grid,
+      sortByColumnIds: initialState.grid.sortByColumnIds
+    },
+    allRows: this.gridService.sortRows(state.allRows, ['id'], 'asc', state.grid.columnToCellMapper)
+  }))
   readonly copyColumn = this.effect<PrColumnWithMetadata>((triggers$: Observable<PrColumn>) => triggers$.pipe(
     withLatestFrom<PrColumn, [PrGrid]>(this.grid$),
     switchMap(([column, grid]) => {

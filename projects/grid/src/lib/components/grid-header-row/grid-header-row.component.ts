@@ -2,11 +2,12 @@ import {Component, Input, QueryList, ViewChildren} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
 import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
-import {PrColumn, PrColumnGroup, PrColumnWithMetadata} from "@parlament/grid";
+import { PrColumn, PrColumnGroup, PrColumnWithMetadata, PrSortDirection } from '@parlament/grid';
 import {GridStore} from "../../store/grid.store";
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {MatOptionModule} from "@angular/material/core";
 import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-column-group-spacer.component";
+import { MatIconModule } from '@angular/material/icon';
 import { ToggleLabelPipe } from '../../pipes/toggle-label.pipe';
 
 @Component({
@@ -25,7 +26,8 @@ import { ToggleLabelPipe } from '../../pipes/toggle-label.pipe';
     MatOptionModule,
     GridColumnGroupSpacerComponent,
     NgIf,
-    ToggleLabelPipe
+    ToggleLabelPipe,
+    MatIconModule
   ]
 })
 export class GridHeaderRowComponent {
@@ -34,6 +36,8 @@ export class GridHeaderRowComponent {
   @Input() gridMaxWidth: number;
   @Input() gridWidth: number;
   @Input() groupByColumnIds: string[];
+  @Input() sortByColumnIds: string[];
+  @Input() sortByDirection: PrSortDirection;
   @ViewChildren(MatMenuTrigger) menuTriggers: QueryList<MatMenuTrigger>;
 
   constructor(public gridStore: GridStore) {}
@@ -98,5 +102,15 @@ export class GridHeaderRowComponent {
     }
 
     this.gridStore.updateAllRows();
+  }
+
+  onSortAction(columnDef: string) {
+    if (this.sortByColumnIds.includes(columnDef)) {
+      this.gridStore.removeSortByColumnId(columnDef);
+    } else {
+      this.gridStore.addSortByColumnId(columnDef);
+    }
+
+    this.gridStore.sortRows();
   }
 }

@@ -85,13 +85,15 @@ export type PrRow = {
   id: string | number;
 }
 
+export type PrSortDirection = 'asc' | 'desc';
+
 export type PrDisplayableRow = PrGroupByRow | PrRow;
 
 export type PrGridMetadata<AvailableColumns extends string = string> = {
   columnGroups: PrColumnGroup<AvailableColumns>[]
   pinnedRowsIds?: (string | number)[];
   groupByColumnIds?: AvailableColumns[]
-  sortByColumn?: AvailableColumns[];
+  sortByColumnIds?: AvailableColumns[]
   rowHeightInPx?: number;
   maxWidthInPx?: number;
 }
@@ -147,7 +149,7 @@ export const columnDefaults: Omit<Required<PrColumnWithMetadata>, 'columnDef' | 
 export const gridDefaults: Omit<PrGridMetadata, 'columns' | 'columnGroups'> = {
   pinnedRowsIds: [],
   groupByColumnIds: [],
-  sortByColumn: undefined,
+  sortByColumnIds: [],
   rowHeightInPx: 30,
   maxWidthInPx: 1000
 }

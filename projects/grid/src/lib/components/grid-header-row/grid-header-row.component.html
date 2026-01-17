@@ -39,7 +39,7 @@
             העתקת עמודה
           </mat-option>
           <mat-option (click)="onGroupByAction(column.columnDef)">
-            {{(groupByColumnIds.includes(column.columnDef) ? 'הסר קיבוץ' : 'קבץ לפי עמודה')}}
+            {{groupByColumnIds | toggleLabel : column.columnDef : 'קבץ לפי עמודה' : 'הסר קיבוץ'}}
           </mat-option>
         </mat-menu>
         <div [matMenuTriggerFor]="headerActionsMenu"></div>

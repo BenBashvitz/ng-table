@@ -6,7 +6,7 @@ import {
   CdkDragPreview,
   CdkDropList
 } from '@angular/cdk/drag-drop';
-import { PrColumnGroup } from '@parlament/grid';
+import { PrColumnGroup } from '../../types/grid.interface';
 import { GridStore } from '../../store/grid.store';
 import { ColumnResizeDirective } from '../../directives/column-resize.directive';
 import { SumPipe } from '../../pipes/sum.pipe';

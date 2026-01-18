@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
   ColumnResize,
-  defaults,
   isComponentCell,
   isTextCell,
   MoveItem,
@@ -18,6 +17,7 @@ import {
 import { ComponentStore } from '@ngrx/component-store';
 import { Observable, switchMap, tap, withLatestFrom } from 'rxjs';
 import { GridService } from "../services/grid.service";
+import {defaults} from "../types/grid.constants";
 
 export interface GridState {
   grid: PrGrid,
@@ -55,7 +55,7 @@ export class GridStore extends ComponentStore<GridState> {
   readonly columns$ = this.select(this.grid$, table => table.columnGroups.reduce((tableColumns, {columns}) => {
     return [...tableColumns, ...columns]
   }, [] as PrColumnWithMetadata[]));
-  readonly columnsWithSpace$ = this.select(this.grid$, table => table.columnGroups.reduce((tableColumns, {columns}, index) => {
+  readonly columnsWithSpaceAndActions$ = this.select(this.grid$, table => table.columnGroups.reduce((tableColumns, {columns}, index) => {
     const emptyColumn: PrColumnWithMetadata = { columnDef: 'empty', title: '', widthInPx: 6};
 
     if(index === table.columnGroups.length - 1) {
@@ -66,12 +66,12 @@ export class GridStore extends ComponentStore<GridState> {
 
     return tableColumns
   }, [] as PrColumnWithMetadata[]))
-  readonly gridTemplate$ = this.select(this.columnsWithSpace$, columns => {
+  readonly gridTemplate$ = this.select(this.columnsWithSpaceAndActions$, columns => {
     return columns.map(col => {
       return `${col.widthInPx ?? defaults.widthInPx}px`
     }).join(' ');
   });
-  readonly gridWidth$ = this.select(this.columnsWithSpace$, columns => {
+  readonly gridWidth$ = this.select(this.columnsWithSpaceAndActions$, columns => {
     return columns.reduce((width, {widthInPx}) => {
       return width + widthInPx;
     }, 0)
@@ -89,7 +89,7 @@ export class GridStore extends ComponentStore<GridState> {
     this.allRows$,
     allRows => this.gridService.getDisplayedRows(allRows)
   )
-  readonly columnRight$ = (column: PrColumn) => this.select(this.columnsWithSpace$, columns => {
+  readonly columnRight$ = (column: PrColumn) => this.select(this.columnsWithSpaceAndActions$, columns => {
     const columnIndex = columns.findIndex(({columnDef}) => column.columnDef === columnDef);
 
     return columnIndex === 0 ? '2px' : `${columns.slice(0, columnIndex).reduce((width, {widthInPx}) => width + widthInPx, 1)}px`

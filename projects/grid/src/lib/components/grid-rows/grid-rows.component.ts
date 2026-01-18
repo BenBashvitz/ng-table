@@ -16,7 +16,7 @@ import {
   PrGroupByRow,
   PrDisplayableRow,
   PrRow,
-  SelectedCellData} from '@parlament/grid';
+  SelectedCellData} from '../../types/grid.interface';
 import {CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 import {MatTableModule} from "@angular/material/table";
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
@@ -53,7 +53,7 @@ import { FindByPropPipe } from '../../pipes/find-by-prop.pipe';
   ]
 })
 export class GridRowsComponent implements OnInit, OnDestroy {
-  @Input() table: PrGrid;
+  @Input() grid: PrGrid;
   @Input() allRows: PrDisplayableRow[];
   @Input() columns: PrColumnWithMetadata[];
   @Input() selectedCells: SelectedCellData[];

@@ -13,6 +13,7 @@ import { SumPipe } from '../../pipes/sum.pipe';
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {MatOptionModule} from "@angular/material/core";
 import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-column-group-spacer.component";
+import {HasRequiredColumnPipe} from "../../pipes/has-required-column.pipe";
 
 @Component({
   selector: 'pr-grid-column-group-row',
@@ -25,7 +26,7 @@ import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-c
     NgForOf,
     AsyncPipe,
     SumPipe
-    , MatMenuModule, MatOptionModule, GridColumnGroupSpacerComponent, NgIf],
+    , MatMenuModule, MatOptionModule, GridColumnGroupSpacerComponent, NgIf, HasRequiredColumnPipe],
   templateUrl: './grid-column-group-row.component.html',
   styleUrls: ['./grid-column-group-row.component.less']
 })
@@ -35,6 +36,9 @@ export class GridColumnGroupRowComponent {
   @Input() gridMaxWidth: number;
   @Input() gridWidth: number;
   @ViewChildren(MatMenuTrigger) menuTriggers: QueryList<MatMenuTrigger>;
+
+  readonly removeGroupText = 'הסרת קבוצת עמודות';
+  readonly removeNonRequiredColumnsText = 'הסרת עמודות רשות'
 
   constructor(public gridStore: GridStore) {}
 

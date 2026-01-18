@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { GridTextCellMenuComponent } from '../grid-text-cell-menu/grid-text-cell-menu.component';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { GridStore } from '@parlament/grid';
+import { GridStore } from '../../store/grid.store';
 import { isEditableCell, PrFreeTextCell } from '../../types/grid.interface';
 
 @Component({

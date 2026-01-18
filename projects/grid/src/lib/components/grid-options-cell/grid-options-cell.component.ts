@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { GridStore, isEditableCell, PrOptionsCell } from '@parlament/grid';
+import { isEditableCell, PrOptionsCell } from '../../types/grid.interface';
+import { GridStore } from '../../store/grid.store';
 import {MatOptionModule} from "@angular/material/core";
 import {MatListModule} from "@angular/material/list";
 

@@ -1,0 +1,11 @@
+<mat-icon class="grid-cell-text" [ngClass]="columnDef" [matMenuTriggerFor]="menu">
+  more_vert
+</mat-icon>
+<mat-menu class="grid-options-cell-menu" #menu>
+  <ng-container *ngFor="let action of cell.actions; let i = index">
+    <mat-option (click)="onClickOption(action)">
+      {{ action.label }}
+    </mat-option>
+    <mat-divider *ngIf="i !== cell.actions.length - 1"></mat-divider>
+  </ng-container>
+</mat-menu>

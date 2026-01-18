@@ -10,14 +10,12 @@ const columns = ['id', 'name', 'type', 'status', 'more'] as const;
 type Columns = typeof columns[number];
 
 @Component({
-  selector: 'app-basic-grid-example',
-  templateUrl: './basic-grid-example.component.html',
-  styleUrls: ['./basic-grid-example.component.css'],
+  selector: 'app-grid-row-actions-example',
+  templateUrl: './grid-row-actions-example.component.html',
+  styleUrls: ['./grid-row-actions-example.component.css'],
   providers: [GridStore]
 })
-export class BasicGridExample {
-  isGroupByEnabled = false;
-
+export class GridRowActionsExample {
   table: PrGrid<Columns> = {
     rows: DATA,
     columnToCellMapper: {
@@ -77,15 +75,11 @@ export class BasicGridExample {
         title: 'סטטוסים'
       },
     ],
-  }
-
-  enableGroupBy() {
-    if (!this.isGroupByEnabled) {
-      this.table = { ...this.table, groupByColumnIds: ['name', 'type'] };
-    } else {
-      this.table = { ...this.table, groupByColumnIds: [] };
-    }
-
-    this.isGroupByEnabled = !this.isGroupByEnabled;
+    rowActions: [{
+      label: 'מרכוז',
+      onAction: () => {
+        console.log('fly to entity logic')
+      }
+    }]
   }
 }

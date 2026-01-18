@@ -18,6 +18,10 @@
         [columnTitle]="columnTitle"
         (rightClick)="onEditCellRightClick()"
       ></pr-grid-options-cell>
+      <pr-grid-actions-cell
+        *ngSwitchCase="'Actions'"
+        [cell]="cell | toActionsCell"
+      ></pr-grid-actions-cell>
     </ng-container>
   </ng-container>
   <ng-container *ngIf="!cell">

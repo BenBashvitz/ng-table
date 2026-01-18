@@ -9,6 +9,7 @@ import {MatOptionModule} from "@angular/material/core";
 import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-column-group-spacer.component";
 import { ToggleLabelPipe } from '../../pipes/toggle-label.pipe';
 import {MatIconModule} from "@angular/material/icon";
+import {actionsColumnDef} from "../../types/grid.constants";
 
 @Component({
   selector: 'pr-grid-header-row',
@@ -101,4 +102,6 @@ export class GridHeaderRowComponent {
 
     this.gridStore.updateAllRows();
   }
+
+  protected readonly actionsColumnDef = actionsColumnDef;
 }

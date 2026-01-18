@@ -23,6 +23,13 @@ export type PrColumnGroup<AvailableColumns extends string = string> =
   columns: PrColumnWithMetadata<AvailableColumns>[];
 }
 
+export type PrGridAction = {
+  label: string,
+  onAction: <T>() => T | void,
+}
+
+export type PrGridActions = PrGridAction[]
+
 export interface PrTextCell {
   cellText: string;
   onEdit?: (text: string) => void;
@@ -45,7 +52,12 @@ export type PrComponentCell<ComponentInputs extends Record<string, unknown> = Re
   value: () => any;
 }
 
-export type PrCellType = PrTextCell | PrFreeTextCell | PrOptionsCell | PrComponentCell;
+export type PrActionsCell = {
+  discriminator: 'Actions';
+  actions: PrGridActions
+}
+
+export type PrCellType = PrTextCell | PrFreeTextCell | PrOptionsCell | PrComponentCell | PrActionsCell;
 
 export type SelectedCellData = {
   columnDef: string;
@@ -100,6 +112,7 @@ export type PrGridMetadata<AvailableColumns extends string = string> = {
 export type PrGrid<AvailableColumns extends string = string> = PrGridMetadata<AvailableColumns> & {
   rows: PrRow[];
   columnToCellMapper: Record<AvailableColumns, (row: PrRow) => PrCellType>;
+  rowActions?: PrGridActions
 }
 
 export function isComponentCell(cell: PrCellType): cell is PrComponentCell<{}> {
@@ -116,6 +129,10 @@ export function isFreeTextCell(cell: PrCellType): cell is PrFreeTextCell {
 
 export function isOptionsCell(cell: PrCellType): cell is PrFreeTextCell {
   return cell.discriminator === "Options";
+}
+
+export function isActionsCell(cell: PrCellType): cell is PrActionsCell {
+  return cell.discriminator === "Actions";
 }
 
 export function isColumnGroup(column: object): column is PrColumnGroup {
@@ -136,25 +153,4 @@ export function isRowArray(rows: PrRowGroup[] | PrRow[]): rows is PrRow[] {
 
 export function isGroupByRow(row: PrDisplayableRow): row is PrGroupByRow {
   return row.discriminator === 'groupByRow';
-}
-
-export const columnDefaults: Omit<Required<PrColumnWithMetadata>, 'columnDef' | 'title'> = {
-  widthInPx: 100,
-  minWidthInPx: 70,
-  maxWidthInPx: 400,
-  isSticky: false,
-  isRequired: false,
-}
-
-export const gridDefaults: Omit<PrGridMetadata, 'columns' | 'columnGroups'> = {
-  pinnedRowsIds: [],
-  groupByColumnIds: [],
-  sortByColumn: undefined,
-  rowHeightInPx: 30,
-  maxWidthInPx: 1000
-}
-
-export const defaults: Omit<PrColumnWithMetadata & PrGridMetadata, 'columnDef' | 'title' | 'columns' | 'columnGroups'> = {
-  ...columnDefaults,
-  ...gridDefaults,
 }

@@ -11,12 +11,14 @@ import {BasicDarkGridExample} from "./basic-dark-grid-example/basic-dark-grid-ex
 import {EditableCellGridExample} from "./editable-cell-grid-example/editable-cell-grid-example.component";
 import {StickyColumnGridExample} from "./sticky-column-grid-example/sticky-column-grid-example.component";
 import { GridComponent } from '@parlament/grid';
+import {GridRowActionsExample} from "./grid-row-actions-example/grid-row-actions-example.component";
 
 const examples = [
   BasicGridExample,
   BasicDarkGridExample,
   EditableCellGridExample,
   StickyColumnGridExample,
+  GridRowActionsExample
 ];
 
 @NgModule({

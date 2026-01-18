@@ -7,6 +7,8 @@ import {MatMenuModule} from "@angular/material/menu";
 import {GridTextCellComponent} from "../grid-text-cell/grid-text-cell.component";
 import {GridOptionsCellComponent} from "../grid-options-cell/grid-options-cell.component";
 import {ToOptionsCellPipe} from "../../pipes/to-options-cell.pipe";
+import {GridActionsCellComponent} from "../grid-actions-cell/grid-actions-cell.component";
+import {ToActionsCellPipe} from "../../pipes/to-actions-cell.pipe";
 
 @Component({
   selector: 'pr-grid-cell',
@@ -22,7 +24,9 @@ import {ToOptionsCellPipe} from "../../pipes/to-options-cell.pipe";
     NgSwitchCase,
     NgSwitch,
     GridOptionsCellComponent,
-    ToOptionsCellPipe
+    ToOptionsCellPipe,
+    ToActionsCellPipe,
+    GridActionsCellComponent
   ],
   standalone: true
 })

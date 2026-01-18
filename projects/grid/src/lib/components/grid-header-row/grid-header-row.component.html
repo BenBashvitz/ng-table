@@ -26,11 +26,14 @@
         (click)="onClickColumn(column)"
         (contextmenu)="onContextMenuColumn($event, column, groupIndex, i)"
       >
-        <div class="grid-header-cell">
+        <div
+          class="grid-header-cell"
+          [class.transparent]="column.columnDef === actionsColumnDef"
+        >
           <span class="grid-header-cell-text">
             {{ column.title }}
           </span>
-          <mat-icon class="grid-header-cell-menu-icon" [matMenuTriggerFor]="headerActionsMenu">
+          <mat-icon *ngIf="column.columnDef !== actionsColumnDef" class="grid-header-cell-menu-icon" [matMenuTriggerFor]="headerActionsMenu">
             more_vert
           </mat-icon>
         </div>

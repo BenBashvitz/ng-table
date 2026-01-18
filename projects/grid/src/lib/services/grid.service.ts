@@ -10,9 +10,11 @@ import {
   isOptionsCell,
   isComponentCell,
   PrDisplayableRow,
-  PrGroupByRow,
   PrRowGroup,
-  ColumnResize
+  ColumnResize,
+  isGroupByRow,
+  isRowArray,
+  isRowGroup
 } from '../types/grid.interface';
 import {moveItemInArray} from "@angular/cdk/drag-drop";
 
@@ -82,12 +84,12 @@ export class GridService {
     }
   }
 
-  getAllRows(grid: PrGrid, groupByColumnIds: string[]): PrDisplayableRow[] {
-    if (!groupByColumnIds?.length) {
+  getAllRows(grid: PrGrid): PrDisplayableRow[] {
+    if (!grid.groupByColumnIds?.length) {
       return grid.rows;
     }
 
-    const grouped = this.recursiveGroupBy(grid.rows, groupByColumnIds, 0, grid);
+    const grouped = this.recursiveGroupBy(grid.rows, grid.groupByColumnIds, 0, grid);
     return this.flattenGroupedData(grouped, 0);
   }
 
@@ -118,7 +120,7 @@ export class GridService {
       let leafCount = 0;
       let subtreeSize = 0;
 
-      if (this.isRowArray(children)) {
+      if (isRowArray(children)) {
         leafCount = children.length;
         subtreeSize = children.length;
       } else {
@@ -138,7 +140,7 @@ export class GridService {
     result: PrDisplayableRow[] = []
   ): PrDisplayableRow[] {
     for (const item of groupedData) {
-      if (!this.isRowGroup(item)) {
+      if (!isRowGroup(item)) {
         result.push(item);
         continue;
       }
@@ -146,6 +148,7 @@ export class GridService {
       result.push({
         groupName: item.groupName,
         id: `group_by_${item.groupColumnId}_${item.groupName}`,
+        columnDef: item.groupColumnId,
         discriminator: 'groupByRow',
         leafCount: item.leafCount,
         subtreeSize: item.subtreeSize,
@@ -155,7 +158,7 @@ export class GridService {
       const children = item.children;
 
       if (Array.isArray(children)) {
-        if (this.isRowArray(children)) {
+        if (isRowArray(children)) {
           result.push(...children);
         } else {
           this.flattenGroupedData(children, level + 1, result);
@@ -166,14 +169,14 @@ export class GridService {
     return result;
   }
 
-  updateDisplayedRows(rows: PrDisplayableRow[]): PrDisplayableRow[] {
+  getDisplayedRows(rows: PrDisplayableRow[]): PrDisplayableRow[] {
     const result: PrDisplayableRow[] = [];
 
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
       result.push(row);
 
-      if (this.isGroupByRow(row) && !row.isOpen) {
+      if (isGroupByRow(row) && !row.isOpen) {
         i += row.subtreeSize;
       }
     }
@@ -181,16 +184,20 @@ export class GridService {
     return result;
   }
 
-  private isRowGroup(row: PrRowGroup | PrRow): row is PrRowGroup {
-    return (row as PrRowGroup).groupName !== undefined;
-  }
+  collapseExpandAllGroups(rows: PrDisplayableRow[], isExpand: boolean): PrDisplayableRow[] {
+    if (!isGroupByRow(rows[0])) return rows;
 
-  private isRowArray(rows: PrRowGroup[] | PrRow[]): rows is PrRow[] {
-    return rows[0]['discriminator'] === 'row';
-  }
+    const result: PrDisplayableRow[] = [];
 
-  private isGroupByRow(row: PrDisplayableRow): row is PrGroupByRow {
-    return row.discriminator === 'groupByRow';
+    for (const row of rows) {
+      if (isGroupByRow(row)) {
+        result.push({ ...row, isOpen: isExpand });
+      } else {
+        result.push(row);
+      }
+    }
+
+    return result;
   }
 
   private setGridDefaultValues(table: PrGrid): PrGrid {

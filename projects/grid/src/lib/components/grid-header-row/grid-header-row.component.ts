@@ -7,6 +7,7 @@ import {GridStore} from "../../store/grid.store";
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {MatOptionModule} from "@angular/material/core";
 import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-column-group-spacer.component";
+import { ToggleLabelPipe } from '../../pipes/toggle-label.pipe';
 
 @Component({
   selector: 'pr-grid-header-row',
@@ -23,14 +24,16 @@ import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-c
     MatMenuModule,
     MatOptionModule,
     GridColumnGroupSpacerComponent,
-    NgIf
+    NgIf,
+    ToggleLabelPipe
   ]
 })
 export class GridHeaderRowComponent {
   @Input() columnGroups: PrColumnGroup[];
-  @Input() gridTemplateColumns: string
+  @Input() gridTemplateColumns: string;
   @Input() gridMaxWidth: number;
   @Input() gridWidth: number;
+  @Input() groupByColumnIds: string[];
   @ViewChildren(MatMenuTrigger) menuTriggers: QueryList<MatMenuTrigger>;
 
   constructor(public gridStore: GridStore) {}
@@ -52,7 +55,7 @@ export class GridHeaderRowComponent {
   }
 
   trackByColumn(_: number, column: PrColumnWithMetadata) {
-    return column.columnDef
+    return column.columnDef;
   }
 
   onClickColumn(column: PrColumnWithMetadata) {
@@ -77,13 +80,23 @@ export class GridHeaderRowComponent {
 
   getColumnIndex(groupIndex: number, columnInGroupIndex: number) {
     return this.columnGroups.reduce((columnIndex, _, i) => {
-      if(i < groupIndex) {
-        return columnIndex + this.columnGroups[i].columns.length
-      } else if(i > groupIndex) {
+      if (i < groupIndex) {
+        return columnIndex + this.columnGroups[i].columns.length;
+      } else if (i > groupIndex) {
         return columnIndex;
       } else {
         return columnIndex + columnInGroupIndex;
       }
-    }, 0)
+    }, 0);
+  }
+
+  onGroupByAction(columnDef: string) {
+    if (this.groupByColumnIds.includes(columnDef)) {
+      this.gridStore.removeGroupByColumnId(columnDef);
+    } else {
+      this.gridStore.addGroupByColumnId(columnDef);
+    }
+
+    this.gridStore.updateAllRows();
   }
 }

@@ -1,6 +1,6 @@
 <div class="grid-row-container" [style.grid-template-columns]="gridTemplateColumns" (click)="toggleOpen()">
   <div class="grid-group-by-row" [style.grid-column]="'span ' + columnsLength">
-    <div class="grid-group-by-row-data">
+    <div class="grid-group-by-row-data" [style.--group-level]="groupLevel">
       <div class="grid-group-name">{{ groupByRow.groupName }}</div>
       <div *ngIf="groupByRow.leafCount !== null" class="grid-row-count">({{ groupByRow.leafCount }})</div>
       <mat-icon class="grid-dropdown-icon" [class.closed]="!groupByRow.isOpen">keyboard_arrow_up</mat-icon>

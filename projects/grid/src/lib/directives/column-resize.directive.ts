@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import {fromEvent, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {columnDefaults, isColumnGroup, PrColumnWithMetadata} from "@parlament/grid";
+import {columnDefaults, isColumnGroup, PrColumnWithMetadata} from "../types/grid.interface";
 import {GridStore} from "../store/grid.store";
 
 @Directive({

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {PrRow, PrGrid} from "@parlament/grid";
+import {PrRow, PrGrid, GridStore} from "@parlament/grid";
 
 const DATA: PrRow[] = Array.from({length: 1000}, (v, i) => ({
   id: i + 1,
@@ -12,7 +12,8 @@ type Columns = typeof columns[number];
 @Component({
   selector: 'app-basic-grid-example',
   templateUrl: './basic-grid-example.component.html',
-  styleUrls: ['./basic-grid-example.component.css']
+  styleUrls: ['./basic-grid-example.component.css'],
+  providers: [GridStore]
 })
 export class BasicGridExample {
   isGroupByEnabled = false;

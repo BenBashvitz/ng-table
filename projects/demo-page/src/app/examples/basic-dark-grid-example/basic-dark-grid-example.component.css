@@ -2,7 +2,7 @@ pr-grid {
   --pr-grid-max-width: 750px;
 }
 
-.group-by-button{
+.example-button {
   width: 75px;
   height: 20px;
   background-color: #7B8297;

@@ -1,7 +1,7 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
-import {PrOptionsCell} from "@parlament/grid";
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { GridStore, isEditableCell, PrOptionsCell } from '@parlament/grid';
 import {MatOptionModule} from "@angular/material/core";
 import {MatListModule} from "@angular/material/list";
 
@@ -16,17 +16,23 @@ export class GridOptionsCellComponent {
   @Input() cell: PrOptionsCell;
   @Input() columnDef: string;
   @Input() columnTitle: string;
+  @Output() rightClick = new EventEmitter<void>();
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
-  onDoubleClick(): void {
-    if (this.cell.onEdit) {
+  constructor(public gridStore: GridStore) {}
+
+  onRightClick(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (isEditableCell(this.cell) && this.cell.onEdit) {
+      this.rightClick.emit();
       this.trigger.openMenu();
     }
   }
 
   onClickOption(option: string) {
     this.trigger.closeMenu();
-
-    this.cell?.onEdit(option);
+    this.gridStore.editCells({ triggerCell: this.cell, value: option, columnDef: this.columnDef });
   }
 }

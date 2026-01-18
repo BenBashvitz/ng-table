@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {PrRow, PrGrid, GridStore} from "@parlament/grid";
 
 const DATA: PrRow[] = Array.from({length: 1000}, (v, i) => ({
-  id: i + 1,
+  id: `${i + 1}`,
   discriminator: 'row'
 }));
 
@@ -36,14 +36,14 @@ export class EditableCellGridExample {
         cellText: `אופציות ${row.id}`,
         options: ['מלא', 'חלקי', 'ללא'],
         onEdit: (value: string) => {
-          alert("called onEdit fn of this cell. the new value is: " + value);
+          alert("called onEdit fn of this cell on row: "+ row.id +". the new value is: " + value);
         }
       }),
       more: (row: PrRow) => ({
         discriminator: "Text",
         cellText: `טקסט חופשי ${row.id}`,
         onEdit: (value: string) => {
-          alert("called onEdit fn of this cell. the new value is: " + value);
+          alert("called onEdit fn of this cell on row: "+ row.id +". the new value is: " + value);
         }
       }),
     },
@@ -81,5 +81,9 @@ export class EditableCellGridExample {
         title: 'סטטוסים'
       },
     ],
+  }
+
+  onDblClick() {
+    alert('מרכזת יאלוף');
   }
 }

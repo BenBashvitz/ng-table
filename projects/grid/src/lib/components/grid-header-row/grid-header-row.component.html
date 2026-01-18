@@ -25,7 +25,7 @@
         [gridWidthInPx]="gridWidth"
         (contextmenu)="onContextMenuColumn($event, column, groupIndex, i)"
       >
-        <div class="grid-header-cell" (click)="onClickColumn(column)">
+        <div class="grid-header-cell" (click)="onClickColumn($event, column)">
           <div class="grid-header-title">{{ column.title }}</div>
           <ng-container *ngIf="sortByColumns | findByProp: 'id' : column.columnDef as sortColumn">
             <mat-icon class="grid-sort-direction" [class.desc]="sortColumn.direction === 'desc'">

@@ -103,8 +103,15 @@ export class GridRowsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onClickRow(row: PrRow, index: number) {
-    this.clickRow.emit(row)
+  onClickRow(event: MouseEvent, row: PrRow, index: number) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (event.ctrlKey) {
+      this.gridStore.toggleSelectRow({ row, index });
+    } else {
+      this.gridStore.setSelectedRow({ row, index });
+    }
   }
 
   onDoubleClickRow(row: PrRow) {

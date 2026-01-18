@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {PrCellType} from "../../types/grid.interface";
+import { PrCellType, PrSelectedRowData } from '../../types/grid.interface';
 import {NgComponentOutlet, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
 import {ToFreeTextCellPipe} from "../../pipes/to-text-cell.pipe";
 import {ToComponentCellPipe} from "../../pipes/to-component-cell.pipe";
@@ -7,6 +7,7 @@ import {MatMenuModule} from "@angular/material/menu";
 import {GridTextCellComponent} from "../grid-text-cell/grid-text-cell.component";
 import {GridOptionsCellComponent} from "../grid-options-cell/grid-options-cell.component";
 import {ToOptionsCellPipe} from "../../pipes/to-options-cell.pipe";
+import { GridStore } from '@parlament/grid';
 
 @Component({
   selector: 'pr-grid-cell',
@@ -31,4 +32,14 @@ export class GridCellComponent {
   @Input() columnDef: string;
   @Input() columnTitle: string;
   @Input() selected: boolean;
+  @Input() rowId: string;
+  @Input() selectedRows: PrSelectedRowData[];
+
+  constructor(public gridStore: GridStore) {}
+
+  onEditCellRightClick() {
+    if (this.selectedRows.length < 2) {
+      this.gridStore.setSelectedCell({ rowId: this.rowId, columnDef: this.columnDef });
+    }
+  }
 }

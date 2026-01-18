@@ -1,12 +1,12 @@
-import {Component, Input, QueryList, ViewChildren} from '@angular/core';
-import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
-import {ColumnResizeDirective} from "../../directives/column-resize.directive";
-import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
+import { Component, Input, QueryList, ViewChildren } from '@angular/core';
+import { CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList } from '@angular/cdk/drag-drop';
+import { ColumnResizeDirective } from '../../directives/column-resize.directive';
+import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
 import { PrColumn, PrColumnGroup, PrColumnWithMetadata, PrSortColumn, PrSortDirection } from '@parlament/grid';
-import {GridStore} from "../../store/grid.store";
-import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
-import {MatOptionModule} from "@angular/material/core";
-import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-column-group-spacer.component";
+import { GridStore } from '../../store/grid.store';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatOptionModule } from '@angular/material/core';
+import { GridColumnGroupSpacerComponent } from '../grid-column-group-spacer/grid-column-group-spacer.component';
 import { MatIconModule } from '@angular/material/icon';
 import { ToggleLabelPipe } from '../../pipes/toggle-label.pipe';
 import { FindByPropPipe } from '../../pipes/find-by-prop.pipe';
@@ -64,9 +64,16 @@ export class GridHeaderRowComponent {
     return column.columnDef;
   }
 
-  onClickColumn(column: PrColumn) {
-    this.onSelectColumn(column);
-    this.onSortAction(column.columnDef);
+  onClickColumn(event: MouseEvent, column: PrColumn) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (event.ctrlKey) {
+      this.onRemoveSortByColumn(column.columnDef);
+    } else {
+      this.onSelectColumn(column);
+      this.onSortAction(column.columnDef);
+    }
   }
 
   onContextMenuColumn(event: Event, column: PrColumn, groupIndex: number, columnIndex: number) {

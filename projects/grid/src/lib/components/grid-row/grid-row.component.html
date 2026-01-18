@@ -12,7 +12,8 @@
         [cell]="columnToCellMapper | gridCell:column:row"
         [columnDef]="column.columnDef"
         [columnTitle]="column.title"
-        (click)="onClickCell(column.columnDef)"
+        [rowId]="row.id"
+        [selectedRows]="gridStore.selectedRows$ | async"
       ></pr-grid-cell>
     </ng-container>
     <pr-grid-column-group-spacer *ngIf="groupIndex !== columnGroups.length - 1"></pr-grid-column-group-spacer>

@@ -16,7 +16,10 @@ import {
   isRowArray,
   isRowGroup,
   PrTextCell,
-  PrSortColumn
+  PrSortColumn,
+  PrSelectedRowData,
+  PrEditableCell,
+  isEditableCell
 } from '../types/grid.interface';
 import {moveItemInArray} from "@angular/cdk/drag-drop";
 
@@ -376,6 +379,26 @@ export class GridService {
 
     for (let k = 0; k < length; k++) {
       rows[start + k] = decoratedRows[k].row;
+    }
+  }
+
+  onEditCells(
+    triggerCell: PrEditableCell,
+    value: string,
+    columnDef: string,
+    selectedRows: PrSelectedRowData[],
+    columnToCellMapper: PrGrid['columnToCellMapper']
+  ) {
+    if (selectedRows.length < 1 && isEditableCell(triggerCell)) {
+      triggerCell?.onEdit(value);
+    } else {
+      for (const { row } of selectedRows) {
+        const editableRow = columnToCellMapper[columnDef](row);
+
+        if (isEditableCell(editableRow)) {
+          editableRow?.onEdit(value);
+        }
+      }
     }
   }
 }

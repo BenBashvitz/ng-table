@@ -28,7 +28,7 @@
       <ng-template cdkDragPreview></ng-template>
       <mat-menu class="grid-header-actions-menu" #headerActionsMenu>
         <mat-option (click)="onRemoveColumnGroup(columnGroup)">
-          הסרת קבוצת עמודות
+          {{(columnGroup | hasRequiredColumn) ? removeNonRequiredColumnsText : removeGroupText}}
         </mat-option>
       </mat-menu>
       <div [matMenuTriggerFor]="headerActionsMenu"></div>

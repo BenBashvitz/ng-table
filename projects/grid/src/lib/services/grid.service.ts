@@ -77,10 +77,26 @@ export class GridService {
     }
   }
 
-  removeColumnGroup(grid: PrGrid, columnGroup: PrColumn) {
+  removeColumnGroup(grid: PrGrid, columnGroup: PrColumnGroup) {
+    const hasRequiredColumn = columnGroup.columns.some(({isRequired}) => isRequired);
+
+    if (!hasRequiredColumn) {
+      return {
+        ...grid,
+        columnGroups: grid.columnGroups.filter(({columnDef}) => columnGroup.columnDef !== columnDef)
+      }
+    }
+
     return {
       ...grid,
-      columnGroups: grid.columnGroups.filter(({columnDef}) => columnGroup.columnDef !== columnDef)
+      columnGroups: grid.columnGroups.map((group) => {
+        if (group.columnDef !== columnGroup.columnDef) return group;
+
+        return {
+          ...group,
+          columns: group.columns.filter(({isRequired}) => isRequired),
+        }
+      })
     }
   }
 
@@ -115,7 +131,7 @@ export class GridService {
     }
 
     return Array.from(groups.entries(), ([groupName, groupRows]) => {
-      const children = this.recursiveGroupBy(groupRows, groupByColumnIds,level + 1, grid);
+      const children = this.recursiveGroupBy(groupRows, groupByColumnIds, level + 1, grid);
 
       let leafCount = 0;
       let subtreeSize = 0;
@@ -130,7 +146,7 @@ export class GridService {
         }
       }
 
-      return { groupName, groupColumnId: columnId, children, leafCount, subtreeSize };
+      return {groupName, groupColumnId: columnId, children, leafCount, subtreeSize};
     });
   }
 
@@ -191,7 +207,7 @@ export class GridService {
 
     for (const row of rows) {
       if (isGroupByRow(row)) {
-        result.push({ ...row, isOpen: isExpand });
+        result.push({...row, isOpen: isExpand});
       } else {
         result.push(row);
       }

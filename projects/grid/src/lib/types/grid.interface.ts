@@ -5,6 +5,7 @@ export type PrColumnMetadata = {
   maxWidthInPx?: number;
   minWidthInPx?: number;
   isSticky?: boolean;
+  isRequired?: boolean;
 }
 
 export type PrColumn<AvailableColumns extends string = string> = {
@@ -142,6 +143,7 @@ export const columnDefaults: Omit<Required<PrColumnWithMetadata>, 'columnDef' | 
   minWidthInPx: 70,
   maxWidthInPx: 400,
   isSticky: false,
+  isRequired: false,
 }
 
 export const gridDefaults: Omit<PrGridMetadata, 'columns' | 'columnGroups'> = {

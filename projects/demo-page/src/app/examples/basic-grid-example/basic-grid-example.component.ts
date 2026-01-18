@@ -49,6 +49,7 @@ export class BasicGridExample {
           {
             columnDef: 'id',
             title: 'מזהה ישות',
+            isRequired: true,
           },
           {
             columnDef: 'name',

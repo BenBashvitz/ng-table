@@ -37,7 +37,7 @@
         <span class="resizer"></span>
         <ng-template cdkDragPreview></ng-template>
         <mat-menu class="grid-header-actions-menu" #headerActionsMenu>
-          <mat-option (click)="onRemoveColumn(column)">
+          <mat-option *ngIf="!column.isRequired" (click)="onRemoveColumn(column)">
             הסרת עמודה
           </mat-option>
           <mat-option (click)="onCopyColumn(column)">

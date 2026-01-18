@@ -11,10 +11,15 @@ import {BasicDarkGridExample} from "./basic-dark-grid-example/basic-dark-grid-ex
 import {EditableCellGridExample} from "./editable-cell-grid-example/editable-cell-grid-example.component";
 import {StickyColumnGridExample} from "./sticky-column-grid-example/sticky-column-grid-example.component";
 import { GridComponent } from '@parlament/grid';
+import { MatIconModule } from '@angular/material/icon';
+import { GroupByGridExample } from './group-by-grid-example/group-by-grid-example.component';
+import { SortByGridExample } from './sort-by-grid-example/sort-by-grid-example.component';
 
 const examples = [
   BasicGridExample,
   BasicDarkGridExample,
+  GroupByGridExample,
+  SortByGridExample,
   EditableCellGridExample,
   StickyColumnGridExample,
 ];
@@ -30,7 +35,8 @@ const examples = [
     MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,
-    GridComponent
+    GridComponent,
+    MatIconModule,
   ],
   exports: [...examples]
 })

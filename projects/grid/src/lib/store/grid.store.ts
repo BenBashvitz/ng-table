@@ -12,7 +12,7 @@ import {
   PrDisplayableRow,
   PrGrid,
   PrRow,
-  SelectedCellData
+  SelectedCellData,
 } from '../types/grid.interface';
 import { ComponentStore } from '@ngrx/component-store';
 import { Observable, switchMap, withLatestFrom } from 'rxjs';
@@ -23,7 +23,7 @@ export interface GridState {
   selectedRows: (PrRow & { index: number })[],
   selectedCells: SelectedCellData[],
   allRows: PrDisplayableRow[],
-  selectedColumns: PrColumnWithMetadata[],
+  selectedColumns: PrColumn[],
 }
 
 const initialState: GridState = {
@@ -33,7 +33,7 @@ const initialState: GridState = {
     columnToCellMapper: {},
     pinnedRowsIds: [],
     groupByColumnIds: [],
-    sortByColumn: [],
+    sortByColumns: [],
     rowHeightInPx: defaults.rowHeightInPx,
     maxWidthInPx: defaults.maxWidthInPx
   },
@@ -105,6 +105,35 @@ export class GridStore extends ComponentStore<GridState> {
       groupByColumnIds
     }
   }));
+  readonly toggleOrAddSortColumn = this.updater(
+    (state, columnDef: string) => {
+      const index = state.grid.sortByColumns.findIndex(c => c.id === columnDef);
+
+      if (index !== -1) {
+        const sortByColumnsCopy = state.grid.sortByColumns.slice();
+        const current = sortByColumnsCopy[index];
+
+        sortByColumnsCopy[index] = { ...current, direction: current.direction === 'asc' ? 'desc' : 'asc' };
+
+        return { ...state, grid: { ...state.grid, sortByColumns: sortByColumnsCopy } };
+      }
+
+      return {
+        ...state,
+        grid: {
+          ...state.grid,
+          sortByColumns: [...state.grid.sortByColumns, { id: columnDef, direction: 'asc' } ],
+        },
+      };
+    }
+  );
+  readonly removeSortByColumnId = this.updater((state, columnDef: string) => ({
+    ...state,
+    grid: {
+      ...state.grid,
+      sortByColumns: state.grid.sortByColumns.filter(column => column.id !== columnDef)
+    }
+  }));
   readonly setRows = this.updater((state, rows: PrRow[]) => ({
     ...state,
     grid: {
@@ -125,7 +154,7 @@ export class GridStore extends ComponentStore<GridState> {
       ...state.grid,
       groupByColumnIds: state.grid.groupByColumnIds.filter(column => column !== columnDef)
     }
-  }))
+  }));
   readonly moveColumnGroup = this.updater((state, moveGroup: MoveItem<PrColumnGroup>) => ({
     ...state,
     grid: {
@@ -200,6 +229,28 @@ export class GridStore extends ComponentStore<GridState> {
       )
     })
   );
+  readonly sortRows = this.updater((state) => ({
+    ...state,
+    allRows: this.gridService.sortRows(
+      state.allRows,
+      state.grid.sortByColumns.length > 0 ? state.grid.sortByColumns : [{ id: 'id', direction: 'asc' }],
+      state.grid.columnToCellMapper,
+      state.grid.groupByColumnIds
+    )
+  }));
+  readonly resetSortBy = this.updater((state) => ({
+    ...state,
+    grid: {
+      ...state.grid,
+      sortByColumns: initialState.grid.sortByColumns
+    },
+    allRows: this.gridService.sortRows(
+      state.allRows,
+      [{ id: 'id', direction: 'asc' }],
+      state.grid.columnToCellMapper,
+      state.grid.groupByColumnIds
+    )
+  }));
   readonly copyColumn = this.effect<PrColumnWithMetadata>((triggers$: Observable<PrColumn>) => triggers$.pipe(
     withLatestFrom<PrColumn, [PrGrid]>(this.grid$),
     switchMap(([column, grid]) => {

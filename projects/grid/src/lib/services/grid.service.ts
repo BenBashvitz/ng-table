@@ -12,7 +12,10 @@ import {
   ColumnResize,
   isGroupByRow,
   isRowArray,
-  isRowGroup, PrActionsCell
+  isRowGroup,
+  PrTextCell,
+  PrSortColumn,
+  PrActionsCell
 } from '../types/grid.interface';
 import {moveItemInArray} from "@angular/cdk/drag-drop";
 import {actionsColumn, actionsColumnDef, columnDefaults, gridDefaults} from "../types/grid.constants";
@@ -121,12 +124,13 @@ export class GridService {
   }
 
   getAllRows(grid: PrGrid): PrDisplayableRow[] {
-    if (!grid.groupByColumnIds?.length) {
-      return grid.rows;
-    }
+    const groupedRows: PrDisplayableRow[] = grid.groupByColumnIds?.length
+      ? this.flattenGroupedData(this.recursiveGroupBy(grid.rows, grid.groupByColumnIds, 0, grid), 0)
+      : grid.rows;
 
-    const grouped = this.recursiveGroupBy(grid.rows, grid.groupByColumnIds, 0, grid);
-    return this.flattenGroupedData(grouped, 0);
+    return grid.sortByColumns?.length
+      ? this.sortRows(groupedRows, grid.sortByColumns, grid.columnToCellMapper, grid.groupByColumnIds)
+      : groupedRows;
   }
 
   private recursiveGroupBy(
@@ -293,6 +297,122 @@ export class GridService {
           ...column
         }))
       }))
+    }
+  }
+
+  sortRows(
+    allRows: PrDisplayableRow[],
+    sortByColumns: PrSortColumn[],
+    columnToCellMapper: PrGrid['columnToCellMapper'],
+    groupByColumnIds: string[],
+  ): PrDisplayableRow[] {
+    if (allRows.length <= 1 || !sortByColumns?.length) return allRows;
+
+    const comparator = this.buildMultiStringComparator(sortByColumns, columnToCellMapper);
+
+    if ((groupByColumnIds?.length ?? 0) < 1) {
+      const decoratedRows = (allRows as PrRow[]).map((row, index) => ({ row, index }));
+      decoratedRows.sort((x, y) => {
+        const result = comparator(x.row, y.row);
+
+        return result !== 0 ? result : x.index - y.index;
+      });
+
+      return decoratedRows.map(x => x.row);
+    }
+
+    const out = allRows.slice();
+
+    for (let i = 0; i < out.length; i++) {
+      const row = out[i];
+
+      if (!isGroupByRow(row)) continue;
+
+      const subtreeStart = i + 1;
+      const subtreeEndExclusive = Math.min(out.length, subtreeStart + row.subtreeSize);
+      const leafEndExclusive = Math.min(out.length, subtreeStart + row.leafCount);
+
+      if (row.subtreeSize !== row.leafCount) {
+        i = subtreeEndExclusive - 1;
+        continue;
+      }
+
+      this.stableSortLeafSegment(out, subtreeStart, leafEndExclusive, comparator);
+      i = subtreeEndExclusive - 1;
+    }
+
+    return out;
+  }
+
+  private buildMultiStringComparator(
+    sortByColumns: PrSortColumn[],
+    columnToCellMapper: PrGrid['columnToCellMapper']
+  ): (a: PrRow, b: PrRow) => number {
+
+    const sortKeys = sortByColumns
+      .map(({ id, direction }) => {
+        const mappedField = columnToCellMapper[id];
+        if (!mappedField) return undefined;
+
+        return {
+          get: (row: PrRow) => String((mappedField(row) as PrTextCell)?.cellText ?? '').trim(),
+          dir: direction === 'desc' ? -1 : 1 as const,
+        };
+      })
+      .filter((x): x is { get: (row: PrRow) => string; dir: 1 | -1 } => !!x);
+
+    if (sortKeys.length === 0) return () => 0;
+
+    return (rowA: PrRow, rowB: PrRow) => {
+      for (let i = 0; i < sortKeys.length; i++) {
+        const { get, dir } = sortKeys[i];
+
+        const aValue = get(rowA);
+        const bValue = get(rowB);
+
+        if (aValue === bValue) continue;
+
+        const aEmpty = aValue === '';
+        const bEmpty = bValue === '';
+        if (aEmpty || bEmpty) {
+          if (aEmpty && bEmpty) continue;
+          return aEmpty ? 1 : -1;
+        }
+
+        const result = aValue.localeCompare(bValue, undefined, {
+          numeric: true,
+          sensitivity: 'base',
+        });
+
+        if (result !== 0) return result * dir;
+      }
+      return 0;
+    };
+  }
+
+  private stableSortLeafSegment(
+    rows: PrDisplayableRow[],
+    start: number,
+    endExclusive: number,
+    comparator: (a: PrRow, b: PrRow) => number
+  ): void {
+    const length = endExclusive - start;
+
+    if (length <= 1) return;
+
+    const decoratedRows = new Array<{ row: PrRow; index: number }>(length);
+    for (let k = 0; k < length; k++) {
+      decoratedRows[k] = { row: rows[start + k] as PrRow, index: k };
+    }
+
+    decoratedRows.sort((x, y) => {
+      const v = comparator(x.row, y.row);
+
+      return v !== 0 ? v : x.index - y.index;
+    });
+
+    for (let k = 0; k < length; k++) {
+      rows[start + k] = decoratedRows[k].row;
     }
   }
 

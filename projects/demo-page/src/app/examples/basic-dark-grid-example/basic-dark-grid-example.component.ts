@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { GridStore, PrGrid, PrRow } from '@parlament/grid';
 
-const DATA: PrRow[] = Array.from({ length: 1000 }, (v, i) => ({
+const DATA: PrRow[] = Array.from({ length: 1000 }, (_, i) => ({
   id: i + 1,
   discriminator: 'row'
 }));
@@ -16,8 +16,6 @@ type Columns = (typeof columns)[number];
   providers: [GridStore]
 })
 export class BasicDarkGridExample {
-  isGroupByEnabled = false;
-
   constructor(public gridStore: GridStore) {}
 
   table: PrGrid<Columns> = {
@@ -29,7 +27,7 @@ export class BasicDarkGridExample {
       }),
       name: (row: PrRow) => ({
         discriminator: 'Text',
-        cellText: `שם ישות ${(Number(row.id) % 2 === 0) ? 1 : 2}`
+        cellText: `שם ישות ${Number(row.id) % 2 === 0 ? 1 : 2}`
       }),
       type: (row: PrRow) => ({
         discriminator: 'Text',
@@ -80,22 +78,4 @@ export class BasicDarkGridExample {
     ],
     maxWidthInPx: 750
   };
-
-  enableGroupBy() {
-    if (!this.isGroupByEnabled) {
-      this.table = { ...this.table, groupByColumnIds: ['name', 'type'] };
-    } else {
-      this.table = { ...this.table, groupByColumnIds: [] };
-    }
-
-    this.isGroupByEnabled = !this.isGroupByEnabled;
-  }
-
-  collapseGroupBy() {
-    this.gridStore.collapseExpandAllGroups(false);
-  }
-
-  expandGroupBy() {
-    this.gridStore.collapseExpandAllGroups(true);
-  }
 }

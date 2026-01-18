@@ -10,7 +10,7 @@ export const columnDefaults: Omit<Required<PrColumnWithMetadata>, 'columnDef' | 
 export const gridDefaults: Omit<PrGridMetadata, 'columns' | 'columnGroups'> = {
   pinnedRowsIds: [],
   groupByColumnIds: [],
-  sortByColumn: undefined,
+  sortByColumns: [],
   rowHeightInPx: 30,
   maxWidthInPx: 1000
 }

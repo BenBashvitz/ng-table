@@ -1,0 +1,19 @@
+pr-grid {
+  --pr-grid-max-width: 750px;
+}
+
+.example-button {
+  width: fit-content;
+  padding: 10px;
+  height: 20px;
+  background-color: #7b8297;
+  margin: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 7px;
+  border: 2px solid darkslategrey;
+  font-size: 14px;
+  cursor: pointer;
+  color: azure;
+}

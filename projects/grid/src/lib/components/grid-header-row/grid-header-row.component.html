@@ -4,7 +4,7 @@
   cdkDropListOrientation="horizontal"
   (cdkDropListDropped)="onDropColumn($event)"
   [style.grid-template-columns]="gridTemplateColumns">
-  <ng-container *ngFor="let columnGroup of columnGroups; let groupIndex = index;">
+  <ng-container *ngFor="let columnGroup of columnGroups; let groupIndex = index">
     <ng-container *ngFor="let column of columnGroup.columns; let i = index; trackBy: trackByColumn">
       <div
         cdkDrag
@@ -23,31 +23,31 @@
         [tvsColumnResize]="column"
         [gridMaxWidthInPx]="gridMaxWidth"
         [gridWidthInPx]="gridWidth"
-        (click)="onClickColumn(column)"
         (contextmenu)="onContextMenuColumn($event, column, groupIndex, i)"
       >
-        <div
-          class="grid-header-cell"
-          [class.transparent]="column.columnDef === actionsColumnDef"
-        >
+        <div class="grid-header-cell" [class.transparent]="column.columnDef === actionsColumnDef" (click)="onClickColumn(column)">
           <span class="grid-header-cell-text">
             {{ column.title }}
           </span>
-          <mat-icon *ngIf="column.columnDef !== actionsColumnDef" class="grid-header-cell-menu-icon" [matMenuTriggerFor]="headerActionsMenu">
+          <mat-icon *ngIf="column.columnDef !== actionsColumnDef" class="grid-header-cell-menu-icon" [matMenuTriggerFor]="headerActionsMenu" (click)="$event.stopPropagation()">
             more_vert
           </mat-icon>
+          <ng-container *ngIf="sortByColumns | findByProp: 'id' : column.columnDef as sortColumn">
+            <mat-icon class="grid-sort-direction" [class.desc]="sortColumn.direction === 'desc'">
+              arrow_upwards
+            </mat-icon>
+          </ng-container>
         </div>
         <span class="resizer"></span>
         <ng-template cdkDragPreview></ng-template>
         <mat-menu class="grid-header-actions-menu" #headerActionsMenu>
-          <mat-option *ngIf="!column.isRequired" (click)="onRemoveColumn(column)">
-            הסרת עמודה
-          </mat-option>
-          <mat-option (click)="onCopyColumn(column)">
-            העתקת עמודה
-          </mat-option>
+          <mat-option *ngIf="!column.isRequired" (click)="onRemoveColumn(column)"> הסרת עמודה </mat-option>
+          <mat-option (click)="onCopyColumn(column)"> העתקת עמודה </mat-option>
           <mat-option (click)="onGroupByAction(column.columnDef)">
-            {{groupByColumnIds | toggleLabel : column.columnDef : 'קבץ לפי עמודה' : 'הסר קיבוץ'}}
+            {{ groupByColumnIds | toggleLabel: column.columnDef : 'קבץ לפי עמודה' : 'הסר קיבוץ' }}
+          </mat-option>
+          <mat-option *ngIf="sortByColumns | findByProp : 'id' : column.columnDef" (click)="onRemoveSortByColumn(column.columnDef)">
+            הסר סידור לפי {{column.title}}
           </mat-option>
         </mat-menu>
       </div>

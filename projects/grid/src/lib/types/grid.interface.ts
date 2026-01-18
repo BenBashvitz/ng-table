@@ -98,13 +98,20 @@ export type PrRow = {
   id: string | number;
 }
 
+export type PrSortDirection = 'asc' | 'desc';
+
+export type PrSortColumn<AvailableColumns extends string = string> = {
+  id: AvailableColumns;
+  direction: PrSortDirection;
+};
+
 export type PrDisplayableRow = PrGroupByRow | PrRow;
 
 export type PrGridMetadata<AvailableColumns extends string = string> = {
   columnGroups: PrColumnGroup<AvailableColumns>[]
   pinnedRowsIds?: (string | number)[];
-  groupByColumnIds?: AvailableColumns[]
-  sortByColumn?: AvailableColumns[];
+  groupByColumnIds?: AvailableColumns[];
+  sortByColumns?: PrSortColumn[];
   rowHeightInPx?: number;
   maxWidthInPx?: number;
 }

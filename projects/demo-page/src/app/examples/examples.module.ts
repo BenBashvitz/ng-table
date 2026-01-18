@@ -14,6 +14,7 @@ import { GridComponent } from '@parlament/grid';
 import { MatIconModule } from '@angular/material/icon';
 import { GroupByGridExample } from './group-by-grid-example/group-by-grid-example.component';
 import { SortByGridExample } from './sort-by-grid-example/sort-by-grid-example.component';
+import {GridRowActionsExample} from "./grid-row-actions-example/grid-row-actions-example.component";
 
 const examples = [
   BasicGridExample,
@@ -22,6 +23,7 @@ const examples = [
   SortByGridExample,
   EditableCellGridExample,
   StickyColumnGridExample,
+  GridRowActionsExample
 ];
 
 @NgModule({

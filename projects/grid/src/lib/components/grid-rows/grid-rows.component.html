@@ -1,19 +1,19 @@
 <cdk-virtual-scroll-viewport
-  [itemSize]="table.rowHeightInPx"
+  [itemSize]="grid.rowHeightInPx"
   class="grid-viewport"
   [style.width.px]="gridWidthInPx$ | async"
 >
   <div cdkDropList (cdkDropListDropped)="onDropRow($event)" class="grid-body" #body>
     <pr-grid-column-group-row
-      [columnGroups]="table.columnGroups"
+      [columnGroups]="grid.columnGroups"
       [gridTemplateColumns]="gridTemplate$ | async"
       [gridWidth]="gridWidthInPx$ | async"
       [gridMaxWidth]="gridMaxWidthInPx$ | async"
     ></pr-grid-column-group-row>
     <pr-grid-header-row
-      [columnGroups]="table.columnGroups"
-      [groupByColumnIds]="table.groupByColumnIds"
-      [sortByColumns]="table.sortByColumns"
+      [columnGroups]="grid.columnGroups"
+      [groupByColumnIds]="grid.groupByColumnIds"
+      [sortByColumns]="grid.sortByColumns"
       [gridTemplateColumns]="gridTemplate$ | async"
       [gridWidth]="gridWidthInPx$ | async"
       [gridMaxWidth]="gridMaxWidthInPx$ | async"
@@ -24,8 +24,8 @@
         cdkDrag
         [cdkDragData]="row"
         [row]="row"
-        [columnGroups]="table.columnGroups"
-        [columnToCellMapper]="table.columnToCellMapper"
+        [columnGroups]="grid.columnGroups"
+        [columnToCellMapper]="grid.columnToCellMapper"
         [gridTemplateColumns]="gridTemplate$ | async"
         [selectedCells]="selectedCells"
         (click)="onClickRow(row, i)"
@@ -34,8 +34,8 @@
         <ng-template cdkDragPreview>
           <pr-grid-row
             [row]="row"
-            [columnGroups]="[table.columnGroups[0]]"
-            [columnToCellMapper]="table.columnToCellMapper"
+            [columnGroups]="[grid.columnGroups[0]]"
+            [columnToCellMapper]="grid.columnToCellMapper"
             [gridTemplateColumns]="'' + columns[0].widthInPx + 'px'"
           [selectedCells]="[]"
           ></pr-grid-row>
@@ -46,8 +46,8 @@
         *ngIf="row.discriminator === 'groupByRow'"
         [groupByRow]="row"
         [gridTemplateColumns]="gridTemplate$ | async"
-        [columnsLength]="(gridStore.columnsWithSpace$ | async).length"
-        [groupLevel]="table.groupByColumnIds.indexOf(row.columnDef)"
+        [columnsLength]="(gridStore.columnsWithSpaceAndActions$ | async).length"
+        [groupLevel]="grid.groupByColumnIds.indexOf(row.columnDef)"
         (toggle)="onToggleGroupByRow($event)"
       ></pr-grid-group-by-row>
     </div>
@@ -55,8 +55,8 @@
   <div
     *ngFor="let selectedRow of gridStore.selectedRows$ | async"
     class="grid-row-selection grid-selection"
-    [style.height.px]="table.rowHeightInPx"
-    [style.top.px]="64 + (selectedRow.index - virtualViewport.getRenderedRange().start) * (table.rowHeightInPx + 2)"
+    [style.height.px]="grid.rowHeightInPx"
+    [style.top.px]="64 + (selectedRow.index - virtualViewport.getRenderedRange().start) * (grid.rowHeightInPx + 2)"
   ></div>
   <ng-container *ngFor="let selectedColumn of gridStore.selectedColumns$ | async">
     <ng-container *ngIf="columns | findByProp : 'columnDef' : selectedColumn.columnDef as column">

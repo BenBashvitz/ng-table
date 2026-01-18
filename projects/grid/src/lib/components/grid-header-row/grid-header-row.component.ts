@@ -10,6 +10,7 @@ import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-c
 import { MatIconModule } from '@angular/material/icon';
 import { ToggleLabelPipe } from '../../pipes/toggle-label.pipe';
 import { FindByPropPipe } from '../../pipes/find-by-prop.pipe';
+import {actionsColumnDef} from "../../types/grid.constants";
 
 @Component({
   selector: 'pr-grid-header-row',
@@ -29,7 +30,8 @@ import { FindByPropPipe } from '../../pipes/find-by-prop.pipe';
     NgIf,
     ToggleLabelPipe,
     MatIconModule,
-    FindByPropPipe
+    FindByPropPipe,
+    MatIconModule
   ]
 })
 export class GridHeaderRowComponent {
@@ -41,6 +43,8 @@ export class GridHeaderRowComponent {
   @Input() sortByColumns: PrSortColumn[];
   @Input() sortByDirection: PrSortDirection;
   @ViewChildren(MatMenuTrigger) menuTriggers: QueryList<MatMenuTrigger>;
+
+  protected readonly actionsColumnDef = actionsColumnDef;
 
   constructor(public gridStore: GridStore) {}
 

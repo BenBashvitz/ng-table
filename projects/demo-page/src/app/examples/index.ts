@@ -5,6 +5,7 @@ import {EditableCellGridExample} from "./editable-cell-grid-example/editable-cel
 import { GroupByGridExample } from './group-by-grid-example/group-by-grid-example.component';
 import {StickyColumnGridExample} from "./sticky-column-grid-example/sticky-column-grid-example.component";
 import { SortByGridExample } from './sort-by-grid-example/sort-by-grid-example.component';
+import {GridRowActionsExample} from "./grid-row-actions-example/grid-row-actions-example.component";
 
 export * from './examples.module';
 
@@ -35,4 +36,5 @@ export const examples: Example[] = [
   getExample('Sticky Column Grid Example', StickyColumnGridExample, 'sticky-column-grid-example'),
   getExample('Group By Grid Example', GroupByGridExample, 'group-by-grid-example'),
   getExample('Sort By Grid Example', SortByGridExample, 'sort-by-grid-example'),
+  getExample('Grid Row Actions Example', GridRowActionsExample, 'grid-row-actions-example'),
 ];

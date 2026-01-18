@@ -1,11 +1,9 @@
 import {Injectable} from "@angular/core";
 import {
-  columnDefaults,
   PrColumn,
   PrColumnGroup,
   PrRow,
   PrGrid,
-  gridDefaults,
   isFreeTextCell,
   isOptionsCell,
   isComponentCell,
@@ -16,24 +14,38 @@ import {
   isRowArray,
   isRowGroup,
   PrTextCell,
-  PrSortColumn
+  PrSortColumn,
+  PrActionsCell
 } from '../types/grid.interface';
 import {moveItemInArray} from "@angular/cdk/drag-drop";
+import {actionsColumn, actionsColumnDef, columnDefaults, gridDefaults} from "../types/grid.constants";
 
 @Injectable({
   providedIn: 'root'
 })
 export class GridService {
   initializeGrid(table: PrGrid) {
-    return this.divideColumnGroups(this.setGridColumnDefaultValues(this.setGridDefaultValues(table)));
+    return this.addActionsColumn(this.divideColumnGroups(this.setGridColumnDefaultValues(this.setGridDefaultValues(table))));
   }
 
-  changeColumnGroupOrder(table: PrGrid, columnGroup: PrColumnGroup, previousIndex: number, currentIndex: number) {
-    const actualPreviousIndex = table.columnGroups.indexOf(columnGroup);
+  changeColumnGroupOrder(grid: PrGrid, columnGroup: PrColumnGroup, previousIndex: number, currentIndex: number) {
+    const actualPreviousIndex = grid.columnGroups.indexOf(columnGroup);
     const actualCurrentIndex = actualPreviousIndex + (currentIndex - previousIndex);
-    moveItemInArray(table.columnGroups, actualPreviousIndex, actualCurrentIndex);
+    moveItemInArray(grid.columnGroups, actualPreviousIndex, actualCurrentIndex);
 
-    return table;
+    if(actualPreviousIndex === grid.columnGroups.length - 1 && !!grid.rowActions) {
+      grid.columnGroups[actualCurrentIndex] = {
+        ...grid.columnGroups[actualCurrentIndex],
+        columns: grid.columnGroups[actualCurrentIndex].columns.filter(({columnDef}) => columnDef !== actionsColumnDef)
+      }
+
+      grid.columnGroups[actualPreviousIndex] = {
+        ...grid.columnGroups[actualPreviousIndex],
+        columns: [...grid.columnGroups[actualPreviousIndex].columns, actionsColumn]
+      }
+    }
+
+    return grid;
   }
 
   changeColumnOrder(table: PrGrid, column: PrColumn, previousIndex: number, currentIndex: number) {
@@ -79,10 +91,35 @@ export class GridService {
     }
   }
 
-  removeColumnGroup(grid: PrGrid, columnGroup: PrColumn) {
+  removeColumnGroup(grid: PrGrid, columnGroup: PrColumnGroup) {
+    const hasRequiredColumn = columnGroup.columns.some(({isRequired}) => isRequired);
+
+    if (!hasRequiredColumn) {
+
+      const filteredGroups = grid.columnGroups.filter(({columnDef}) => columnGroup.columnDef !== columnDef);
+      return {
+        ...grid,
+        columnGroups: filteredGroups.map((group, index) => {
+          if(index !== filteredGroups.length - 1 || !grid.rowActions) return group;
+
+          return {
+            ...group,
+            columns: [...group.columns, actionsColumn]
+          }
+        })
+      }
+    }
+
     return {
       ...grid,
-      columnGroups: grid.columnGroups.filter(({columnDef}) => columnGroup.columnDef !== columnDef)
+      columnGroups: grid.columnGroups.map((group) => {
+        if (group.columnDef !== columnGroup.columnDef) return group;
+
+        return {
+          ...group,
+          columns: group.columns.filter(({isRequired, columnDef}) => isRequired || columnDef === actionsColumnDef),
+        }
+      })
     }
   }
 
@@ -118,7 +155,7 @@ export class GridService {
     }
 
     return Array.from(groups.entries(), ([groupName, groupRows]) => {
-      const children = this.recursiveGroupBy(groupRows, groupByColumnIds,level + 1, grid);
+      const children = this.recursiveGroupBy(groupRows, groupByColumnIds, level + 1, grid);
 
       let leafCount = 0;
       let subtreeSize = 0;
@@ -133,7 +170,7 @@ export class GridService {
         }
       }
 
-      return { groupName, groupColumnId: columnId, children, leafCount, subtreeSize };
+      return {groupName, groupColumnId: columnId, children, leafCount, subtreeSize};
     });
   }
 
@@ -194,7 +231,7 @@ export class GridService {
 
     for (const row of rows) {
       if (isGroupByRow(row)) {
-        result.push({ ...row, isOpen: isExpand });
+        result.push({...row, isOpen: isExpand});
       } else {
         result.push(row);
       }
@@ -376,6 +413,30 @@ export class GridService {
 
     for (let k = 0; k < length; k++) {
       rows[start + k] = decoratedRows[k].row;
+    }
+  }
+
+  private addActionsColumn(grid: PrGrid) {
+
+    if(!grid.rowActions) return grid;
+
+    return {
+      ...grid,
+      columnGroups: grid.columnGroups.map((group, index)=> {
+        if(index !== grid.columnGroups.length - 1) return group;
+
+        return {
+          ...group,
+          columns: [...group.columns, {...actionsColumn}]
+        }
+      }),
+      columnToCellMapper: {
+        ...grid.columnToCellMapper,
+        [actionsColumnDef]: (row: PrRow): PrActionsCell => ({
+          discriminator: 'Actions',
+          actions: grid.rowActions
+        })
+      }
     }
   }
 }

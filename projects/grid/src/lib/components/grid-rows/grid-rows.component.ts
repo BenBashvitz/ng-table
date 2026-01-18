@@ -53,7 +53,7 @@ import { FindByPropPipe } from '../../pipes/find-by-prop.pipe';
   ]
 })
 export class GridRowsComponent implements OnInit, OnDestroy {
-  @Input() table: PrGrid;
+  @Input() grid: PrGrid;
   @Input() allRows: PrDisplayableRow[];
   @Input() columns: PrColumnWithMetadata[];
   @Input() selectedCells: SelectedCellData[];

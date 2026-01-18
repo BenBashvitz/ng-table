@@ -92,7 +92,7 @@ export class GridService {
       : grid.rows;
 
     return grid.sortByColumns?.length
-      ? this.sortRows(groupedRows, grid.sortByColumns, grid.columnToCellMapper)
+      ? this.sortRows(groupedRows, grid.sortByColumns, grid.columnToCellMapper, grid.groupByColumnIds.length > 0)
       : groupedRows;
   }
 
@@ -266,12 +266,14 @@ export class GridService {
   sortRows(
     allRows: PrDisplayableRow[],
     sortByColumns: PrSortColumn[],
-    columnToCellMapper: PrGrid['columnToCellMapper']
+      columnToCellMapper: PrGrid['columnToCellMapper'],
+    isGrouped: boolean,
   ): PrDisplayableRow[] {
     if (allRows.length <= 1 || !sortByColumns?.length) return allRows;
+
     const comparator = this.buildMultiStringComparator(sortByColumns, columnToCellMapper);
 
-    if (!isGroupByRow(allRows[0])) {
+    if (!isGrouped) {
       const decoratedRows = (allRows as PrRow[]).map((row, index) => ({ row, index }));
       decoratedRows.sort((x, y) => {
         const result = comparator(x.row, y.row);

@@ -16,8 +16,6 @@ type Columns = typeof columns[number];
   providers: [GridStore]
 })
 export class GridRowActionsExample {
-  isGroupByEnabled = false;
-
   table: PrGrid<Columns> = {
     rows: DATA,
     columnToCellMapper: {
@@ -83,15 +81,5 @@ export class GridRowActionsExample {
         console.log('fly to entity logic')
       }
     }]
-  }
-
-  enableGroupBy() {
-    if (!this.isGroupByEnabled) {
-      this.table = { ...this.table, groupByColumnIds: ['name', 'type'] };
-    } else {
-      this.table = { ...this.table, groupByColumnIds: [] };
-    }
-
-    this.isGroupByEnabled = !this.isGroupByEnabled;
   }
 }

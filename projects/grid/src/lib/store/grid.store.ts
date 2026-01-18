@@ -235,7 +235,7 @@ export class GridStore extends ComponentStore<GridState> {
       state.allRows,
       state.grid.sortByColumns.length > 0 ? state.grid.sortByColumns : [{ id: 'id', direction: 'asc' }],
       state.grid.columnToCellMapper,
-      state.grid.groupByColumnIds.length > 0
+      state.grid.groupByColumnIds
     )
   }));
   readonly resetSortBy = this.updater((state) => ({
@@ -248,7 +248,7 @@ export class GridStore extends ComponentStore<GridState> {
       state.allRows,
       [{ id: 'id', direction: 'asc' }],
       state.grid.columnToCellMapper,
-      state.grid.groupByColumnIds.length > 0
+      state.grid.groupByColumnIds
     )
   }));
   readonly copyColumn = this.effect<PrColumnWithMetadata>((triggers$: Observable<PrColumn>) => triggers$.pipe(

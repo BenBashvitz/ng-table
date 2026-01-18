@@ -92,7 +92,7 @@ export class GridService {
       : grid.rows;
 
     return grid.sortByColumns?.length
-      ? this.sortRows(groupedRows, grid.sortByColumns, grid.columnToCellMapper, grid.groupByColumnIds.length > 0)
+      ? this.sortRows(groupedRows, grid.sortByColumns, grid.columnToCellMapper, grid.groupByColumnIds)
       : groupedRows;
   }
 
@@ -266,14 +266,14 @@ export class GridService {
   sortRows(
     allRows: PrDisplayableRow[],
     sortByColumns: PrSortColumn[],
-      columnToCellMapper: PrGrid['columnToCellMapper'],
-    isGrouped: boolean,
+    columnToCellMapper: PrGrid['columnToCellMapper'],
+    groupByColumnIds: string[],
   ): PrDisplayableRow[] {
     if (allRows.length <= 1 || !sortByColumns?.length) return allRows;
 
     const comparator = this.buildMultiStringComparator(sortByColumns, columnToCellMapper);
 
-    if (!isGrouped) {
+    if ((groupByColumnIds?.length ?? 0) < 1) {
       const decoratedRows = (allRows as PrRow[]).map((row, index) => ({ row, index }));
       decoratedRows.sort((x, y) => {
         const result = comparator(x.row, y.row);
@@ -292,24 +292,15 @@ export class GridService {
       if (!isGroupByRow(row)) continue;
 
       const subtreeStart = i + 1;
-
       const subtreeEndExclusive = Math.min(out.length, subtreeStart + row.subtreeSize);
+      const leafEndExclusive = Math.min(out.length, subtreeStart + row.leafCount);
 
-      let firstNestedGroupIndex = -1;
-      for (let j = subtreeStart; j < subtreeEndExclusive; j++) {
-        if (isGroupByRow(out[j])) {
-          firstNestedGroupIndex = j;
-          break;
-        }
-      }
-
-      if (firstNestedGroupIndex !== -1) {
-        i = firstNestedGroupIndex - 1;
+      if (row.subtreeSize !== row.leafCount) {
+        i = subtreeEndExclusive - 1;
         continue;
       }
 
-      this.stableSortLeafSegment(out, subtreeStart, subtreeEndExclusive, comparator);
-
+      this.stableSortLeafSegment(out, subtreeStart, leafEndExclusive, comparator);
       i = subtreeEndExclusive - 1;
     }
 

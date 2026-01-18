@@ -1,0 +1,8 @@
+<pr-grid dir="rtl" [grid]="table"></pr-grid>
+<div class="actions">
+  <div class="example-button" (click)="toggleSortDirection()">
+    כיוון סדר לפי:
+    <mat-icon class="sort-direction" [class.desc]="(sortDirection$ | async) === 'desc'">arrow_upwards</mat-icon>
+  </div>
+  <div class="example-button" (click)="resetSortBy()">נקה סדר לפי</div>
+</div>

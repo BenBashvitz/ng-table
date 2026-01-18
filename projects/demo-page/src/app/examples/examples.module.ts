@@ -12,10 +12,14 @@ import {EditableCellGridExample} from "./editable-cell-grid-example/editable-cel
 import {StickyColumnGridExample} from "./sticky-column-grid-example/sticky-column-grid-example.component";
 import { GridComponent } from '@parlament/grid';
 import { MatIconModule } from '@angular/material/icon';
+import { GroupByGridExample } from './group-by-grid-example/group-by-grid-example.component';
+import { SortByGridExample } from './sort-by-grid-example/sort-by-grid-example.component';
 
 const examples = [
   BasicGridExample,
   BasicDarkGridExample,
+  GroupByGridExample,
+  SortByGridExample,
   EditableCellGridExample,
   StickyColumnGridExample,
 ];

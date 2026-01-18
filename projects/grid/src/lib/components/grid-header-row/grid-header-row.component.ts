@@ -8,6 +8,7 @@ import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {MatOptionModule} from "@angular/material/core";
 import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-column-group-spacer.component";
 import { ToggleLabelPipe } from '../../pipes/toggle-label.pipe';
+import {MatIconModule} from "@angular/material/icon";
 
 @Component({
   selector: 'pr-grid-header-row',
@@ -25,7 +26,8 @@ import { ToggleLabelPipe } from '../../pipes/toggle-label.pipe';
     MatOptionModule,
     GridColumnGroupSpacerComponent,
     NgIf,
-    ToggleLabelPipe
+    ToggleLabelPipe,
+    MatIconModule
   ]
 })
 export class GridHeaderRowComponent {

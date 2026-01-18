@@ -27,7 +27,12 @@
         (contextmenu)="onContextMenuColumn($event, column, groupIndex, i)"
       >
         <div class="grid-header-cell">
-          {{ column.title }}
+          <span class="grid-header-cell-text">
+            {{ column.title }}
+          </span>
+          <mat-icon class="grid-header-cell-menu-icon" [matMenuTriggerFor]="headerActionsMenu">
+            more_vert
+          </mat-icon>
         </div>
         <span class="resizer"></span>
         <ng-template cdkDragPreview></ng-template>
@@ -42,7 +47,6 @@
             {{groupByColumnIds | toggleLabel : column.columnDef : 'קבץ לפי עמודה' : 'הסר קיבוץ'}}
           </mat-option>
         </mat-menu>
-        <div [matMenuTriggerFor]="headerActionsMenu"></div>
       </div>
     </ng-container>
     <pr-grid-column-group-spacer *ngIf="groupIndex !== columnGroups.length - 1"></pr-grid-column-group-spacer>

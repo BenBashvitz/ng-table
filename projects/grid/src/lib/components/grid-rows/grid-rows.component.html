@@ -13,7 +13,7 @@
     <pr-grid-header-row
       [columnGroups]="table.columnGroups"
       [groupByColumnIds]="table.groupByColumnIds"
-      [sortByColumnIds]="table.sortByColumnIds"
+      [sortByColumns]="table.sortByColumns"
       [gridTemplateColumns]="gridTemplate$ | async"
       [gridWidth]="gridWidthInPx$ | async"
       [gridMaxWidth]="gridMaxWidthInPx$ | async"
@@ -58,10 +58,13 @@
     [style.height.px]="table.rowHeightInPx"
     [style.top.px]="64 + (selectedRow.index - virtualViewport.getRenderedRange().start) * (table.rowHeightInPx + 2)"
   ></div>
-  <div
-    *ngFor="let selectedColumn of gridStore.selectedColumns$ | async"
-    class="grid-column-selection grid-selection"
-    [style.width.px]="selectedColumn.widthInPx - 2"
-    [style.right]="gridStore.columnRight$(selectedColumn) | async"
-  ></div>
+  <ng-container *ngFor="let selectedColumn of gridStore.selectedColumns$ | async">
+    <ng-container *ngIf="columns | findByProp : 'columnDef' : selectedColumn.columnDef as column">
+      <div
+        class="grid-column-selection grid-selection"
+        [style.width.px]="column.widthInPx - 2"
+        [style.right]="gridStore.columnRight$(column) | async"
+      ></div>
+    </ng-container>
+  </ng-container>
 </cdk-virtual-scroll-viewport>

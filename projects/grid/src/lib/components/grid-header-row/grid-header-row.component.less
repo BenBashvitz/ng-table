@@ -40,13 +40,35 @@
       width: 100%;
       user-select: none;
       overflow: hidden;
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      justify-content: center;
       color: var(--pr-grid-column-color);
       background-color: var(--pr-grid-column-bg);
       border-radius: var(--pr-grid-column-radius);
       font-size: var(--pr-grid-column-font-size);
+
+      .grid-header-title {
+        grid-column: 2;
+        justify-self: center;
+      }
+
+      .grid-sort-direction {
+        color: #40a0ff;
+        transition: transform 0.3s ease;
+        width: 16px;
+        height: 16px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: initial;
+        grid-column: 3;
+        justify-self: end;
+
+        &.desc {
+          transform: rotate(180deg);
+        }
+      }
     }
 
     .resizer {

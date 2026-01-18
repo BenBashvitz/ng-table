@@ -27,6 +27,7 @@ import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 import {Observable, Subject, tap} from "rxjs";
 import {GridColumnGroupRowComponent} from "../grid-column-group-row/grid-column-group-row.component";
 import { GridGroupByRowComponent } from '../grid-group-by-row/grid-group-by-row.component';
+import { FindByPropPipe } from '../../pipes/find-by-prop.pipe';
 
 @Component({
   selector: 'pr-grid-rows',
@@ -48,6 +49,7 @@ import { GridGroupByRowComponent } from '../grid-group-by-row/grid-group-by-row.
     GridColumnGroupRowComponent,
     NgIf,
     NgForOf,
+    FindByPropPipe
   ]
 })
 export class GridRowsComponent implements OnInit, OnDestroy {
@@ -57,14 +59,14 @@ export class GridRowsComponent implements OnInit, OnDestroy {
   @Input() selectedCells: SelectedCellData[];
   @Output() clickRow = new EventEmitter<PrRow>();
   @Output() dblclickRow = new EventEmitter<PrRow>();
-  @ViewChild('body') body: ElementRef<Element>
+  @ViewChild('body') body: ElementRef<Element>;
   @ViewChild(CdkVirtualScrollViewport)
   virtualViewport: CdkVirtualScrollViewport;
 
   gridWidthInPx$: Observable<number>;
   gridMaxWidthInPx$ = this.gridStore.maxWidth$;
   gridTemplate$: Observable<string>;
-  displayedRows$: Observable<PrDisplayableRow[]>
+  displayedRows$: Observable<PrDisplayableRow[]>;
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent): void {
@@ -86,11 +88,11 @@ export class GridRowsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.destroyed$.next()
+    this.destroyed$.next();
   }
 
   trackByRow(_: number, row: PrRow) {
-    return row.id
+    return row.id;
   }
 
   onDropRow(event: CdkDragDrop<unknown, unknown, PrRow>) {
@@ -106,10 +108,10 @@ export class GridRowsComponent implements OnInit, OnDestroy {
   }
 
   onDoubleClickRow(row: PrRow) {
-    this.dblclickRow.emit(row)
+    this.dblclickRow.emit(row);
   }
 
   public onToggleGroupByRow(toggledRow: PrGroupByRow): void {
-    this.gridStore.toggleGroupByRow({rowId: toggledRow.id, isOpen: !toggledRow.isOpen});
+    this.gridStore.toggleGroupByRow({ rowId: toggledRow.id, isOpen: !toggledRow.isOpen });
   }
 }

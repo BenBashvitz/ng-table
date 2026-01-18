@@ -1,7 +1,5 @@
 import { GridStore, PrGrid, PrRow } from '@parlament/grid';
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { SortDirection } from '@angular/material/sort';
+import { Component } from '@angular/core';
 
 const DATA: PrRow[] = Array.from({ length: 1000 }, (_, i) => ({
   id: i + 1,
@@ -32,14 +30,9 @@ const types = ['A', 'B', 'C'] as const;
   styleUrls: ['./sort-by-grid-example.component.css'],
   providers: [GridStore]
 })
-export class SortByGridExample implements OnInit {
-  sortDirection$: Observable<SortDirection>;
+export class SortByGridExample {
 
   constructor(public gridStore: GridStore) {}
-
-  ngOnInit() {
-    this.sortDirection$ = this.gridStore.sortDirection$;
-  }
 
   table: PrGrid<Columns> = {
     rows: DATA,
@@ -117,11 +110,6 @@ export class SortByGridExample implements OnInit {
     ],
     maxWidthInPx: 750
   };
-
-  toggleSortDirection() {
-    this.gridStore.toggleSortByDirection();
-    this.gridStore.sortRows();
-  }
 
   resetSortBy() {
     this.gridStore.resetSortBy();

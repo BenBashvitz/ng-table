@@ -15,8 +15,8 @@ import {
   isGroupByRow,
   isRowArray,
   isRowGroup,
-  PrSortDirection,
-  PrTextCell
+  PrTextCell,
+  PrSortColumn
 } from '../types/grid.interface';
 import {moveItemInArray} from "@angular/cdk/drag-drop";
 
@@ -86,13 +86,13 @@ export class GridService {
     }
   }
 
-  getAllRows(grid: PrGrid, sortByDirection: PrSortDirection): PrDisplayableRow[] {
+  getAllRows(grid: PrGrid): PrDisplayableRow[] {
     const groupedRows: PrDisplayableRow[] = grid.groupByColumnIds?.length
       ? this.flattenGroupedData(this.recursiveGroupBy(grid.rows, grid.groupByColumnIds, 0, grid), 0)
       : grid.rows;
 
-    return grid.sortByColumnIds?.length
-      ? this.sortRows(groupedRows, grid.sortByColumnIds, sortByDirection, grid.columnToCellMapper)
+    return grid.sortByColumns?.length
+      ? this.sortRows(groupedRows, grid.sortByColumns, grid.columnToCellMapper)
       : groupedRows;
   }
 
@@ -265,53 +265,34 @@ export class GridService {
 
   sortRows(
     allRows: PrDisplayableRow[],
-    sortByColumnIds: string[],
-    direction: PrSortDirection,
+    sortByColumns: PrSortColumn[],
     columnToCellMapper: PrGrid['columnToCellMapper']
   ): PrDisplayableRow[] {
-    // Nothing to do if 0/1 row (already sorted) or if no sort columns provided.
-    if (allRows.length <= 1) return allRows;
-    if (!sortByColumnIds?.length) return allRows;
+    if (allRows.length <= 1 || !sortByColumns?.length) return allRows;
+    const comparator = this.buildMultiStringComparator(sortByColumns, columnToCellMapper);
 
-    // Build a comparator that compares two leaf rows by the requested column IDs.
-    // This comparator is used both in non-grouped sorting and in leaf-segment sorting.
-    const comparator = this.buildMultiStringComparator(sortByColumnIds, direction, columnToCellMapper);
-
-    // Fast path: if the first row is NOT a group header row, we treat the entire list as leaf rows.
-    // We then do a stable sort (decorate -> sort -> undecorate) for predictable ordering.
     if (!isGroupByRow(allRows[0])) {
-      // Decorate each row with its original index so ties can be broken by index,
-      // guaranteeing stability even if JS engine sort isn't stable in some environments.
       const decoratedRows = (allRows as PrRow[]).map((row, index) => ({ row, index }));
       decoratedRows.sort((x, y) => {
-        // Primary comparison uses the multi-column comparator.
         const result = comparator(x.row, y.row);
-        // If equal by comparator, keep original relative order via original index.
+
         return result !== 0 ? result : x.index - y.index;
       });
-      // Undecorate back into just rows.
+
       return decoratedRows.map(x => x.row);
     }
 
-    // Grouped path: work on a shallow copy to avoid mutating the original array.
     const out = allRows.slice();
 
-    // Iterate through the display list scanning group headers and deciding which leaf segments to sort.
     for (let i = 0; i < out.length; i++) {
       const row = out[i];
 
-      // Only group header rows define a subtree range; leaf rows are ignored here.
       if (!isGroupByRow(row)) continue;
 
-      // The group subtree starts immediately after the group header row.
       const subtreeStart = i + 1;
 
-      // `row.subtreeSize` is the number of rows that belong to this group’s subtree in the display list.
-      // Clamp to array length to stay safe even if subtreeSize is imperfect.
       const subtreeEndExclusive = Math.min(out.length, subtreeStart + row.subtreeSize);
 
-      // Detect whether this group subtree contains *any* nested group header rows.
-      // If it does, we do NOT sort here (we want to reach the deepest leaf-only groups first).
       let firstNestedGroupIndex = -1;
       for (let j = subtreeStart; j < subtreeEndExclusive; j++) {
         if (isGroupByRow(out[j])) {
@@ -320,80 +301,61 @@ export class GridService {
         }
       }
 
-      // If we found a nested group header inside this subtree,
-      // skip ahead so the outer loop will process that nested group header next.
-      // This ensures we sort only “leaf segments” (segments that contain only PrRow leaves).
       if (firstNestedGroupIndex !== -1) {
         i = firstNestedGroupIndex - 1;
         continue;
       }
 
-      // No nested group headers were found in this subtree range,
-      // therefore the entire subtree segment should be leaf rows (PrRow),
-      // and it is safe to sort that segment without affecting grouping structure.
       this.stableSortLeafSegment(out, subtreeStart, subtreeEndExclusive, comparator);
 
-      // Skip past the subtree we just sorted so we don’t re-process its members.
       i = subtreeEndExclusive - 1;
     }
 
-    // Return the sorted view.
     return out;
   }
 
   private buildMultiStringComparator(
-    sortByColumnIds: string[],
-    direction: PrSortDirection,
+    sortByColumns: PrSortColumn[],
     columnToCellMapper: PrGrid['columnToCellMapper']
   ): (a: PrRow, b: PrRow) => number {
-    // Convert requested direction to a multiplier used at the end of comparisons.
-    const dir = direction === 'desc' ? -1 : 1;
 
-    // Build an array of getter functions: each getter extracts a normalized string
-    // from the row for a specific sort column.
-    const getters = sortByColumnIds
-      .map((field) => {
-        // Map column id -> accessor function. If the column id is unknown, skip it.
-        const mappedField = columnToCellMapper[field];
+    const sortKeys = sortByColumns
+      .map(({ id, direction }) => {
+        const mappedField = columnToCellMapper[id];
         if (!mappedField) return undefined;
 
-        // Normalize to a trimmed string. Missing text becomes ''.
-        return (row: PrRow) => String((mappedField(row) as PrTextCell)?.cellText ?? '').trim();
-      }).filter((g): g is (row: PrRow) => string => !!g);
+        return {
+          get: (row: PrRow) => String((mappedField(row) as PrTextCell)?.cellText ?? '').trim(),
+          dir: direction === 'desc' ? -1 : 1 as const,
+        };
+      })
+      .filter((x): x is { get: (row: PrRow) => string; dir: 1 | -1 } => !!x);
 
-    // If no valid getters exist (no valid columns), all rows are "equal" for sorting.
-    if (getters.length === 0) return () => 0;
+    if (sortKeys.length === 0) return () => 0;
 
-    // Comparator: walk getters in order, returning on first decisive difference.
     return (rowA: PrRow, rowB: PrRow) => {
-      for (let i = 0; i < getters.length; i++) {
-        const aValue = getters[i](rowA);
-        const bValue = getters[i](rowB);
+      for (let i = 0; i < sortKeys.length; i++) {
+        const { get, dir } = sortKeys[i];
 
-        // If equal for this key, try the next key.
+        const aValue = get(rowA);
+        const bValue = get(rowB);
+
         if (aValue === bValue) continue;
 
-        // Empty values are always pushed to the end.
         const aEmpty = aValue === '';
         const bEmpty = bValue === '';
         if (aEmpty || bEmpty) {
-          // If both empty (should have been caught by equality above), keep going.
           if (aEmpty && bEmpty) continue;
-
-          // Empty goes after non-empty (returns positive if a is empty).
           return aEmpty ? 1 : -1;
         }
 
-        // Compare strings in a human-friendly way (numeric segments + case-insensitive).
         const result = aValue.localeCompare(bValue, undefined, {
           numeric: true,
           sensitivity: 'base',
         });
 
-        // Apply direction once we have a decisive result.
         if (result !== 0) return result * dir;
       }
-      // All sort keys were equal.
       return 0;
     };
   }
@@ -406,23 +368,19 @@ export class GridService {
   ): void {
     const length = endExclusive - start;
 
-    // 0/1 element segments are already sorted.
     if (length <= 1) return;
 
-    // Decorate each row with its original index (relative to the segment) for stable tie-breaking.
     const decoratedRows = new Array<{ row: PrRow; index: number }>(length);
     for (let k = 0; k < length; k++) {
       decoratedRows[k] = { row: rows[start + k] as PrRow, index: k };
     }
 
-    // Sort decorated entries by comparator, falling back to original segment order on ties.
     decoratedRows.sort((x, y) => {
       const v = comparator(x.row, y.row);
 
       return v !== 0 ? v : x.index - y.index;
     });
 
-    // Write sorted rows back into the original array segment.
     for (let k = 0; k < length; k++) {
       rows[start + k] = decoratedRows[k].row;
     }

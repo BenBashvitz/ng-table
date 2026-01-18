@@ -2,13 +2,14 @@ import {Component, Input, QueryList, ViewChildren} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {ColumnResizeDirective} from "../../directives/column-resize.directive";
 import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
-import { PrColumn, PrColumnGroup, PrColumnWithMetadata, PrSortDirection } from '@parlament/grid';
+import { PrColumn, PrColumnGroup, PrColumnWithMetadata, PrSortColumn, PrSortDirection } from '@parlament/grid';
 import {GridStore} from "../../store/grid.store";
 import {MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {MatOptionModule} from "@angular/material/core";
 import {GridColumnGroupSpacerComponent} from "../grid-column-group-spacer/grid-column-group-spacer.component";
 import { MatIconModule } from '@angular/material/icon';
 import { ToggleLabelPipe } from '../../pipes/toggle-label.pipe';
+import { FindByPropPipe } from '../../pipes/find-by-prop.pipe';
 
 @Component({
   selector: 'pr-grid-header-row',
@@ -27,7 +28,8 @@ import { ToggleLabelPipe } from '../../pipes/toggle-label.pipe';
     GridColumnGroupSpacerComponent,
     NgIf,
     ToggleLabelPipe,
-    MatIconModule
+    MatIconModule,
+    FindByPropPipe
   ]
 })
 export class GridHeaderRowComponent {
@@ -36,7 +38,7 @@ export class GridHeaderRowComponent {
   @Input() gridMaxWidth: number;
   @Input() gridWidth: number;
   @Input() groupByColumnIds: string[];
-  @Input() sortByColumnIds: string[];
+  @Input() sortByColumns: PrSortColumn[];
   @Input() sortByDirection: PrSortDirection;
   @ViewChildren(MatMenuTrigger) menuTriggers: QueryList<MatMenuTrigger>;
 
@@ -62,15 +64,15 @@ export class GridHeaderRowComponent {
     return column.columnDef;
   }
 
-  onClickColumn(column: PrColumnWithMetadata) {
-    this.gridStore.setSelectedColumn(column);
+  onClickColumn(column: PrColumn) {
+    this.onSelectColumn(column);
+    this.onSortAction(column.columnDef);
   }
 
   onContextMenuColumn(event: Event, column: PrColumn, groupIndex: number, columnIndex: number) {
     event.stopPropagation();
     event.preventDefault();
-    this.onClickColumn(column);
-
+    this.onSelectColumn(column);
     this.menuTriggers.get(this.getColumnIndex(groupIndex, columnIndex)).openMenu();
   }
 
@@ -105,12 +107,16 @@ export class GridHeaderRowComponent {
   }
 
   onSortAction(columnDef: string) {
-    if (this.sortByColumnIds.includes(columnDef)) {
-      this.gridStore.removeSortByColumnId(columnDef);
-    } else {
-      this.gridStore.addSortByColumnId(columnDef);
-    }
-
+    this.gridStore.toggleOrAddSortColumn(columnDef);
     this.gridStore.sortRows();
+  }
+
+  onRemoveSortByColumn(columnDef: string) {
+    this.gridStore.removeSortByColumnId(columnDef);
+    this.gridStore.sortRows();
+  }
+
+  onSelectColumn(column: PrColumn) {
+    this.gridStore.setSelectedColumn(column);
   }
 }

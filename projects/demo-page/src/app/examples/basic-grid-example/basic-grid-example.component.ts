@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {PrRow, PrGrid, GridStore} from "@parlament/grid";
 
 const DATA: PrRow[] = Array.from({length: 1000}, (v, i) => ({
-  id: i + 1,
+  id: `${i + 1}`,
   discriminator: 'row'
 }));
 

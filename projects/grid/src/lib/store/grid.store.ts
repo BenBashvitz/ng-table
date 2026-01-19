@@ -11,16 +11,17 @@ import {
   PrDisplayableRow,
   PrGrid,
   PrRow,
-  SelectedCellData,
+  PrSelectedRowData,
+  SelectedCellData
 } from '../types/grid.interface';
 import { ComponentStore } from '@ngrx/component-store';
-import { Observable, switchMap, withLatestFrom } from 'rxjs';
+import { Observable, switchMap, tap, withLatestFrom } from 'rxjs';
 import { GridService } from "../services/grid.service";
 import {defaults} from "../types/grid.constants";
 
 export interface GridState {
   grid: PrGrid,
-  selectedRows: (PrRow & { index: number })[],
+  selectedRows: PrSelectedRowData[],
   selectedCells: SelectedCellData[],
   allRows: PrDisplayableRow[],
   selectedColumns: PrColumn[],
@@ -51,6 +52,7 @@ export class GridStore extends ComponentStore<GridState> {
   }
 
   readonly grid$ = this.select(state => state.grid);
+  readonly columnToCellMapper$ = this.select(this.grid$, table => table.columnToCellMapper);
   readonly columns$ = this.select(this.grid$, table => table.columnGroups.reduce((tableColumns, {columns}) => {
     return [...tableColumns, ...columns]
   }, [] as PrColumnWithMetadata[]));
@@ -190,15 +192,24 @@ export class GridStore extends ComponentStore<GridState> {
     ...state,
     grid: this.gridService.removeColumnGroup(state.grid, columnGroup),
   }));
-  readonly setSelectedRow = this.updater((state, rowData: { row: PrRow, index: number }) => ({
+  readonly setSelectedRow = this.updater((state, rowData: PrSelectedRowData) => ({
     ...state,
-    selectedRows: [{
-      ...rowData.row,
-      index: rowData.index,
-    }],
+    selectedRows: [rowData],
     selectedCells: [],
     selectedColumns: [],
   }));
+  readonly toggleSelectRow = this.updater((state, rowData: PrSelectedRowData) => {
+    const index = state.selectedRows.findIndex(row => row.row.id === rowData.row.id);
+
+    return {
+      ...state,
+      selectedRows: index === -1
+          ? [...state.selectedRows, rowData]
+          : [...state.selectedRows.slice(0, index), ...state.selectedRows.slice(index + 1)],
+      selectedCells: [],
+      selectedColumns: []
+    };
+  });
   readonly setSelectedCell = this.updater((state, cell: SelectedCellData) => ({
     ...state,
     selectedCells: [cell],
@@ -291,4 +302,13 @@ export class GridStore extends ComponentStore<GridState> {
       return navigator.clipboard.writeText(text);
     })
   ));
+
+  readonly editCells = this.effect<{ triggerCell: PrCellType, value: string, columnDef: string }>((params$) =>
+    params$.pipe(
+      withLatestFrom(this.selectedRows$, this.columnToCellMapper$),
+      tap(([{ triggerCell, value, columnDef }, selectedRows, columnToCellMapper]) => {
+        this.gridService.onEditCells(triggerCell, value, columnDef, selectedRows, columnToCellMapper);
+      })
+    )
+  );
 }

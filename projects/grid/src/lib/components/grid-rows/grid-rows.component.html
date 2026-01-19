@@ -31,7 +31,7 @@
       [columnToCellMapper]="grid.columnToCellMapper"
       [gridTemplateColumns]="gridTemplate$ | async"
       [selectedCells]="selectedCells"
-      (click)="onClickRow(row, i)"
+      (click)="onClickRow($event, row, i)"
       (dblclick)="onDoubleClickRow(row)"
     >
       <ng-template cdkDragPreview>
@@ -55,7 +55,7 @@
       [columnToCellMapper]="grid.columnToCellMapper"
       [gridTemplateColumns]="gridTemplate$ | async"
       [selectedCells]="selectedCells"
-      (click)="onClickRow(row, i)"
+      (click)="onClickRow($event, row, i)"
       (dblclick)="onDoubleClickRow(row)"
     >
       <ng-template cdkDragPreview>
@@ -82,7 +82,7 @@
     *ngFor="let selectedRow of gridStore.selectedRows$ | async"
     class="grid-row-selection grid-selection"
     [style.height.px]="grid.rowHeightInPx"
-    [style.top.px]="64 + (selectedRow.index - virtualViewport.getRenderedRange().start) * (grid.rowHeightInPx + 2)"
+    [style.top.px]="60 + (selectedRow.index - virtualViewport.getRenderedRange().start) * grid.rowHeightInPx"
   ></div>
   <ng-container *ngFor="let selectedColumn of gridStore.selectedColumns$ | async">
     <ng-container *ngIf="columns | findByProp : 'columnDef' : selectedColumn.columnDef as column">

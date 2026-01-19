@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {PrCellType, PrRow} from "../../types/grid.interface";
+import { PrCellType, PrSelectedRowData, PrRow } from '../../types/grid.interface';
 import {NgComponentOutlet, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
 import {ToFreeTextCellPipe} from "../../pipes/to-text-cell.pipe";
 import {ToComponentCellPipe} from "../../pipes/to-component-cell.pipe";
@@ -9,6 +9,7 @@ import {GridOptionsCellComponent} from "../grid-options-cell/grid-options-cell.c
 import {ToOptionsCellPipe} from "../../pipes/to-options-cell.pipe";
 import {GridActionsCellComponent} from "../grid-actions-cell/grid-actions-cell.component";
 import {ToActionsCellPipe} from "../../pipes/to-actions-cell.pipe";
+import { GridStore } from '../../store/grid.store';
 
 @Component({
   selector: 'pr-grid-cell',
@@ -36,4 +37,14 @@ export class GridCellComponent {
   @Input() columnDef: string;
   @Input() columnTitle: string;
   @Input() selected: boolean;
+  @Input() rowId: string;
+  @Input() selectedRows: PrSelectedRowData[];
+
+  constructor(public gridStore: GridStore) {}
+
+  onEditCellRightClick() {
+    if (this.selectedRows.length < 2) {
+      this.gridStore.setSelectedCell({ rowId: this.rowId, columnDef: this.columnDef });
+    }
+  }
 }

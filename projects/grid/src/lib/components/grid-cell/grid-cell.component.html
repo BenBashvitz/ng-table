@@ -6,6 +6,7 @@
         [cell]="cell | toFreeTextCell"
         [columnDef]="columnDef"
         [columnTitle]="columnTitle"
+        (rightClick)="onEditCellRightClick()"
       ></pr-grid-text-cell>
       <ng-container *ngSwitchCase="'Component'">
         <ng-container *ngComponentOutlet="(cell | toComponentCell).component;"></ng-container>
@@ -15,6 +16,7 @@
         [cell]="cell | toOptionsCell"
         [columnDef]="columnDef"
         [columnTitle]="columnTitle"
+        (rightClick)="onEditCellRightClick()"
       ></pr-grid-options-cell>
       <pr-grid-actions-cell
         *ngSwitchCase="'Actions'"

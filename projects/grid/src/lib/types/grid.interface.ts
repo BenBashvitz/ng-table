@@ -59,9 +59,16 @@ export type PrActionsCell = {
 
 export type PrCellType = PrTextCell | PrFreeTextCell | PrOptionsCell | PrComponentCell | PrActionsCell;
 
+export type PrEditableCell = PrTextCell | PrFreeTextCell | PrOptionsCell;
+
 export type SelectedCellData = {
   columnDef: string;
   rowId: string | number;
+}
+
+export type PrSelectedRowData = {
+  row: PrRow,
+  index: number
 }
 
 export interface MoveItem<T = PrRow | PrColumn | PrColumnGroup> {
@@ -95,7 +102,7 @@ export type PrGroupByRow = {
 
 export type PrRow = {
   discriminator: 'row';
-  id: string | number;
+  id: string;
 }
 
 export type PrSortDirection = 'asc' | 'desc';
@@ -159,4 +166,8 @@ export function isRowArray(rows: PrRowGroup[] | PrRow[]): rows is PrRow[] {
 
 export function isGroupByRow(row: PrDisplayableRow): row is PrGroupByRow {
   return row.discriminator === 'groupByRow';
+}
+
+export function isEditableCell(row: PrCellType): row is PrEditableCell {
+  return row.discriminator === 'Text' || row.discriminator === 'Options';
 }

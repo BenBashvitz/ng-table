@@ -8,6 +8,10 @@
       position: sticky;
       z-index: 3;
       top: 0;
+
+      &.grid-column-group {
+        z-index: 4;
+      }
     }
 
     .grid-body {
@@ -24,7 +28,7 @@
       border: 1px solid var(--pr-grid-primary);
       background-color: var(--pr-grid-primary-opacity);
       border-radius: var(--pr-grid-cell-radius);
-      z-index: 1000;
+      z-index: 2;
       pointer-events: none;
     }
 
@@ -34,6 +38,7 @@
     }
 
     .grid-column-selection {
+      z-index: 3;
       height: 100%;
       top: 30px;
     }

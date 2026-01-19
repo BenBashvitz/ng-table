@@ -42,8 +42,8 @@ export class GridVirtualScrollStrategy implements VirtualScrollStrategy {
   }
 
   private updateTotalContentSize() {
-    const dataLength = this.viewport.getDataLength();
-    this.viewport.setTotalContentSize(dataLength * this.itemSize);
+    const dataLength = this.viewport?.getDataLength();
+    this.viewport?.setTotalContentSize(dataLength * this.itemSize);
   }
 
   private updateRenderedRange() {

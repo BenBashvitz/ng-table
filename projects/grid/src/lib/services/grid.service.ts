@@ -335,10 +335,7 @@ export class GridService {
       const subtreeEndExclusive = Math.min(out.length, subtreeStart + row.subtreeSize);
       const leafEndExclusive = Math.min(out.length, subtreeStart + row.leafCount);
 
-      if (row.subtreeSize !== row.leafCount) {
-        i = subtreeEndExclusive - 1;
-        continue;
-      }
+      if (row.subtreeSize !== row.leafCount) continue;
 
       this.stableSortLeafSegment(out, subtreeStart, leafEndExclusive, comparator);
       i = subtreeEndExclusive - 1;

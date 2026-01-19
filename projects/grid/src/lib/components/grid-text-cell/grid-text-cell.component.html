@@ -1,4 +1,4 @@
-<div class="grid-cell-text" [ngClass]="columnDef" (dblclick)="onDoubleClick()">
+<div class="grid-cell-text" [ngClass]="columnDef" (contextmenu)="onRightClick($event)">
   {{ cell.cellText }}
 </div>
 <div [matMenuTriggerFor]="menu"></div>

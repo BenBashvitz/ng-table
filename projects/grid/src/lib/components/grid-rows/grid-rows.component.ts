@@ -16,7 +16,7 @@ import {
   PrGroupByRow,
   PrDisplayableRow,
   PrRow,
-  SelectedCellData} from '@parlament/grid';
+  SelectedCellData} from '../../types/grid.interface';
 import {CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 import {MatTableModule} from "@angular/material/table";
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
@@ -103,8 +103,15 @@ export class GridRowsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onClickRow(row: PrRow, index: number) {
-    this.clickRow.emit(row)
+  onClickRow(event: MouseEvent, row: PrRow, index: number) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (event.ctrlKey) {
+      this.gridStore.toggleSelectRow({ row, index });
+    } else {
+      this.gridStore.setSelectedRow({ row, index });
+    }
   }
 
   onDoubleClickRow(row: PrRow) {

@@ -25,7 +25,7 @@
         [gridWidthInPx]="gridWidth"
         (contextmenu)="onContextMenuColumn($event, column, groupIndex, i)"
       >
-        <div class="grid-header-cell" [class.transparent]="column.columnDef === actionsColumnDef" (click)="onClickColumn(column)">
+        <div class="grid-header-cell" [class.transparent]="column.columnDef === actionsColumnDef" (click)="onClickColumn($event, column)">
           <span class="grid-header-cell-text">
             {{ column.title }}
           </span>

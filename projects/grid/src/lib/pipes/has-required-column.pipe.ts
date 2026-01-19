@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {PrColumnGroup} from "@parlament/grid";
+import {PrColumnGroup} from "../types/grid.interface";
 
 @Pipe({
   name: 'hasRequiredColumn',

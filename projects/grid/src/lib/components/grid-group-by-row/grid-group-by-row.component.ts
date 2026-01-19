@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { PrGroupByRow } from '@parlament/grid';
+import { PrGroupByRow } from '../../types/grid.interface';
 import { NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 

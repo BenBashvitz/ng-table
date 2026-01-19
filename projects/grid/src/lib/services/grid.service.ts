@@ -15,7 +15,10 @@ import {
   isRowGroup,
   PrTextCell,
   PrSortColumn,
-  PrActionsCell
+  PrActionsCell,
+  PrSelectedRowData,
+  PrEditableCell,
+  isEditableCell
 } from '../types/grid.interface';
 import {moveItemInArray} from "@angular/cdk/drag-drop";
 import {actionsColumn, actionsColumnDef, columnDefaults, gridDefaults} from "../types/grid.constants";
@@ -170,7 +173,7 @@ export class GridService {
         }
       }
 
-      return {groupName, groupColumnId: columnId, children, leafCount, subtreeSize};
+      return { groupName, groupColumnId: columnId, children, leafCount, subtreeSize };
     });
   }
 
@@ -231,7 +234,7 @@ export class GridService {
 
     for (const row of rows) {
       if (isGroupByRow(row)) {
-        result.push({...row, isOpen: isExpand});
+        result.push({ ...row, isOpen: isExpand });
       } else {
         result.push(row);
       }
@@ -413,6 +416,26 @@ export class GridService {
 
     for (let k = 0; k < length; k++) {
       rows[start + k] = decoratedRows[k].row;
+    }
+  }
+
+  onEditCells(
+    triggerCell: PrEditableCell,
+    value: string,
+    columnDef: string,
+    selectedRows: PrSelectedRowData[],
+    columnToCellMapper: PrGrid['columnToCellMapper']
+  ) {
+    if (selectedRows.length < 1 && isEditableCell(triggerCell)) {
+      triggerCell?.onEdit(value);
+    } else {
+      for (const { row } of selectedRows) {
+        const cellToEdit = columnToCellMapper[columnDef](row);
+
+        if (isEditableCell(cellToEdit)) {
+          cellToEdit?.onEdit(value);
+        }
+      }
     }
   }
 

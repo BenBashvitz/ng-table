@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {SelectedCellData} from "@parlament/grid";
+import {SelectedCellData} from "../types/grid.interface";
 
 @Pipe({
   name: 'isCellSelected',

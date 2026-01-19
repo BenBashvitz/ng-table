@@ -24,8 +24,6 @@ export class GridRowComponent {
   @Input() gridTemplateColumns: string;
   @Input() selectedCells: SelectedCellData[];
 
-  readonly actionsColumnDef = actionsColumnDef
-
   constructor(public gridStore: GridStore) {}
 
   onClickCell(columnDef: string) {

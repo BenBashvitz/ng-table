@@ -209,7 +209,7 @@ export class GridService {
     return result;
   }
 
-  getDisplayedRows(rows: PrDisplayableRow[]): PrDisplayableRow[] {
+  getDisplayedRows(rows: PrDisplayableRow[], pinnedRows: PrRow[]): PrDisplayableRow[] {
     const result: PrDisplayableRow[] = [];
 
     for (let i = 0; i < rows.length; i++) {
@@ -221,7 +221,7 @@ export class GridService {
       }
     }
 
-    return result;
+    return result.filter((displayedRow) => !pinnedRows.find(({id}) => displayedRow.id === id));
   }
 
   collapseExpandAllGroups(rows: PrDisplayableRow[], isExpand: boolean): PrDisplayableRow[] {

@@ -1,4 +1,5 @@
-import {PrColumnWithMetadata, PrGridMetadata} from "./grid.interface";
+import {PrColumnWithMetadata, PrGridActions, PrGridMetadata, PrRow} from "./grid.interface";
+import {GridStore} from "../store/grid.store";
 
 export const columnDefaults: Omit<Required<PrColumnWithMetadata>, 'columnDef' | 'title'> = {
   widthInPx: 100,
@@ -8,7 +9,6 @@ export const columnDefaults: Omit<Required<PrColumnWithMetadata>, 'columnDef' | 
   isRequired: false,
 }
 export const gridDefaults: Omit<PrGridMetadata, 'columns' | 'columnGroups'> = {
-  pinnedRowsIds: [],
   groupByColumnIds: [],
   sortByColumns: [],
   rowHeightInPx: 30,

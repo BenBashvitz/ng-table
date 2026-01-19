@@ -10,6 +10,7 @@
         [class.last-in-group]="i === columnGroup.columns.length - 1"
         [style.right]="column.isSticky ? (gridStore.stickyColumnRight$(column) | async) : 'unset'"
         [cell]="columnToCellMapper | gridCell:column:row"
+        [row]="row"
         [columnDef]="column.columnDef"
         [columnTitle]="column.title"
         (click)="onClickCell(column.columnDef)"

@@ -11,21 +11,23 @@ export * from './examples.module';
 
 export interface Example {
   component: Type<any>;
-  ts: string;
-  html: string;
-  css: string;
   name: string;
   title: string;
+  tsUrl: string;
+  htmlUrl: string;
+  cssUrl: string;
 }
 
 function getExample(title: string, component: Type<any>, name: string): Example {
+  const base = `assets/examples/${name}/${name}.component`;
+
   return {
     title,
     name,
     component,
-    ts: require(`!!../examples/${name}/${name}.component.ts?raw`),
-    html: require(`!!../examples/${name}/${name}.component.html?raw`),
-    css: require(`!!../examples/${name}/${name}.component.css?raw`),
+    tsUrl: `${base}.ts`,
+    htmlUrl: `${base}.html`,
+    cssUrl: `${base}.css`,
   };
 }
 

@@ -10,19 +10,6 @@
     "@jridgewell/gen-mapping" "^0.3.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@angular-builders/custom-webpack@16.0.0":
-  version "16.0.0"
-  resolved "https://registry.npmjs.org/@angular-builders/custom-webpack/-/custom-webpack-16.0.0.tgz"
-  integrity sha512-CR2529DueVpYhS4hPm0TDm4sDeSzYKn+4IvFmujciy4uSO8W4YrBmRgSM0YKjHRGeIwwlHRy025lLjjT7XAPdQ==
-  dependencies:
-    "@angular-devkit/architect" ">=0.1600.0 < 0.1700.0"
-    "@angular-devkit/build-angular" "^16.0.0"
-    "@angular-devkit/core" "^16.0.0"
-    lodash "^4.17.15"
-    ts-node "^10.0.0"
-    tsconfig-paths "^4.1.0"
-    webpack-merge "^5.7.3"
-
 "@angular-builders/jest@16.0.0":
   version "16.0.0"
   resolved "https://registry.npmjs.org/@angular-builders/jest/-/jest-16.0.0.tgz"
@@ -2500,10 +2487,10 @@
     "@material/theme" "15.0.0-canary.bc9ae6c9c.0"
     tslib "^2.1.0"
 
-"@ngrx/component-store@16.0.0":
-  version "16.0.0"
-  resolved "https://registry.npmjs.org/@ngrx/component-store/-/component-store-16.0.0.tgz"
-  integrity sha512-RVWxz1VB27TjZxH/DX/UMwIoQ+M0bSta2kANNRuHN5KY2hmhq+4ceHRUO4TFpmB5BoMAgVBaESXu6TWrttuYTg==
+"@ngrx/component-store@16.3.0":
+  version "16.3.0"
+  resolved "https://registry.npmjs.org/@ngrx/component-store/-/component-store-16.3.0.tgz"
+  integrity sha512-mCUzhCHLhZPZ6Vq0JI810Vv2uhEX6ceaMqJykdDEVKmvkokm3cwsV8bvodyzn5BcJf2w47JFCvdNSaWU31XU+A==
   dependencies:
     tslib "^2.0.0"
 
@@ -9905,7 +9892,7 @@ ts-jest@^29.0.0:
     type-fest "^4.41.0"
     yargs-parser "^21.1.1"
 
-ts-node@^10.0.0, ts-node@>=9.0.0, ts-node@~10.9.1:
+ts-node@>=9.0.0, ts-node@~10.9.1:
   version "10.9.1"
   resolved "https://registry.npmjs.org/ts-node/-/ts-node-10.9.1.tgz"
   integrity sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==
@@ -10327,7 +10314,7 @@ webpack-dev-server@^4.0.0, webpack-dev-server@4.15.1:
     webpack-dev-middleware "^5.3.1"
     ws "^8.13.0"
 
-webpack-merge@^5.7.3, webpack-merge@5.9.0:
+webpack-merge@5.9.0:
   version "5.9.0"
   resolved "https://registry.npmjs.org/webpack-merge/-/webpack-merge-5.9.0.tgz"
   integrity sha512-6NbRQw4+Sy50vYNTw7EyOn41OZItPiXB8GNv3INSoe3PSFaHJEz3SHTrYVaRm2LilNGnFUzh0FAwqPEmU/CwDg==

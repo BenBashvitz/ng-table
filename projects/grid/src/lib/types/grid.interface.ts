@@ -25,7 +25,7 @@ export type PrColumnGroup<AvailableColumns extends string = string> =
 
 export type PrGridAction = {
   label: string,
-  onAction: <T>() => T | void,
+  onAction: (data?: unknown) => unknown | void,
 }
 
 export type PrGridActions = PrGridAction[]
@@ -116,7 +116,6 @@ export type PrDisplayableRow = PrGroupByRow | PrRow;
 
 export type PrGridMetadata<AvailableColumns extends string = string> = {
   columnGroups: PrColumnGroup<AvailableColumns>[]
-  pinnedRowsIds?: (string | number)[];
   groupByColumnIds?: AvailableColumns[];
   sortByColumns?: PrSortColumn[];
   rowHeightInPx?: number;

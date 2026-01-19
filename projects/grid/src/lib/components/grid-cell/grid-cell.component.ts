@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import { PrCellType, PrSelectedRowData } from '../../types/grid.interface';
+import { PrCellType, PrSelectedRowData, PrRow } from '../../types/grid.interface';
 import {NgComponentOutlet, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
 import {ToFreeTextCellPipe} from "../../pipes/to-text-cell.pipe";
 import {ToComponentCellPipe} from "../../pipes/to-component-cell.pipe";
@@ -33,6 +33,7 @@ import { GridStore } from '../../store/grid.store';
 })
 export class GridCellComponent {
   @Input() cell: PrCellType;
+  @Input() row: PrRow
   @Input() columnDef: string;
   @Input() columnTitle: string;
   @Input() selected: boolean;

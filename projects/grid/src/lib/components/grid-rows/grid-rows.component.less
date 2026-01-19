@@ -2,14 +2,21 @@
   .grid-viewport {
     height: 250px;
     overflow: auto;
-    position: relative;
     max-width: var(--pr-grid-max-width);
+
+    .grid-sticky-row {
+      position: sticky;
+      z-index: 3;
+      top: 0;
+    }
 
     .grid-body {
       display: grid;
       max-width: var(--pr-grid-max-width);
       grid-auto-rows: var(--pr-grid-group-row-height);
-      overflow: auto;
+      overflow-x: auto;
+      overflow-y: auto;
+      position: relative;
     }
 
     .grid-selection {

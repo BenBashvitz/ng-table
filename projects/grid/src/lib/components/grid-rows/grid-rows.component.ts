@@ -17,7 +17,12 @@ import {
   PrDisplayableRow,
   PrRow,
   SelectedCellData} from '../../types/grid.interface';
-import {CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
+import {
+  CdkFixedSizeVirtualScroll,
+  CdkVirtualForOf,
+  CdkVirtualScrollViewport,
+  VIRTUAL_SCROLL_STRATEGY
+} from "@angular/cdk/scrolling";
 import {MatTableModule} from "@angular/material/table";
 import {CdkDrag, CdkDragDrop, CdkDragPreview, CdkDropList} from "@angular/cdk/drag-drop";
 import {GridRowComponent} from "../grid-row/grid-row.component";
@@ -28,6 +33,8 @@ import {Observable, Subject, tap} from "rxjs";
 import {GridColumnGroupRowComponent} from "../grid-column-group-row/grid-column-group-row.component";
 import { GridGroupByRowComponent } from '../grid-group-by-row/grid-group-by-row.component';
 import { FindByPropPipe } from '../../pipes/find-by-prop.pipe';
+import {GridVirtualScrollDirective} from "../../directives/grid-virtual-scroll.directive";
+import {GridVirtualScrollStrategy} from "../../services/grid-virtual-scroll.strategy";
 
 @Component({
   selector: 'pr-grid-rows',
@@ -37,10 +44,8 @@ import { FindByPropPipe } from '../../pipes/find-by-prop.pipe';
   imports: [
     CdkVirtualScrollViewport,
     MatTableModule,
-    CdkDropList,
     CdkDrag,
     CdkVirtualForOf,
-    CdkFixedSizeVirtualScroll,
     GridRowComponent,
     GridGroupByRowComponent,
     GridHeaderRowComponent,
@@ -49,8 +54,9 @@ import { FindByPropPipe } from '../../pipes/find-by-prop.pipe';
     GridColumnGroupRowComponent,
     NgIf,
     NgForOf,
-    FindByPropPipe
-  ]
+    FindByPropPipe,
+    GridVirtualScrollDirective
+  ],
 })
 export class GridRowsComponent implements OnInit, OnDestroy {
   @Input() grid: PrGrid;
@@ -59,7 +65,6 @@ export class GridRowsComponent implements OnInit, OnDestroy {
   @Input() selectedCells: SelectedCellData[];
   @Output() clickRow = new EventEmitter<PrRow>();
   @Output() dblclickRow = new EventEmitter<PrRow>();
-  @ViewChild('body') body: ElementRef<Element>;
   @ViewChild(CdkVirtualScrollViewport)
   virtualViewport: CdkVirtualScrollViewport;
 
@@ -67,15 +72,7 @@ export class GridRowsComponent implements OnInit, OnDestroy {
   gridMaxWidthInPx$ = this.gridStore.maxWidth$;
   gridTemplate$: Observable<string>;
   displayedRows$: Observable<PrDisplayableRow[]>;
-
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: MouseEvent): void {
-    const element = event.target as Element;
-
-    if (!this.body.nativeElement.contains(element)) {
-    }
-  }
-
+  pinnedRows$: Observable<PrRow[]>;
   destroyed$ = new Subject<void>();
 
   constructor(public gridStore: GridStore, private cd: ChangeDetectorRef) {}
@@ -85,6 +82,7 @@ export class GridRowsComponent implements OnInit, OnDestroy {
     this.gridTemplate$ = this.gridStore.gridTemplate$.pipe(tap(() => this.cd.detectChanges()));
     this.gridMaxWidthInPx$ = this.gridStore.maxWidth$.pipe(tap(() => this.cd.detectChanges()));
     this.displayedRows$ = this.gridStore.displayedRows$.pipe(tap(() => this.cd.detectChanges()));
+    this.pinnedRows$ = this.gridStore.pinnedRows$.pipe(tap(() => this.cd.detectChanges()));
   }
 
   ngOnDestroy() {

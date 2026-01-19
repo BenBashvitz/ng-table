@@ -25,6 +25,7 @@ export interface GridState {
   selectedCells: SelectedCellData[],
   allRows: PrDisplayableRow[],
   selectedColumns: PrColumn[],
+  pinnedRows: PrRow[];
 }
 
 const initialState: GridState = {
@@ -32,7 +33,6 @@ const initialState: GridState = {
     columnGroups: [],
     rows: [],
     columnToCellMapper: {},
-    pinnedRowsIds: [],
     groupByColumnIds: [],
     sortByColumns: [],
     rowHeightInPx: defaults.rowHeightInPx,
@@ -42,6 +42,7 @@ const initialState: GridState = {
   selectedRows: [],
   allRows: [],
   selectedColumns: [],
+  pinnedRows: [],
 }
 
 @Injectable()
@@ -85,9 +86,11 @@ export class GridStore extends ComponentStore<GridState> {
 
     return columnIndex === 0 ? '0px' : `${columns.slice(0, columnIndex).reduce((width, {widthInPx}) => width + widthInPx + 2, 0)}px`
   })
+  readonly pinnedRows$ = this.select(state => state.pinnedRows);
   readonly displayedRows$ = this.select(
     this.allRows$,
-    allRows => this.gridService.getDisplayedRows(allRows)
+    this.pinnedRows$,
+    (allRows, pinnedRows) => this.gridService.getDisplayedRows(allRows, pinnedRows)
   )
   readonly columnRight$ = (column: PrColumn) => this.select(this.columnsWithSpaceAndActions$, columns => {
     const columnIndex = columns.findIndex(({columnDef}) => column.columnDef === columnDef);
@@ -96,6 +99,7 @@ export class GridStore extends ComponentStore<GridState> {
   });
   readonly selectedCells$ = this.select(state => state.selectedCells);
   readonly selectedColumns$ = this.select(state => state.selectedColumns);
+  readonly isRowPinned$ = (rowId: string | number) => this.select(state => !!state.pinnedRows.find(({id}) => id === rowId));
   readonly setGrid = this.updater((state, table: PrGrid) => ({
     ...state,
     grid: this.gridService.initializeGrid(table)
@@ -262,6 +266,19 @@ export class GridStore extends ComponentStore<GridState> {
       state.grid.groupByColumnIds
     )
   }));
+  readonly togglePinnedRow = this.updater((state, row: PrRow) => {
+    if(!!state.pinnedRows.find(({id}) => id === row.id)) {
+      return {
+        ...state,
+        pinnedRows: state.pinnedRows.filter(({id}) => id !== row.id)
+      }
+    }
+
+    return {
+      ...state,
+      pinnedRows: [...state.pinnedRows, row],
+    }
+  })
   readonly copyColumn = this.effect<PrColumnWithMetadata>((triggers$: Observable<PrColumn>) => triggers$.pipe(
     withLatestFrom<PrColumn, [PrGrid]>(this.grid$),
     switchMap(([column, grid]) => {

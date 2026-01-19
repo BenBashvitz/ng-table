@@ -8,7 +8,6 @@ export const columnDefaults: Omit<Required<PrColumnWithMetadata>, 'columnDef' | 
   isRequired: false,
 }
 export const gridDefaults: Omit<PrGridMetadata, 'columns' | 'columnGroups'> = {
-  pinnedRowsIds: [],
   groupByColumnIds: [],
   sortByColumns: [],
   rowHeightInPx: 30,
@@ -26,3 +25,5 @@ export const actionsColumn: PrColumnWithMetadata = {
   title: '',
   widthInPx: 16
 }
+
+export const gridBufferInPx = 300

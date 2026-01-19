@@ -1,56 +1,82 @@
 <cdk-virtual-scroll-viewport
-  [itemSize]="grid.rowHeightInPx"
+  prGridVirtualScroll
   class="grid-viewport"
   [style.width.px]="gridWidthInPx$ | async"
 >
-  <div cdkDropList (cdkDropListDropped)="onDropRow($event)" class="grid-body" #body>
-    <pr-grid-column-group-row
+  <pr-grid-column-group-row
+    class="grid-sticky-row"
+    [columnGroups]="grid.columnGroups"
+    [gridTemplateColumns]="gridTemplate$ | async"
+    [gridWidth]="gridWidthInPx$ | async"
+    [gridMaxWidth]="gridMaxWidthInPx$ | async"
+  ></pr-grid-column-group-row>
+  <pr-grid-header-row
+    class="grid-sticky-row"
+    [columnGroups]="grid.columnGroups"
+    [groupByColumnIds]="grid.groupByColumnIds"
+    [sortByColumns]="grid.sortByColumns"
+    [gridTemplateColumns]="gridTemplate$ | async"
+    [gridWidth]="gridWidthInPx$ | async"
+    [gridMaxWidth]="gridMaxWidthInPx$ | async"
+  ></pr-grid-header-row>
+  <div
+    *ngFor="let row of pinnedRows$ | async; let i = index; trackBy: trackByRow"
+    class="grid-sticky-row">
+    <pr-grid-row
+      *ngIf="row.discriminator === 'row'"
+      cdkDrag
+      [cdkDragData]="row"
+      [row]="row"
       [columnGroups]="grid.columnGroups"
+      [columnToCellMapper]="grid.columnToCellMapper"
       [gridTemplateColumns]="gridTemplate$ | async"
-      [gridWidth]="gridWidthInPx$ | async"
-      [gridMaxWidth]="gridMaxWidthInPx$ | async"
-    ></pr-grid-column-group-row>
-    <pr-grid-header-row
-      [columnGroups]="grid.columnGroups"
-      [groupByColumnIds]="grid.groupByColumnIds"
-      [sortByColumns]="grid.sortByColumns"
-      [gridTemplateColumns]="gridTemplate$ | async"
-      [gridWidth]="gridWidthInPx$ | async"
-      [gridMaxWidth]="gridMaxWidthInPx$ | async"
-    ></pr-grid-header-row>
-    <div *cdkVirtualFor="let row of displayedRows$ | async; let i = index; trackBy: trackByRow">
-      <pr-grid-row
-        *ngIf="row.discriminator === 'row'"
-        cdkDrag
-        [cdkDragData]="row"
-        [row]="row"
-        [columnGroups]="grid.columnGroups"
-        [columnToCellMapper]="grid.columnToCellMapper"
-        [gridTemplateColumns]="gridTemplate$ | async"
-        [selectedCells]="selectedCells"
-        (click)="onClickRow($event, row, i)"
-        (dblclick)="onDoubleClickRow(row)"
-      >
-        <ng-template cdkDragPreview>
-          <pr-grid-row
-            [row]="row"
-            [columnGroups]="[grid.columnGroups[0]]"
-            [columnToCellMapper]="grid.columnToCellMapper"
-            [gridTemplateColumns]="'' + columns[0].widthInPx + 'px'"
+      [selectedCells]="selectedCells"
+      (click)="onClickRow($event, row, i)"
+      (dblclick)="onDoubleClickRow(row)"
+    >
+      <ng-template cdkDragPreview>
+        <pr-grid-row
+          [row]="row"
+          [columnGroups]="[grid.columnGroups[0]]"
+          [columnToCellMapper]="grid.columnToCellMapper"
+          [gridTemplateColumns]="'' + columns[0].widthInPx + 'px'"
           [selectedCells]="[]"
-          ></pr-grid-row>
-        </ng-template>
-      </pr-grid-row>
+        ></pr-grid-row>
+      </ng-template>
+    </pr-grid-row>
+  </div>
+  <div *cdkVirtualFor="let row of displayedRows$ | async; let i = index; trackBy: trackByRow">
+    <pr-grid-row
+      *ngIf="row.discriminator === 'row'"
+      cdkDrag
+      [cdkDragData]="row"
+      [row]="row"
+      [columnGroups]="grid.columnGroups"
+      [columnToCellMapper]="grid.columnToCellMapper"
+      [gridTemplateColumns]="gridTemplate$ | async"
+      [selectedCells]="selectedCells"
+      (click)="onClickRow($event, row, i)"
+      (dblclick)="onDoubleClickRow(row)"
+    >
+      <ng-template cdkDragPreview>
+        <pr-grid-row
+          [row]="row"
+          [columnGroups]="[grid.columnGroups[0]]"
+          [columnToCellMapper]="grid.columnToCellMapper"
+          [gridTemplateColumns]="'' + columns[0].widthInPx + 'px'"
+          [selectedCells]="[]"
+        ></pr-grid-row>
+      </ng-template>
+    </pr-grid-row>
 
-      <pr-grid-group-by-row
-        *ngIf="row.discriminator === 'groupByRow'"
-        [groupByRow]="row"
-        [gridTemplateColumns]="gridTemplate$ | async"
-        [columnsLength]="(gridStore.columnsWithSpaceAndActions$ | async).length"
-        [groupLevel]="grid.groupByColumnIds.indexOf(row.columnDef)"
-        (toggle)="onToggleGroupByRow($event)"
-      ></pr-grid-group-by-row>
-    </div>
+    <pr-grid-group-by-row
+      *ngIf="row.discriminator === 'groupByRow'"
+      [groupByRow]="row"
+      [gridTemplateColumns]="gridTemplate$ | async"
+      [columnsLength]="(gridStore.columnsWithSpaceAndActions$ | async).length"
+      [groupLevel]="grid.groupByColumnIds.indexOf(row.columnDef)"
+      (toggle)="onToggleGroupByRow($event)"
+    ></pr-grid-group-by-row>
   </div>
   <div
     *ngFor="let selectedRow of gridStore.selectedRows$ | async"

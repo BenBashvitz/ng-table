@@ -2,6 +2,9 @@
   more_vert
 </mat-icon>
 <mat-menu class="grid-options-cell-menu" #menu>
+  <mat-option (click)="onPinRow()">
+    {{ (isRowPinned$ | async) ? unpinRowText : pinRowText}}
+  </mat-option>
   <ng-container *ngFor="let action of cell.actions; let i = index">
     <mat-option (click)="onClickOption(action)">
       {{ action.label }}

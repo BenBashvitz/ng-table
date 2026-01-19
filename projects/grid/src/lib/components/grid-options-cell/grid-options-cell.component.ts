@@ -32,8 +32,8 @@ export class GridOptionsCellComponent {
     }
   }
 
-  onClickOption(option: string) {
+  onClickOption(value: string) {
     this.trigger.closeMenu();
-    this.gridStore.editCells({ triggerCell: this.cell, value: option, columnDef: this.columnDef });
+    this.gridStore.editCells({ triggerCell: this.cell, value, columnDef: this.columnDef });
   }
 }

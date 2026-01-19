@@ -430,10 +430,10 @@ export class GridService {
       triggerCell?.onEdit(value);
     } else {
       for (const { row } of selectedRows) {
-        const editableRow = columnToCellMapper[columnDef](row);
+        const cellToEdit = columnToCellMapper[columnDef](row);
 
-        if (isEditableCell(editableRow)) {
-          editableRow?.onEdit(value);
+        if (isEditableCell(cellToEdit)) {
+          cellToEdit?.onEdit(value);
         }
       }
     }

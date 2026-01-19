@@ -1,5 +1,4 @@
-import {PrColumnWithMetadata, PrGridActions, PrGridMetadata, PrRow} from "./grid.interface";
-import {GridStore} from "../store/grid.store";
+import {PrColumnWithMetadata, PrGridMetadata} from "./grid.interface";
 
 export const columnDefaults: Omit<Required<PrColumnWithMetadata>, 'columnDef' | 'title'> = {
   widthInPx: 100,
@@ -26,3 +25,5 @@ export const actionsColumn: PrColumnWithMetadata = {
   title: '',
   widthInPx: 16
 }
+
+export const gridBufferInPx = 300

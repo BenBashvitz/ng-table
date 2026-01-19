@@ -33,11 +33,9 @@ export class GridVirtualScrollStrategy implements VirtualScrollStrategy {
     this.updateRenderedRange();
   }
 
-  onContentRendered(): void {
-  }
+  onContentRendered(): void {}
 
-  onRenderedOffsetChanged(): void {
-  }
+  onRenderedOffsetChanged(): void {}
 
   scrollToIndex(index: number, behavior: ScrollBehavior): void {
     this.viewport.scrollToOffset(index * this.itemSize, behavior);

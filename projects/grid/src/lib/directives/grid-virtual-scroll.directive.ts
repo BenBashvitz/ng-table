@@ -1,40 +1,32 @@
 import {VIRTUAL_SCROLL_STRATEGY} from '@angular/cdk/scrolling';
 import {AfterContentInit, Directive, forwardRef, NgZone, OnDestroy} from '@angular/core';
 import {combineLatest, from, Subject} from 'rxjs';
-import {delayWhen, startWith, take, takeUntil, tap} from 'rxjs/operators';
+import {delayWhen, startWith, take, takeUntil} from 'rxjs/operators';
 import {GridStore} from "../store/grid.store";
 import {GridVirtualScrollStrategy} from "../services/grid-virtual-scroll.strategy";
+import {gridBufferInPx} from "../types/grid.constants";
 
-export function _tableVirtualScrollDirectiveStrategyFactory(tableDir: GridVirtualScrollDirective) {
-  return tableDir.scrollStrategy;
+export function _gridVirtualScrollDirectiveStrategyFactory(gridVirtualScrollDirective: GridVirtualScrollDirective) {
+  return gridVirtualScrollDirective.scrollStrategy;
 }
-
-function combineSelectors(...pairs: string[][]): string {
-  return pairs.map((selectors) => `${selectors.join(' ')}, ${selectors.join('')}`).join(', ');
-}
-
-const stickyRowsSelector = combineSelectors(
-  ['.grid-sticky-row']
-);
 
 @Directive({
-  selector: 'cdk-virtual-scroll-viewport[prGridScroll]',
+  selector: 'cdk-virtual-scroll-viewport[prGridVirtualScroll]',
   standalone: true,
   providers: [{
     provide: VIRTUAL_SCROLL_STRATEGY,
-    useFactory: _tableVirtualScrollDirectiveStrategyFactory,
+    useFactory: _gridVirtualScrollDirectiveStrategyFactory,
     deps: [forwardRef(() => GridVirtualScrollDirective)]
   }]
 })
 export class GridVirtualScrollDirective implements AfterContentInit, OnDestroy {
   scrollStrategy: GridVirtualScrollStrategy;
-  private stickyPositions: Map<HTMLElement, number>;
   private resetStickyPositions = new Subject<void>();
   private destroyed$ = new Subject<void>();
 
   constructor(private zone: NgZone, gridStore: GridStore) {
     gridStore.grid$.pipe(take(1)).subscribe(grid => {
-      this.scrollStrategy = new GridVirtualScrollStrategy(grid.rowHeightInPx, 300)
+      this.scrollStrategy = new GridVirtualScrollStrategy(grid.rowHeightInPx, gridBufferInPx)
     })
   }
 
@@ -44,18 +36,12 @@ export class GridVirtualScrollDirective implements AfterContentInit, OnDestroy {
       this.resetStickyPositions.pipe(
         startWith(void 0),
         delayWhen(() => this.getScheduleObservable()),
-        tap(() => {
-          this.stickyPositions = null;
-        })
       )
     ])
       .pipe(
         takeUntil(this.destroyed$)
       )
       .subscribe(([stickyOffset]) => {
-        if (!this.stickyPositions) {
-          this.initStickyPositions();
-        }
         this.setStickyRows(stickyOffset);
       });
   }
@@ -64,34 +50,14 @@ export class GridVirtualScrollDirective implements AfterContentInit, OnDestroy {
     this.destroyed$.next();
   }
 
-  private initStickyPositions() {
-    this.stickyPositions = new Map<HTMLElement, number>();
-
-    this.scrollStrategy.viewport.elementRef.nativeElement.querySelectorAll(stickyRowsSelector)
-      .forEach(el => {
-        const parent = el.parentElement;
-        if (!this.stickyPositions.has(parent)) {
-          this.stickyPositions.set(parent, parent.offsetTop);
-        }
-      });
-  }
-
   private setStickyRows(offset: number) {
-    this.scrollStrategy.viewport.elementRef.nativeElement.querySelectorAll(stickyRowsSelector)
+    this.scrollStrategy.viewport.elementRef.nativeElement.querySelectorAll('.grid-sticky-row')
       .forEach((el: HTMLElement, index: number) => {
-        const parent = el.parentElement;
-        let baseOffset = 0;
-        if (this.stickyPositions.has(parent)) {
-          baseOffset = index * this.scrollStrategy.itemSize
-        }
-
-        el.style.top = `${baseOffset - offset}px`;
+        el.style.top = `${index * this.scrollStrategy.itemSize - offset}px`;
       });
   }
 
   private getScheduleObservable() {
-    // Use onStable when in the context of an ongoing change detection cycle so that we
-    // do not accidentally trigger additional cycles.
     return this.zone.isStable
       ? from(Promise.resolve(undefined))
       : this.zone.onStable.pipe(take(1));

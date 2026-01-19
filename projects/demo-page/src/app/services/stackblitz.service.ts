@@ -4,6 +4,7 @@ import { Inject, Injectable } from '@angular/core';
 import stackBlitzSDK from '@stackblitz/sdk';
 import { Example } from '../examples';
 import { Utils } from '../utils';
+import { forkJoin, map, Observable } from 'rxjs';
 
 function trimEndSlash(url: string): string {
   if (url[url.length - 1] === '/') {
@@ -45,22 +46,24 @@ export class StackblitzService {
   }
 
   open(example: Example): void {
-    stackBlitzSDK.openProject(
-      {
-        files: this.getFiles(example),
-        title: 'ng-basic-grid-example-virtual-scroll | ' + example.title,
-        description: example.title,
-        template: 'angular-cli',
-        dependencies: {
-          '@angular/cdk': '*',
-          '@angular/material': '*',
-          'ng-table-virtual-scroll': '*'
+    this.getFilesAsync(example).subscribe((files) => {
+      stackBlitzSDK.openProject(
+        {
+          files,
+          title: 'ng-basic-grid-example-virtual-scroll | ' + example.title,
+          description: example.title,
+          template: 'angular-cli',
+          dependencies: {
+            '@angular/cdk': '*',
+            '@angular/material': '*',
+            'ng-table-virtual-scroll': '*',
+          },
+        },
+        {
+          openFile: [getFilePath(example, 'ts'), getFilePath(example, 'html')],
         }
-      },
-      {
-        openFile: [getFilePath(example, 'ts'), getFilePath(example, 'html')]
-      }
-    );
+      );
+    });
   }
 
   private setFiles(): void {
@@ -73,24 +76,36 @@ export class StackblitzService {
       });
   }
 
-  private getFiles(example: Example): { [path: string]: string } {
-    const exampleFiles = (['ts', 'css', 'html'] as const).reduce((files, ext) => {
-      files[getFilePath(example, ext)] = example[ext];
-      return files;
-    }, {});
-    const replacedFiles = replaceFilesPath.reduce((files, path) => {
-      files[path] = Utils.replace(this.files[path], {
-        exampleComponentName: Utils.capitalize(Utils.toCamelCase(example.name)) + 'Component',
-        exampleName: example.name,
-        title: example.title
-      });
-      return files;
-    }, {});
+  private getFilesAsync(example: Example): Observable<{ [path: string]: string }> {
+    const exampleSource$ = forkJoin({
+      ts: this.http.get(example.tsUrl, { responseType: 'text' }),
+      html: this.http.get(example.htmlUrl, { responseType: 'text' }),
+      css: this.http.get(example.cssUrl, { responseType: 'text' }),
+    });
 
-    return {
-      ...this.files,
-      ...exampleFiles,
-      ...replacedFiles,
-    };
+    return exampleSource$.pipe(
+      map(({ ts, html, css }) => {
+        const exampleFiles: { [path: string]: string } = {
+          [getFilePath(example, 'ts')]: ts,
+          [getFilePath(example, 'html')]: html,
+          [getFilePath(example, 'css')]: css,
+        };
+
+        const replacedFiles = replaceFilesPath.reduce((files, path) => {
+          files[path] = Utils.replace(this.files[path] ?? '', {
+            exampleComponentName: Utils.capitalize(Utils.toCamelCase(example.name)) + 'Component',
+            exampleName: example.name,
+            title: example.title,
+          });
+          return files;
+        }, {} as { [path: string]: string });
+
+        return {
+          ...this.files,
+          ...exampleFiles,
+          ...replacedFiles,
+        };
+      })
+    );
   }
 }

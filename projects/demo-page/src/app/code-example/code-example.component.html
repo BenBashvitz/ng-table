@@ -1,14 +1,10 @@
 <div class="header">
-  <span>{{title}}</span>
+  <span>{{ title }}</span>
   <span class="spacer"></span>
-  <button mat-icon-button
-          matTooltip="View code"
-          (click)="panel.toggle()">
+  <button mat-icon-button matTooltip="View code" (click)="loadSourceIfNeeded(); panel.toggle()">
     <mat-icon class="mat-18">code</mat-icon>
   </button>
-  <button mat-icon-button
-          matTooltip="Edit {{title}} in StackBlitz"
-          (click)="openStackblitz()">
+  <button mat-icon-button matTooltip="Edit {{ title }} in StackBlitz" (click)="openStackblitz()">
     <mat-icon class="mat-18">open_in_new</mat-icon>
   </button>
 </div>
@@ -17,17 +13,14 @@
   <mat-expansion-panel #panel="matExpansionPanel" class="mat-elevation-z0">
     <ng-template matExpansionPanelContent>
       <mat-tab-group>
-        <mat-tab *ngFor="let snippet of exampleSnippets"
-                 [label]="snippet.label">
+        <mat-tab *ngFor="let snippet of exampleSnippets" [label]="snippet.label">
           <ng-template matTabContent>
             <div class="button-bar">
-              <button mat-icon-button
-                      matTooltip="Copy example source"
-                      (click)="copySource(example[snippet.type] )">
+              <button mat-icon-button matTooltip="Copy example source" (click)="copySnippet(snippet.type)">
                 <mat-icon>content_copy</mat-icon>
               </button>
             </div>
-            <pre [highlight]="example[snippet.type]"></pre>
+            <pre [highlight]="(source$ | async)?.[snippet.type]"></pre>
           </ng-template>
         </mat-tab>
       </mat-tab-group>
